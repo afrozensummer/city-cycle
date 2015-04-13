@@ -60,9 +60,9 @@ var map = new google.maps.Map(d3.select("#map").node(), {
   scaleControl: false,
   draggable: false,
   scrollwheel: false,
-  disableDoubleClickZoom: false,
+  disableDoubleClickZoom: true,
   mapTypeControlOptions: {
-    mapTypeIds: [google.maps.MapTypeId.ROADMAP]
+    mapTypeIds: [google.maps.MapTypeId.ROADMAP, 'no_poi']
   },
   streetViewControl: false,
  //mapTypeId: google.maps.MapTypeId.TERRAIN
@@ -116,6 +116,8 @@ d3.json("data/stations.json", function(err, data) {
   overlay.setMap(map);
 });
 
+// we should get rid of landmarks on map
+
   d3.csv("data/december2014.csv", function(err, data) {
     var overlaybikes = new google.maps.OverlayView();
     var minidata = [];
@@ -146,7 +148,7 @@ d3.json("data/stations.json", function(err, data) {
 
         // Add a circle.
         marker.append("svg:circle")
-            .attr("r", 2)
+            .attr("r", 1.5)
             .attr("cx", padding)
             .attr("cy", padding);
 
