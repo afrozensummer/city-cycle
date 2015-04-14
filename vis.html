@@ -6,6 +6,9 @@
     <script src="libs/d3/d3.min.js" charset="utf-8"></script>
     <script src="libs/jquery.min.js" charset="utf-8"></script>
     <script src="js/slider.js"></script>
+    <link href='https://api.tiles.mapbox.com/mapbox.js/v2.1.8/mapbox.css' rel='stylesheet' />
+    <script src="http://cdn.leafletjs.com/leaflet-0.7/leaflet.js"></script>
+    <script src='https://api.tiles.mapbox.com/mapbox.js/v2.1.8/mapbox.js'></script>
     
     <link href='http://fonts.googleapis.com/css?family=Raleway' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" type="text/css" href="css/main.css">
@@ -69,33 +72,12 @@ $(MyEventHandler).bind("selectionChanged", function(event, value) {
 
 });
 
+L.mapbox.accessToken = 'pk.eyJ1IjoiY2l0eWN5Y2xlIiwiYSI6IjZ3MXNtRW8ifQ.lmAxO5RTphn4Jo-QV63Vpg';
+// Create a map in the div #map
+L.mapbox.map('map', 'citycycle.lnkh0jpk');
 
-// Create the Google Map…
-var map = new google.maps.Map(d3.select("#map").node(), {
-  zoom: 13,
-  center: new google.maps.LatLng(40.7357, -73.992),
-  panControl: false,
-  zoomControl: false,
-  scaleControl: false,
-  draggable: false,
-  scrollwheel: false,
-  disableDoubleClickZoom: true,
-  mapTypeControlOptions: {
-    mapTypeIds: [google.maps.MapTypeId.ROADMAP]
-  },
-  streetViewControl: false,
- //mapTypeId: google.maps.MapTypeId.TERRAIN
-});
 
-var noPoi = [{
-  featureType: "poi",
-  stylers: [
-  {visibility: "off"}]
-}];
 
-map.setOptions({styles: noPoi})
-// Load the station data. When the data comes back, create an overlay.
-//d3.csv("data/december2014.csv", function(err, data) {
 d3.json("data/stations.json", function(err, data) {
   //console.log(data["stationBeanList"]);
   var overlay = new google.maps.OverlayView();
