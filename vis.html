@@ -98,7 +98,6 @@ function data_loaded() {
       .addLayer(layer)
       .setView([40.72332345541449, -73.99], 12);
 
-  console.log(map.getPanes().overlayPane);
   var svg = d3.select(map.getPanes().overlayPane).append("svg");
   console.log(svg);
   var g = svg.append("g").attr("class", "leaflet-zoom-hide");
@@ -121,23 +120,13 @@ function data_loaded() {
   }
 
   function reset() {
-
-   /* var bounds = d3path.bounds(collection),
-        topLeft = bounds[0],
-        bottomRight = bounds[1];*/
-
+    
     stations.attr("transform",
                   function(d) {
                       return "translate(" +
                           applyLatLngToLayer(d).x + "," +
                           applyLatLngToLayer(d).y + ")";
                   });
-
-    svg.attr("width", 1000 + 120)
-        .attr("height",1000 + 120)
-        .style("left", topLeft[0] - 50 + "px")
-        .style("top", topLeft[1] - 50 + "px");
-
   }
 
   reset();
