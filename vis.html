@@ -85,72 +85,107 @@ function data_loaded() {
   var MyEventHandler = new Object();
   var slider = new Slider(d3.select("#slider"), [], MyEventHandler);
 
+  // Handle the event for the slider
   $(MyEventHandler).bind("selectionChanged", function(event, value) {
     document.getElementById("time").innerHTML = "Current Time: " + formatDate(value.time);
 
   });
 
+  // Build the map
   L.mapbox.accessToken = 'pk.eyJ1IjoiY2l0eWN5Y2xlIiwiYSI6IjZ3MXNtRW8ifQ.lmAxO5RTphn4Jo-QV63Vpg';
-
   var layer = L.mapbox.tileLayer('citycycle.lnkh0jpk');
+  var map = L.map('map')
+      .addLayer(layer)
+      .setView([40.72332345541449, -73.99], 12);
 
-
-    var map = L.map('map')
-        .addLayer(layer)
-        .setView([40.72332345541449, -73.99], 12);
-
+  console.log(map.getPanes().overlayPane);
   var svg = d3.select(map.getPanes().overlayPane).append("svg");
+  console.log(svg);
   var g = svg.append("g").attr("class", "leaflet-zoom-hide");
 
+  var stationsList = station_data["stationBeanList"];
+  //var transform = d3.geo.transform({ point : projectPoint});
 
-  d3.json("data/stations.json", function(err, data) {
-    var stationsList = data["stationBeanList"];
-    //console.log(stationsList);
-    var transform = d3.geo.transform({ point : projectPoint});
-      //projectPoint});
-    //d3.geo.transform({point: projectPoint});
-
-    //transforms to svg path codes
-    var d3path = d3.geo.path().projection(transform);
-
-    // var feature = g.selectAll("path")
-    //                 .data(stationsList)
-    //                 .enter()
-    //                 .append("path");
-    //         map.on("viewreset", reset);
-    //         reset();
-            // Reposition the SVG to cover the features.
-    function reset() {
-        var bounds = path.bounds(stationsList),
-                topLeft = bounds[0],
-                bottomRight = bounds[1];
-        svg.attr("width", bottomRight[0] - topLeft[0])
-                .attr("height", bottomRight[1] - topLeft[1])
-                .style("left", topLeft[0] + "px")
-                .style("top", topLeft[1] + "px");
-        g.attr("transform", "translate(" + -topLeft[0] + "," + -topLeft[1] + ")");
-        //apply a class with the 'handle' value from the geojson file
-        feature.attr("class", function (d) {
-            return "code " + d.handle;
-        });
-        feature.attr("d", path);
-      }
-
-    function projectPoint(x, y) {
-        var point = map.latLngToLayerPoint(new L.LatLng(y, x));
-        this.stream.point(point.x, point.y);
-    }
-
-    var stations = g.selectAll(".station")
+  var stations = g.selectAll("circle")
             .data(stationsList)
             .enter()
-            .append("circle", ".stations")
-            .attr("r", 5)
-            .style("fill", steelblue)
-            .style("opacity", "0.5");
+            .append("circle")
+            .attr("r", 3)
+            .attr("class", "stations");
 
-    reset();
-    transition();
+  function applyLatLngToLayer(d) {
+    var y = d.latitude;
+    var x = d.longitude;
+    console.log(map.latLngToLayerPoint(new L.LatLng(y, x)));
+    return map.latLngToLayerPoint(new L.LatLng(y, x))
+  }
+
+  function reset() {
+
+   /* var bounds = d3path.bounds(collection),
+        topLeft = bounds[0],
+        bottomRight = bounds[1];*/
+
+    stations.attr("transform",
+                  function(d) {
+                      return "translate(" +
+                          applyLatLngToLayer(d).x + "," +
+                          applyLatLngToLayer(d).y + ")";
+                  });
+
+    svg.attr("width", 1000 + 120)
+        .attr("height",1000 + 120)
+        .style("left", topLeft[0] - 50 + "px")
+        .style("top", topLeft[1] - 50 + "px");
+
+  }
+
+  reset();
+  map.on("viewreset", reset);
+    
+
+  //transforms to svg path codes
+ /* var d3path = d3.geo.path().projection(transform);
+
+  var feature = g.selectAll("path")
+                   .data(stationsList)
+                   .enter()
+                   .append("path");
+           map.on("viewreset", reset);
+           reset();
+          // Reposition the SVG to cover the features.
+  function reset() {
+      var bounds = path.bounds(stationsList),
+              topLeft = bounds[0],
+              bottomRight = bounds[1];
+      svg.attr("width", bottomRight[0] - topLeft[0])
+              .attr("height", bottomRight[1] - topLeft[1])
+              .style("left", topLeft[0] + "px")
+              .style("top", topLeft[1] + "px");
+      g.attr("transform", "translate(" + -topLeft[0] + "," + -topLeft[1] + ")");
+      //apply a class with the 'handle' value from the geojson file
+      feature.attr("class", function (d) {
+          return "code " + d.handle;
+      });
+      feature.attr("d", path);
+    }
+
+  function projectPoint(x, y) {
+      console.log(x +":"+y);
+      var point = map.latLngToLayerPoint(new L.LatLng(y, x));
+      this.stream.point(point.x, point.y);
+  }
+
+  var stations = g.selectAll(".station")
+          .data(stationsList)
+          .enter()
+          .append("circle", ".stations")
+          .attr("r", 5)
+          .style("fill", "steelblue")
+          .style("opacity", "0.5");
+
+  reset();
+  transition();
 
     //console.log(data["stationBeanList"]);
     // var overlay = new google.maps.OverlayView();
@@ -195,16 +230,16 @@ function data_loaded() {
 
     // // Bind our overlay to the map…
     // overlay.setMap(map);
-  });
+  };
 
-   function applyLatLngToLayer(d) {
-        var y = d.geometry.coordinates[1]
-        var x = d.geometry.coordinates[0]
-        return map.latLngToLayerPoint(new L.LatLng(y, x))
-    }
+  function applyLatLngToLayer(d) {
+    var y = d.geometry.coordinates[1]
+    var x = d.geometry.coordinates[0]
+    return map.latLngToLayerPoint(new L.LatLng(y, x))
+  
 
   // we should get rid of landmarks on map
-
+/*
     d3.csv("data/december2014.csv", function(err, data) {
       var overlaybikes = new google.maps.OverlayView();
       var minidata = [];
@@ -258,7 +293,7 @@ function data_loaded() {
 
       //trying to update...
 
-    });
+    });*/
 }
 
     </script>
