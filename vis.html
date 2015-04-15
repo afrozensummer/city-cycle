@@ -149,13 +149,23 @@ function data_loaded() {
   }
 
   function reset() {
-    var bounds = d3path.bounds(stationsList), topLeft = bounds[0], bottomRight = bounds[1];
+
+    var x_coors = [];
+    var y_coors = [];
+
     stations.attr("transform",
                   function(d) {
+                      var x = applyLatLngToLayer(d).x;
+                      var y = applyLatLngToLayer(d).y;
+
+                      x_coors.push(x);
+                      y_coors.push(y);
+
                       return "translate(" +
-                          applyLatLngToLayer(d).x + "," +
-                          applyLatLngToLayer(d).y + ")";
+                          x + "," +
+                          y + ")";
                   });
+
     bikes.attr("transform",
                   function(d) {
                       return "translate(" +
@@ -163,10 +173,15 @@ function data_loaded() {
                           applyLatLngToLayer(d).y + ")";
                   });
 
-    svg.attr("width", 500)
-                .attr("height", 500)
-                // .style("left", topLeft[0] - 50 + "px")
-                // .style("top", topLeft[1] - 50 + "px");
+    var topLeft = [d3.min(x_coors), d3.min(y_coors)];
+    var bottomRight = [d3.max(x_coors), d3.max(y_coors)];
+
+    svg.attr("width", bottomRight[0] - topLeft[0] + 120)
+                .attr("height", bottomRight[1] - topLeft[1] + 120)
+                .style("left", topLeft[0] - 50 + "px")
+                .style("top", topLeft[1] - 50 + "px");
+
+    g.attr("transform", "translate(" + (-topLeft[0] + 50) + "," + (-topLeft[1] + 50) + ")");
   }
 
   reset();
