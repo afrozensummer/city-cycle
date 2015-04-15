@@ -33,14 +33,14 @@ html, body {
   font: 10px sans-serif;
 }
 
-.stations circle {
+.stations {
   fill: steelblue;
-  opacity: 0.5;
+  opacity: 0.8;
 /*  stroke: black;
   stroke-width: .8px;*/
 }
 
-.bikes circle {
+.bikes {
   fill: #000;
   z-index: 1;
   opacity: 1;
@@ -75,7 +75,7 @@ queue()
   });
 
 function data_loaded() {
-  console.log(bike_data);
+  //console.log(bike_data);
 
   // Date Formating 
   var formatDate = d3.time.format("%a, %b %e, %H:%M");
@@ -99,11 +99,27 @@ function data_loaded() {
       .setView([40.72332345541449, -73.99], 12);
 
   var svg = d3.select(map.getPanes().overlayPane).append("svg");
-  console.log(svg);
+  //console.log(svg);
   var g = svg.append("g").attr("class", "leaflet-zoom-hide");
 
   var stationsList = station_data["stationBeanList"];
-  //var transform = d3.geo.transform({ point : projectPoint});
+  //console.log(stationsList)
+  var transform = d3.geo.transform({ point : projectPoint});
+
+  function projectPoint(x, y) {
+      console.log(x +":"+y);
+      var point = map.latLngToLayerPoint(new L.LatLng(y, x));
+      this.stream.point(point.x, point.y);
+  }
+
+  var minidata = [];
+  var i = 0;
+  while (bike_data[i].starttime < "12/1/2014 11:59:59") {
+    minidata.push(bike_data[i]);
+    i++;
+  }
+
+  var d3path = d3.geo.path().projection(transform);
 
   var stations = g.selectAll("circle")
             .data(stationsList)
@@ -112,177 +128,52 @@ function data_loaded() {
             .attr("r", 3)
             .attr("class", "stations");
 
+  var bikes = g.selectAll("circle")
+          .data(minidata)
+          .enter()
+          .append("circle")
+          .attr("r", 1)
+          .attr("class", "bikes");
+
   function applyLatLngToLayer(d) {
-    var y = d.latitude;
-    var x = d.longitude;
-    console.log(map.latLngToLayerPoint(new L.LatLng(y, x)));
+    if (d.bikeid != null) {
+      var y = d["start station latitude"];
+      var x = d["start station longitude"]
+    }
+    else {
+      var y = d.latitude;
+      var x = d.longitude;     
+    }
+    //console.log(map.latLngToLayerPoint(new L.LatLng(y, x)));
     return map.latLngToLayerPoint(new L.LatLng(y, x))
   }
 
   function reset() {
-    
+    var bounds = d3path.bounds(stationsList), topLeft = bounds[0], bottomRight = bounds[1];
     stations.attr("transform",
                   function(d) {
                       return "translate(" +
                           applyLatLngToLayer(d).x + "," +
                           applyLatLngToLayer(d).y + ")";
                   });
+    bikes.attr("transform",
+                  function(d) {
+                      return "translate(" +
+                          applyLatLngToLayer(d).x + "," +
+                          applyLatLngToLayer(d).y + ")";
+                  });
+
+    svg.attr("width", 500)
+                .attr("height", 500)
+                // .style("left", topLeft[0] - 50 + "px")
+                // .style("top", topLeft[1] - 50 + "px");
   }
 
   reset();
   map.on("viewreset", reset);
     
 
-  //transforms to svg path codes
- /* var d3path = d3.geo.path().projection(transform);
-
-  var feature = g.selectAll("path")
-                   .data(stationsList)
-                   .enter()
-                   .append("path");
-           map.on("viewreset", reset);
-           reset();
-          // Reposition the SVG to cover the features.
-  function reset() {
-      var bounds = path.bounds(stationsList),
-              topLeft = bounds[0],
-              bottomRight = bounds[1];
-      svg.attr("width", bottomRight[0] - topLeft[0])
-              .attr("height", bottomRight[1] - topLeft[1])
-              .style("left", topLeft[0] + "px")
-              .style("top", topLeft[1] + "px");
-      g.attr("transform", "translate(" + -topLeft[0] + "," + -topLeft[1] + ")");
-      //apply a class with the 'handle' value from the geojson file
-      feature.attr("class", function (d) {
-          return "code " + d.handle;
-      });
-      feature.attr("d", path);
-    }
-
-  function projectPoint(x, y) {
-      console.log(x +":"+y);
-      var point = map.latLngToLayerPoint(new L.LatLng(y, x));
-      this.stream.point(point.x, point.y);
-  }
-
-  var stations = g.selectAll(".station")
-          .data(stationsList)
-          .enter()
-          .append("circle", ".stations")
-          .attr("r", 5)
-          .style("fill", "steelblue")
-          .style("opacity", "0.5");
-
-  reset();
-  transition();
-
-    //console.log(data["stationBeanList"]);
-    // var overlay = new google.maps.OverlayView();
-    // var stationsList = data["stationBeanList"];
-
-    // // Add the container when the overlay is added to the map.
-    // overlay.onAdd = function() {
-    //   var layer = d3.select(this.getPanes().overlayLayer).append("div")
-    //       .attr("class", "stations");
-
-    //   // Draw each marker as a separate SVG element.
-    //   // We could use a single SVG, but what size would it have?
-    //   overlay.draw = function() {
-    //     var projection = this.getProjection(),
-    //         padding = 10;
-
-    //     var marker = layer.selectAll("svg")
-    //         //.data(d3.entries(data))
-    //         .data(d3.entries(stationsList))
-    //         .each(transform) // update existing markers
-    //       .enter().append("svg:svg")
-    //         .each(transform)
-    //         .attr("class", "marker");
-
-    //     // Add a circle.
-    //     marker.append("svg:circle")
-    //         .attr("r", 3)
-    //         .attr("cx", padding)
-    //         .attr("cy", padding);
-
-    //     function transform(d) {
-    //       d = new google.maps.LatLng(d.value.latitude, d.value.longitude);
-    //       d = projection.fromLatLngToDivPixel(d);
-       
-    //       // console.log(d);
-    //       return d3.select(this)
-    //           .style("left", (d.x - padding) + "px")
-    //           .style("top", (d.y - padding) + "px");
-    //     }
-    //   };
-    // };
-
-    // // Bind our overlay to the map…
-    // overlay.setMap(map);
-  };
-
-  function applyLatLngToLayer(d) {
-    var y = d.geometry.coordinates[1]
-    var x = d.geometry.coordinates[0]
-    return map.latLngToLayerPoint(new L.LatLng(y, x))
-  
-
-  // we should get rid of landmarks on map
-/*
-    d3.csv("data/december2014.csv", function(err, data) {
-      var overlaybikes = new google.maps.OverlayView();
-      var minidata = [];
-      var i = 0;
-      while (data[i].starttime < "12/1/2014 11:59:59") {
-        minidata.push(data[i]);
-        i++;
-      }
-      //console.log(minidata)
-      // Add the container when the overlay is added to the map.
-      overlaybikes.onAdd = function() {
-        var layer = d3.select(this.getPanes().overlayLayer).append("div")
-            .attr("class", "bikes");
-
-        // Draw each marker as a separate SVG element.
-        // We could use a single SVG, but what size would it have?
-        overlaybikes.draw = function() {
-          var projection = this.getProjection(),
-              padding = 10;
-          //console.log(minidata[0])
-
-          var marker = layer.selectAll("svg")
-              .data(d3.entries(minidata))
-              .each(transform) // update existing markers
-            .enter().append("svg:svg")
-              .each(transform)
-              .attr("class", "marker");
-
-          // Add a circle.
-          marker.append("svg:circle")
-              .attr("r", 1.5)
-              .attr("cx", padding)
-              .attr("cy", padding);
-
-          function transform(d) {
-            //console.log(d.value["start station longitude"])
-            d = new google.maps.LatLng(d.value["start station latitude"], d.value["start station longitude"]);
-            d = projection.fromLatLngToDivPixel(d);
-          
-            //console.log(d);
-            return d3.select(this)
-                .style("left", (d.x - padding) + "px")
-                .style("top", (d.y - padding) + "px");
-          }
-
-        };
-      };
-
-      // Bind our overlay to the map…
-      overlaybikes.setMap(map);
-
-      //trying to update...
-
-    });*/
+ 
 }
 
     </script>
