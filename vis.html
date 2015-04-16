@@ -63,7 +63,7 @@ html, body {
 //Variables
 var bike_data;
 var station_data;
-var starting_time = new Date("2014-12-01 13:10:30");
+var starting_time = new Date("2014-12-01 00:00:00");
 var current_time = starting_time;
 
 queue()
@@ -95,7 +95,10 @@ function data_loaded() {
     if(d3.time.minute.floor(new Date(value.time)) > d3.time.minute.floor(current_time)) {
       animate();
       current_time = new Date(value.time);
-      console.log(current_time);
+      minidata = data_for_minute(current_time);
+      createnewbikes(minidata);
+      // console.log(minidata)
+      // console.log(current_time);
     }
   });
 
@@ -135,8 +138,8 @@ function data_loaded() {
         //longitude_step = Math.round(longitude_step*10000000000)/10000000000;
         //latitude_step = Math.round(latitude_step*10000000000)/10000000000;
 
-        console.log(latitude_step);
-        console.log(longitude_step);
+        //console.log(latitude_step);
+        //console.log(longitude_step);
 
         bikes_data.time_line = d3.range(0,range+1).map(function(d,i) {
           return {time:new Date(bike_start_time.getTime() + i*(1000*60)), longitude:start_long + (i)*longitude_step, latitude:start_lat + (i)*latitude_step};
@@ -144,14 +147,27 @@ function data_loaded() {
 
         bikes_data.minute = 0;  
         bike_list_minute.push(bikes_data);
+        //console.log(bikes_data)
       }
       i++;
     }
     return bike_list_minute;
   }
 
-  var minidata = data_for_minute(starting_time);
-  console.log(minidata);
+  //var minidata = data_for_minute(starting_time);
+  var minidata = data_for_minute(current_time)
+  //console.log(minidata);
+
+  function createnewbikes (minidata) {
+      var bikes = g.selectAll("bikes")
+          .data(minidata)
+          .enter()
+          .append("circle")
+          .attr("r", 2)
+          .attr("class", "bikes");
+
+          reset();
+  }
 
   var stations = g.selectAll("stations")
             .data(stationsList)
@@ -178,8 +194,8 @@ function data_loaded() {
       var y = d.latitude;
       var x = d.longitude;
       if (d.time != null) {
-        console.log("x:" + x + " y:" + y);
-        console.log(new L.LatLng(y, x).toString());
+        //console.log("x:" + x + " y:" + y);
+        //console.log(new L.LatLng(y, x).toString());
         //console.log(map.latLngToLayerPoint(new L.LatLng(y, x)));
       }     
     //} 
@@ -230,13 +246,13 @@ function data_loaded() {
       console.log(d);
       if(d.minute == d.time_line.length) this.remove();
     });*/
-
+    //console.log(svg.selectAll(".bikes"));
     svg.selectAll(".bikes")
       .transition()
         .attr("transform",
                       function(d) {
                           // console.log(d.time_line[d.minute]);
-
+                          d.minute++;
                           if(d.minute == d.time_line.length) {
                             this.remove();
                             /*return "translate(" +
@@ -246,8 +262,7 @@ function data_loaded() {
                           }
 
                           new_coordinates = applyLatLngToLayer(d.time_line[d.minute]);
-                          console.log(new_coordinates);
-                          d.minute++;
+                          //console.log(new_coordinates);
                           return "translate(" +
                                new_coordinates.x + "," +
                                new_coordinates.y + ")";

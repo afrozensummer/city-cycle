@@ -6,15 +6,15 @@ Slider = function(_parentElement, _data, _eventHandler) {
       top: 10,
       right: 50,
       bottom: 10,
-      left: 150
+      left: 100
     },
-    width = 800 - margin.left - margin.right,
+    width = 1000 - margin.left - margin.right,
     height = 50 - margin.bottom - margin.top;
 
 
   // scale function
   var timeScale = d3.time.scale()
-    .domain([new Date("2014-12-01 13:10:30"), new Date("2014-12-01 13:40:30")])
+    .domain([new Date("2014-12-01 00:00:00"), new Date("2014-12-02 0:00:00")])
     .range([0, width])
     .clamp(true);
 
