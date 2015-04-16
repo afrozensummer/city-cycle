@@ -204,7 +204,7 @@ function data_loaded() {
                           y + ")";
                   });
 
-    bikes
+    svg.selectAll(".bikes")
       .attr("transform",
                     function(d) {
                         new_coordinates = applyLatLngToLayer(d.time_line[d.minute]);
@@ -231,7 +231,7 @@ function data_loaded() {
       if(d.minute == d.time_line.length) this.remove();
     });*/
 
-    bikes
+    svg.selectAll(".bikes")
       .transition()
         .attr("transform",
                       function(d) {
