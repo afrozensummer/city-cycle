@@ -59,9 +59,12 @@ html, body {
     <div id="slider"></div>
     <div id="map"></div> 
     <script type="text/javascript">
-//Data
+
+//Variables
 var bike_data;
 var station_data;
+var starting_time = new Date("2014-12-01 0:10:30");
+var current_time = starting_time;
 
 queue()
   .defer(d3.json, "data/stations.json") 
@@ -79,7 +82,7 @@ function data_loaded() {
 
   // Date Formating 
   var formatDate = d3.time.format("%a, %b %e, %H:%M");
-  document.getElementById("time").innerHTML = "Current Time: " + formatDate(new Date("2014-12-01 0:00:00"));
+  document.getElementById("time").innerHTML = "Current Time: " + formatDate(starting_time);
 
   // Create a date range slider
   var MyEventHandler = new Object();
@@ -88,7 +91,12 @@ function data_loaded() {
   // Handle the event for the slider
   $(MyEventHandler).bind("selectionChanged", function(event, value) {
     document.getElementById("time").innerHTML = "Current Time: " + formatDate(value.time);
-
+    
+    if(d3.time.minute.floor(new Date(value.time)) > d3.time.minute.floor(current_time)) {
+      animate();
+      current_time = new Date(value.time);
+      console.log(current_time);
+    }
   });
 
   // Build the map
@@ -103,48 +111,78 @@ function data_loaded() {
   var g = svg.append("g").attr("class", "leaflet-zoom-hide");
 
   var stationsList = station_data["stationBeanList"];
-  //console.log(stationsList)
-  var transform = d3.geo.transform({ point : projectPoint});
+  
+  // returns all the trips for that minute, use a while loop with a condition so we don't go needlessly into the data
+  function data_for_minute(date) {
+    var bike_list_minute = [];
+    var i = 0;
+    while (new Date(bike_data[i].starttime) < d3.time.minute.floor(d3.time.minute.offset(date,1))) {
+      var bike_start_time = d3.time.minute.floor(new Date(bike_data[i].starttime));
+      if(bike_start_time.getTime() === d3.time.minute.floor(date).getTime()) {
+        var bikes_data = bike_data[i];
+        
+        // figure out range in minutes
+        var range = d3.time.minute.floor(new Date(bike_data[i].stoptime)) - bike_start_time;
+        range = range/(1000*60)
+        var start_long = parseFloat(bikes_data["start station longitude"])
+        var start_lat =parseFloat(bikes_data["start station latitude"])
+        var end_long = parseFloat(bikes_data["end station longitude"])
+        var end_lat = parseFloat(bikes_data["end station latitude"])
 
-  function projectPoint(x, y) {
-      console.log(x +":"+y);
-      var point = map.latLngToLayerPoint(new L.LatLng(y, x));
-      this.stream.point(point.x, point.y);
+        var longitude_step = (end_long - start_long)/range;
+        var latitude_step = (end_lat - start_lat)/range;
+
+        //longitude_step = Math.round(longitude_step*10000000000)/10000000000;
+        //latitude_step = Math.round(latitude_step*10000000000)/10000000000;
+
+        console.log(latitude_step);
+        console.log(longitude_step);
+
+        bikes_data.time_line = d3.range(0,range+1).map(function(d,i) {
+          return {time:new Date(bike_start_time.getTime() + i*(1000*60)), longitude:start_long + (i)*longitude_step, latitude:start_lat + (i)*latitude_step};
+        })
+
+        bikes_data.minute = 0;  
+        bike_list_minute.push(bikes_data);
+      }
+      i++;
+    }
+    return bike_list_minute;
   }
 
-  var minidata = [];
-  var i = 0;
-  while (bike_data[i].starttime < "12/1/2014 11:59:59") {
-    minidata.push(bike_data[i]);
-    i++;
-  }
+  var minidata = data_for_minute(starting_time);
+  console.log(minidata);
 
-  var d3path = d3.geo.path().projection(transform);
-
-  var stations = g.selectAll("circle")
+  var stations = g.selectAll("stations")
             .data(stationsList)
             .enter()
             .append("circle")
             .attr("r", 3)
             .attr("class", "stations");
 
-  var bikes = g.selectAll("circle")
+  var bikes = g.selectAll("bikes")
           .data(minidata)
           .enter()
           .append("circle")
-          .attr("r", 1)
+          .attr("r", 2)
           .attr("class", "bikes");
 
   function applyLatLngToLayer(d) {
-    if (d.bikeid != null) {
+    /*if (d.bikeid != null) {
+      //console.log(d["start station latitude"]);
       var y = d["start station latitude"];
       var x = d["start station longitude"]
     }
-    else {
+    else {*/
+
       var y = d.latitude;
-      var x = d.longitude;     
-    }
-    //console.log(map.latLngToLayerPoint(new L.LatLng(y, x)));
+      var x = d.longitude;
+      if (d.time != null) {
+        console.log("x:" + x + " y:" + y);
+        console.log(new L.LatLng(y, x).toString());
+        //console.log(map.latLngToLayerPoint(new L.LatLng(y, x)));
+      }     
+    //} 
     return map.latLngToLayerPoint(new L.LatLng(y, x))
   }
 
@@ -166,12 +204,14 @@ function data_loaded() {
                           y + ")";
                   });
 
-    bikes.attr("transform",
-                  function(d) {
-                      return "translate(" +
-                          applyLatLngToLayer(d).x + "," +
-                          applyLatLngToLayer(d).y + ")";
-                  });
+    bikes
+      .attr("transform",
+                    function(d) {
+                        new_coordinates = applyLatLngToLayer(d.time_line[d.minute]);
+                        return "translate(" +
+                             new_coordinates.x + "," +
+                             new_coordinates.y + ")";
+                    });
 
     var topLeft = [d3.min(x_coors), d3.min(y_coors)];
     var bottomRight = [d3.max(x_coors), d3.max(y_coors)];
@@ -184,10 +224,43 @@ function data_loaded() {
     g.attr("transform", "translate(" + (-topLeft[0] + 50) + "," + (-topLeft[1] + 50) + ")");
   }
 
+  function animate() {
+   
+    /*bikes.enter().call(function(d){ 
+      console.log(d);
+      if(d.minute == d.time_line.length) this.remove();
+    });*/
+
+    bikes
+      .transition()
+        .attr("transform",
+                      function(d) {
+                          // console.log(d.time_line[d.minute]);
+
+                          if(d.minute == d.time_line.length) {
+                            return "translate(" +
+                               0 + "," +
+                               0 + ")";
+                          }
+
+                          new_coordinates = applyLatLngToLayer(d.time_line[d.minute]);
+                          console.log(new_coordinates);
+                          d.minute++;
+                          return "translate(" +
+                               new_coordinates.x + "," +
+                               new_coordinates.y + ")";
+                      });
+  }
+
   reset();
   map.on("viewreset", reset);
-    
-
+  
+  /*for(var i = 0; i < 10; i ++) {
+    setTimeout(function(){
+      animate();
+    //your code to be executed after 1 seconds
+    },10000);
+  }*/
  
 }
 
