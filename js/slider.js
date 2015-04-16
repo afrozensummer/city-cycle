@@ -14,7 +14,7 @@ Slider = function(_parentElement, _data, _eventHandler) {
 
   // scale function
   var timeScale = d3.time.scale()
-    .domain([new Date('2014-12-01 0:10:00'), new Date('2014-12-01 00:30:00')])
+    .domain([new Date("2014-12-01 13:10:30"), new Date("2014-12-01 13:40:30")])
     .range([0, width])
     .clamp(true);
 

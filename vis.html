@@ -35,7 +35,7 @@ html, body {
 
 .stations {
   fill: steelblue;
-  opacity: 0.8;
+  opacity: 0.5;
 /*  stroke: black;
   stroke-width: .8px;*/
 }
@@ -63,7 +63,7 @@ html, body {
 //Variables
 var bike_data;
 var station_data;
-var starting_time = new Date("2014-12-01 0:10:30");
+var starting_time = new Date("2014-12-01 13:10:30");
 var current_time = starting_time;
 
 queue()
@@ -238,9 +238,11 @@ function data_loaded() {
                           // console.log(d.time_line[d.minute]);
 
                           if(d.minute == d.time_line.length) {
-                            return "translate(" +
+                            this.remove();
+                            /*return "translate(" +
                                0 + "," +
-                               0 + ")";
+                               0 + ")";*/
+                            return;
                           }
 
                           new_coordinates = applyLatLngToLayer(d.time_line[d.minute]);
