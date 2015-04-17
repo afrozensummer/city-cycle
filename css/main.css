@@ -38,6 +38,10 @@ opacity: 0.6;
     opacity: 1;
 }
 
+.row {
+    width: 100%;
+}
+
 .axis {
   fill: gray;
   -webkit-user-select: none;
@@ -47,21 +51,15 @@ opacity: 0.6;
 
 .axis .halo {
   stroke: gray;
-  stroke-width: 4px;
+  stroke-width: 2px;
   stroke-linecap: round;
 }
 
 .slider .handle path {
   stroke: black;
-  stroke-width: 3px;
+  stroke-width: 2px;
   stroke-linecap: round;
   pointer-events: none;
-}
-
-.slider .handle text {
-  fill: white;
-  text-align: center;
-  font-size: 18px;
 }
 
 .slider {
@@ -72,8 +70,27 @@ opacity: 0.6;
 {
   width: 40%;
   height: 80%;
+  float: left;
 /*  margin: auto;*/
   padding: 0;
+  z-index: 1;
+}
+
+#map_cover {
+    position:absolute;
+    width: 35%;
+    height: 80%;
+    padding: 0;
+    opacity: 0.4;
+        background-color: rgba(0,0,0,0.6);
+        z-index: 10;
+}
+
+#description_container{
+    width: 55%;
+    float: right;
+    font-family: "Raleway";
+    font-size: 20px;
 }
 
 #introtitle{

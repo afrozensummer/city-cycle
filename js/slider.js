@@ -1,12 +1,13 @@
 Slider = function(_parentElement, _data, _eventHandler) {
-  var formatDate = d3.time.format("%a, %b %e, %H:%M"); //date and time
+  //var formatDate = d3.time.format("%a, %b %e, %H:%M"); //date and time
+  var formatDate = d3.time.format("%a, %b %e")
 
   // parameters
   var margin = {
       top: 10,
       right: 50,
       bottom: 10,
-      left: 100
+      left: 50
     },
     width = 1000 - margin.left - margin.right,
     height = 50 - margin.bottom - margin.top;
