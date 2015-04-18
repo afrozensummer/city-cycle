@@ -21,6 +21,11 @@ html, body {
   margin: 0;
   padding: 0;
 }
+.slider
+{
+    display: none;
+    width: 1000px;
+}
 
 .bikes, .stations, .bikes svg, .stations svg {
   position: absolute;
@@ -55,6 +60,7 @@ html, body {
     <div>
       Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptatem aspernatur facilis ipsum, beatae! Quasi amet ratione perspiciatis velit, excepturi nisi. Magni repellat amet illum ducimus cum. Saepe harum repellendus perspiciatis. <br><br>
     </div>
+    <div id = "new slider"><input type="range" name="minutes" min="0" max="0" step="1" value="0" class="slider"id="slider-time"; ></div>
     <div id="slider"></div>      
     <div id = "description_container">
       <div id = "time"></div>
@@ -70,6 +76,7 @@ html, body {
 var bike_data;
 var station_data;
 var starting_time = new Date("2014-12-01 00:00:00");
+var ending_time = new Date("2014-12-02 00:00:00");
 var current_time = starting_time;
 
 queue()
@@ -86,6 +93,43 @@ queue()
   });
 
 function data_loaded() {
+
+  function slider_test() {
+    // update max value
+    var total_minutes = (d3.time.minute.floor(ending_time) - d3.time.minute.floor(starting_time))/(1000*60);
+
+    d3.select("#slider-time")
+      .attr("max", total_minutes)
+      .style("display", "initial")
+      .on("input", function() {
+        var new_time = new Date(this.value*60*1000 + starting_time.getTime());
+        document.getElementById("time").innerHTML = "Current Time: <br>" + formatDate(new_time);
+
+      if(new_time > current_time) {
+        difference = (new_time-current_time)/(60*1000);
+        for(var i = 0; i < difference; i++) {
+          animate();
+          current_time = new Date(current_time.getTime() + 60*1000);
+          console.log(current_time);
+          minidata = data_for_minute(current_time);
+          createnewbikes(minidata);
+        }
+        // console.log(minidata)
+        console.log(current_time);
+      }
+
+      });
+
+
+
+    // print the dates in the html
+
+    // oninput function
+
+
+
+  }
+  slider_test();
   //console.log(bike_data);
   //console.log(weather_data);
   document.getElementById("temp").innerHTML = "Temperature: " + weather_data[0]["TMAX"];
@@ -94,14 +138,15 @@ function data_loaded() {
   document.getElementById("time").innerHTML = "Current Time: <br>" + formatDate(starting_time);
 
   // Create a date range slider
-  var MyEventHandler = new Object();
-  var slider = new Slider(d3.select("#slider"), [], MyEventHandler);
+  //var MyEventHandler = new Object();
+  //var slider = new Slider(d3.select("#slider"), [], MyEventHandler);
 
   // Handle the event for the slider
-  $(MyEventHandler).bind("selectionChanged", function(event, value) {
+  /*$(MyEventHandler).bind("selectionChanged", function(event, value) {
     document.getElementById("time").innerHTML = "Current Time: <br>" + formatDate(value.time);
     
     if(d3.time.minute.floor(new Date(value.time)) > d3.time.minute.floor(current_time)) {
+
       animate();
       current_time = new Date(value.time);
       minidata = data_for_minute(current_time);
@@ -109,7 +154,7 @@ function data_loaded() {
       // console.log(minidata)
       // console.log(current_time);
     }
-  });
+  });*/
 
   // Build the map
   L.mapbox.accessToken = 'pk.eyJ1IjoiY2l0eWN5Y2xlIiwiYSI6IjZ3MXNtRW8ifQ.lmAxO5RTphn4Jo-QV63Vpg';
