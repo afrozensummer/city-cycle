@@ -11,7 +11,7 @@
     <script src='https://api.tiles.mapbox.com/mapbox.js/v2.1.8/mapbox.js'></script>
     <script src="http://d3js.org/queue.v1.min.js"></script>
     
-    <link href='http://fonts.googleapis.com/css?family=Raleway' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Raleway|Poiret+One' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" type="text/css" href="css/main.css">
     <style type="text/css">
 
@@ -75,7 +75,7 @@ html, body {
 //Variables
 var bike_data;
 var station_data;
-var starting_time = new Date("2014-12-01 00:00:00");
+var starting_time = new Date("2014-12-01 00:00:00"); 
 var ending_time = new Date("2014-12-02 00:00:00");
 var current_time = starting_time;
 
@@ -86,13 +86,19 @@ queue()
     .await(function(error, stations, bikes, weather) { 
         //error handling
         station_data = stations;
-        bike_data = bikes;
+        full_bike_data = bikes;
         weather_data = weather;
         data_loaded();
 
   });
 
 function data_loaded() {
+
+  var j =0, bike_data=[];
+  while(new Date(full_bike_data[j].starttime) < new Date("12/2/2014 00:00:00") ) {
+    bike_data.push(full_bike_data[j]);
+    j++;
+  }
 
   function slider_test() {
     // update max value
@@ -108,14 +114,31 @@ function data_loaded() {
       if(new_time > current_time) {
         difference = (new_time-current_time)/(60*1000);
         for(var i = 0; i < difference; i++) {
-          animate();
+          
           current_time = new Date(current_time.getTime() + 60*1000);
-          console.log(current_time);
-          minidata = data_for_minute(current_time);
+          // console.log(current_time);
+          animate();
+          minidata = data_for_minute(current_time, true);
+          console.log(minidata)
           createnewbikes(minidata);
+          
         }
         // console.log(minidata)
-        console.log(current_time);
+        // console.log(current_time);
+      }
+      else { // going backwards
+         difference = (current_time - new_time)/(60*1000);
+
+         for(var i = 0; i < difference; i++) {
+          
+          current_time = new Date(current_time.getTime() - 60*1000);
+          //console.log(current_time);
+          animate_backwards();
+          minidata = data_for_minute(current_time, false);
+          console.log(minidata)
+          createnewbikes(minidata);
+          
+        }         
       }
 
       });
@@ -137,6 +160,7 @@ function data_loaded() {
   var formatDate = d3.time.format("%a, %b %e, %H:%M");
   document.getElementById("time").innerHTML = "Current Time: <br>" + formatDate(starting_time);
 
+  
   // Create a date range slider
   //var MyEventHandler = new Object();
   //var slider = new Slider(d3.select("#slider"), [], MyEventHandler);
@@ -172,10 +196,11 @@ function data_loaded() {
   
   
   // returns all the trips for that minute, use a while loop with a condition so we don't go needlessly into the data
-  function data_for_minute(date) {
+  function data_for_minute(date, time_direction_forward) {
     var bike_list_minute = [];
-    var i = 0;
-    while (new Date(bike_data[i].starttime) < d3.time.minute.floor(d3.time.minute.offset(date,1))) {
+    var i = 0; 
+    if (time_direction_forward) {
+      while (new Date(bike_data[i].starttime) < d3.time.minute.floor(d3.time.minute.offset(date,1))) {
       var bike_start_time = d3.time.minute.floor(new Date(bike_data[i].starttime));
       if(bike_start_time.getTime() === d3.time.minute.floor(date).getTime()) {
         var bikes_data = bike_data[i];
@@ -206,7 +231,49 @@ function data_loaded() {
         //console.log(bikes_data)
       }
       i++;
+      }
     }
+    else {
+      //console.log(i)
+      // console.log(new Date (bike_data[2].endtime))
+      while (i < bike_data.length) {
+                //console.log(i + ": " + new Date(bike_data[i].stoptime) )
+      var bike_stop_time = d3.time.minute.floor(new Date(bike_data[i].stoptime));
+      //console.log(date)
+      //console.log(bike_stop_time.getTime() === d3.time.minute.floor(date).getTime())
+      if(bike_stop_time.getTime() === d3.time.minute.floor(date).getTime()) {
+        var bikes_data = bike_data[i];
+        //console.log(bikes_data)
+        //console.log(bikes_data)
+        // figure out range in minutes
+        var range = d3.time.minute.floor(new Date(bike_data[i].starttime)) - bike_stop_time;
+        //var range = d3.time.minute.floor(new Date(bike_data[i].stoptime)) - bike_start_time;
+        //console.log(range);
+        range = range/(1000*60)
+        var start_long = parseFloat(bikes_data["start station longitude"])
+        var start_lat =parseFloat(bikes_data["start station latitude"])
+        var end_long = parseFloat(bikes_data["end station longitude"])
+        var end_lat = parseFloat(bikes_data["end station latitude"])
+        
+
+        var longitude_step = (start_long - end_long)/range;
+        var latitude_step = (start_lat - end_lat)/range;
+
+
+        /* if we don't include this, then we have a couple objects (newly created??) with undefined time_line
+        if we do include it, then we get the typeerror of "can't read property"*/
+        // bikes_data.time_line = d3.range(0,range+1).map(function(d,i) {
+        //   return {time:new Date(bike_end_time.getTime() + i*(1000*60)), longitude:end_long + (i)*longitude_step, latitude:end_lat + (i)*latitude_step};
+        // })
+
+        bikes_data.minute = 0;  
+        bike_list_minute.push(bikes_data);
+        //console.log(bikes_data)
+      }
+      i++;
+      }
+    }
+    
     return bike_list_minute;
   }
 
@@ -246,7 +313,7 @@ function data_loaded() {
       var x = d["start station longitude"]
     }
     else {*/
-
+      //console.log(d)
       var y = d.latitude;
       var x = d.longitude;
       if (d.time != null) {
@@ -278,7 +345,8 @@ function data_loaded() {
 
     svg.selectAll(".bikes")
       .attr("transform",
-                    function(d) {
+                    function(d) { //console.log(d.minute)
+                      //if(d.time_line == undefined) {console.log(d)}
                         new_coordinates = applyLatLngToLayer(d.time_line[d.minute]);
                         return "translate(" +
                              new_coordinates.x + "," +
@@ -308,15 +376,36 @@ function data_loaded() {
         .attr("transform",
                       function(d) {
                           // console.log(d.time_line[d.minute]);
+                          //console.log(d.bikeid + " " + d.minute)
                           d.minute++;
-                          if(d.minute == d.time_line.length) {
+                          if(d.minute >= d.time_line.length) {
                             this.remove();
-                            /*return "translate(" +
-                               0 + "," +
-                               0 + ")";*/
                             return;
                           }
 
+                          new_coordinates = applyLatLngToLayer(d.time_line[d.minute]);
+                          //console.log(new_coordinates);
+                          return "translate(" +
+                               new_coordinates.x + "," +
+                               new_coordinates.y + ")";
+                      });
+  }
+
+  function animate_backwards() {
+    svg.selectAll(".bikes")
+      .transition()
+        .attr("transform",
+                      function(d) {
+
+                          d.minute--;
+                          if(d.minute <= 0) {
+                            this.remove();
+                            d.minute = 0;
+                            return;
+                          }
+                          //console.log(d.minute)
+                          //console.log(d.minute + " " +d.time_line[d.minute])
+                          //console.log(d.time_line)
                           new_coordinates = applyLatLngToLayer(d.time_line[d.minute]);
                           //console.log(new_coordinates);
                           return "translate(" +
