@@ -77,7 +77,7 @@ html, body {
 //Variables
 var bike_data;
 var station_data;
-var starting_time = new Date("2014-12-01 20:00:00"); 
+var starting_time = new Date("2014-12-01 00:00:00"); 
 var ending_time = new Date("2014-12-02 00:00:00");
 var current_time = starting_time;
 
@@ -119,49 +119,24 @@ function data_loaded() {
       .on("input", function() {
         var new_time = new Date(this.value*60*1000 + starting_time.getTime());
         document.getElementById("time").innerHTML = "Current Time: <br>" + formatDate(new_time);
+        var difference = Math.abs((new_time-current_time)/(60*1000));
 
-        if(new_time > current_time) {
-          difference = (new_time-current_time)/(60*1000);
-
-          // If its a large jump in time, don't animate it
-          if(difference > 10) {
-            // remove all the bikes
-            svg.selectAll(".bikes").remove();
-            // make the data for all the bikes in that period
-            minidata = all_bikes_for_date(new_time);
-            createnewbikes(minidata);
-            current_time = new_time;
-          } else {
-            for(var i = 0; i < difference; i++) {
+        if(difference > 15) {
+          // remove all the bikes
+          svg.selectAll(".bikes").remove();
+          // make the data for all the bikes in that period
+          minidata = all_bikes_for_date(new_time);
+          createnewbikes(minidata);
+          current_time = new_time;
+        } else {
+          var forward = (new_time > current_time);
+          for(var i = 0; i < difference; i++) {
               current_time = new Date(current_time.getTime() + 60*1000);
               animate();
-              minidata = new_trips(current_time, true);
+              minidata = new_trips(current_time, forward);
               createnewbikes(minidata);
-            }
           }
-        }
-        if(new_time < current_time) { 
-           difference = (current_time - new_time)/(60*1000);
-
-           if(difference > 10) {
-            // remove all the bikes
-            svg.selectAll(".bikes").remove();
-            // make the data for all the bikes in that period
-            minidata = all_bikes_for_date(new_time);
-            console.log(minidata);
-            createnewbikes(minidata);
-            current_time = new_time;
-            console.log(current_time);
-          } else {
-
-             for(var i = 0; i < difference; i++) {
-              current_time = new Date(current_time.getTime() - 60*1000);
-              animate_backwards();
-              minidata = new_trips(current_time, false);
-              createnewbikes(minidata);
-            }
-          }        
-        }
+        }      
       });
   }
   make_slider();
@@ -202,7 +177,7 @@ function data_loaded() {
     if (time_direction_forward) {
       while (i < bike_data.length && new Date(bike_data[i].starttime) < d3.time.minute.floor(d3.time.minute.offset(date,1))) {
         var bike_start_time = d3.time.minute.floor(new Date(bike_data[i].starttime));
-        if(bike_start_time.getTime() === d3.time.minute.floor(date).getTime()) {
+        if(bike_start_time.getTime() == d3.time.minute.floor(date).getTime()) {
 
           var bikes_data = bike_data[i];
           var bike_stop_time = d3.time.minute.floor(new Date(bike_data[i].stoptime));
@@ -217,7 +192,7 @@ function data_loaded() {
       while (i < bike_data.length) {
         var bike_stop_time = d3.time.minute.floor(new Date(bike_data[i].stoptime));
 
-        if(bike_stop_time.getTime() === d3.time.minute.floor(date).getTime()) { 
+        if(bike_stop_time.getTime() == d3.time.minute.floor(date).getTime()) { 
 
           var bikes_data = bike_data[i];
           var bike_start_time = d3.time.minute.floor(new Date(bike_data[i].starttime));
@@ -236,7 +211,7 @@ function data_loaded() {
     range = range/(1000*60);
 
     var start_long = parseFloat(bikes_data["start station longitude"])
-    var start_lat =parseFloat(bikes_data["start station latitude"])
+    var start_lat = parseFloat(bikes_data["start station latitude"])
     var end_long = parseFloat(bikes_data["end station longitude"])
     var end_lat = parseFloat(bikes_data["end station latitude"])
 
@@ -256,7 +231,7 @@ function data_loaded() {
     while (i < bike_data.length) {
       var bike_start_time = d3.time.minute.floor(new Date(bike_data[i].starttime));
       var bike_stop_time = d3.time.minute.floor(new Date(bike_data[i].stoptime));
-      if(date_rounded.getTime() == bike_stop_time.getTime() || date_rounded.getTime() == bike_start_time.getTime() || (date_rounded.getTime() < bike_stop_time.getTime() && date_rounded.getTime() > bike_start_time.getTime())) 
+      if(date_rounded.getTime() == bike_stop_time.getTime() || date_rounded.getTime() == bike_start_time.getTime() || (date_rounded < bike_stop_time && date_rounded > bike_start_time)) 
       {
         var bikes_data = bike_data[i];
         bikes_data.time_line = time_line(bikes_data, bike_stop_time, bike_start_time);
@@ -266,15 +241,7 @@ function data_loaded() {
       i++;
     }
     return bike_list_minute;
-
-    //in while loop, if date is between or equal to a bike's starttime and endtime
-      // make the time line for that bike
-      // go through the time line where time == date, make that index the value of minute
   }
-
-
-
-
 
   function createnewbikes (minidata) {
       var bikes = g.selectAll("bikes")
