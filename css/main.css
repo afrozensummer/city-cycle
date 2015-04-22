@@ -12,6 +12,11 @@ body {
     position: absolute;
     clear: both;
 }
+
+#play {
+    width: 30px;
+}
+
 #intro {
     top:0;
     left: 0;

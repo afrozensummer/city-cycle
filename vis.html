@@ -61,8 +61,8 @@ html, body {
       Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptatem aspernatur facilis ipsum, beatae! Quasi amet ratione perspiciatis velit, excepturi nisi. Magni repellat amet illum ducimus cum. Saepe harum repellendus perspiciatis. <br><br>
     </div>
 
-    <div id = "new slider"><input type="image" src="img/play.png" name="saveForm" class="btTxt submit" id="saveForm" />
-<input type="range" name="minutes" min="0" max="0" step="1" value="0" class="slider"id="slider-time"; ></div>
+    <div id = "new slider"><input type="image" src="img/play.png" name="play" id="play" />
+    <input type="range" name="minutes" min="0" max="0" step="1" value="0" class="slider"id="slider-time"; ></div>
     <div id="slider"></div>      
     <div id = "description_container">
       <div id = "time"></div>
@@ -140,6 +140,24 @@ function data_loaded() {
       });
   }
   make_slider();
+
+  d3.select("#play")
+      .on("input", function() {
+        console.log("hi")
+        //console.log(current_time.getTime())
+        while (current_time <= ending_time) {
+          //$("#play").delay("slow");
+          current_time = new Date(current_time.getTime() + 60*1000);
+          console.log(current_time);
+          $("#play").delay("slow").animate();
+          minidata = new_trips(current_time, forward);
+          createnewbikes(minidata);
+        }
+
+
+        
+        //d3.select("#slider-time")
+      });
 
   // Create a date range slider
   //var MyEventHandler = new Object();
