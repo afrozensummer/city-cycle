@@ -127,12 +127,20 @@ function data_loaded() {
           createnewbikes(minidata);
           current_time = new_time;
         } else {
-          var forward = (new_time > current_time);
-          for(var i = 0; i < difference; i++) {
+          if(new_time > current_time) {
+            for(var i = 0; i < difference; i++) {
               current_time = new Date(current_time.getTime() + 60*1000);
               animate();
-              minidata = new_trips(current_time, forward);
+              minidata = new_trips(current_time, true);
               createnewbikes(minidata);
+            }
+          } else {
+            for(var i = 0; i < difference; i++) {
+              current_time = new Date(current_time.getTime() - 60*1000);
+              animate_backwards();
+              minidata = new_trips(current_time, false);
+              createnewbikes(minidata);
+            }
           }
         }      
       });
@@ -260,12 +268,7 @@ function data_loaded() {
             .attr("class", "stations");
 
   var minidata = all_bikes_for_date(current_time);
-  var bikes = g.selectAll("bikes")
-          .data(minidata)
-          .enter()
-          .append("circle")
-          .attr("r", 2)
-          .attr("class", "bikes");
+  createnewbikes(minidata);
 
   function applyLatLngToLayer(d) {
       var y = d.latitude;
@@ -313,7 +316,7 @@ function data_loaded() {
   function animate() {
    
     svg.selectAll(".bikes")
-      .transition()
+      .transition(0)
         .attr("transform",
                       function(d) {
                           d.minute++;
@@ -346,9 +349,6 @@ function data_loaded() {
                                new_coordinates.y + ")";
                       });
   }
-
-  //add bikes to the map
-  reset();
   map.on("viewreset", reset);
 }
     </script>
