@@ -75,7 +75,7 @@ html, body {
 //Variables
 var bike_data;
 var station_data;
-var starting_time = new Date("2014-12-01 00:00:00"); 
+var starting_time = new Date("2014-12-01 20:00:00"); 
 var ending_time = new Date("2014-12-02 00:00:00");
 var current_time = starting_time;
 
@@ -120,23 +120,44 @@ function data_loaded() {
 
         if(new_time > current_time) {
           difference = (new_time-current_time)/(60*1000);
-          for(var i = 0; i < difference; i++) {
-            
-            current_time = new Date(current_time.getTime() + 60*1000);
-            animate();
-            minidata = data_for_minute(current_time, true);
+
+          // If its a large jump in time, don't animate it
+          if(difference > 10) {
+            // remove all the bikes
+            svg.selectAll(".bikes").remove();
+            // make the data for all the bikes in that period
+            minidata = all_bikes_for_date(new_time);
             createnewbikes(minidata);
+            current_time = new_time;
+          } else {
+            for(var i = 0; i < difference; i++) {
+              current_time = new Date(current_time.getTime() + 60*1000);
+              animate();
+              minidata = new_trips(current_time, true);
+              createnewbikes(minidata);
+            }
           }
         }
         if(new_time < current_time) { 
            difference = (current_time - new_time)/(60*1000);
 
-           for(var i = 0; i < difference; i++) {
-            
-            current_time = new Date(current_time.getTime() - 60*1000);
-            animate_backwards();
-            minidata = data_for_minute(current_time, false);
+           if(difference > 10) {
+            // remove all the bikes
+            svg.selectAll(".bikes").remove();
+            // make the data for all the bikes in that period
+            minidata = all_bikes_for_date(new_time);
+            console.log(minidata);
             createnewbikes(minidata);
+            current_time = new_time;
+            console.log(current_time);
+          } else {
+
+             for(var i = 0; i < difference; i++) {
+              current_time = new Date(current_time.getTime() - 60*1000);
+              animate_backwards();
+              minidata = new_trips(current_time, false);
+              createnewbikes(minidata);
+            }
           }        
         }
       });
@@ -173,7 +194,7 @@ function data_loaded() {
   var g = svg.append("g").attr("class", "leaflet-zoom-hide");
 
   // returns all the trips for that minute, use a while loop with a condition so we don't go needlessly into the data
-  function data_for_minute(date, time_direction_forward) {
+  function new_trips(date, time_direction_forward) {
     var bike_list_minute = [];
     var i = 0; 
     if (time_direction_forward) {
@@ -225,6 +246,34 @@ function data_loaded() {
     });
   }
 
+
+  function all_bikes_for_date(date) {
+    var bike_list_minute = [];
+    var date_rounded = d3.time.minute.floor(date);
+    var i = 0; 
+    while (i < bike_data.length) {
+      var bike_start_time = d3.time.minute.floor(new Date(bike_data[i].starttime));
+      var bike_stop_time = d3.time.minute.floor(new Date(bike_data[i].stoptime));
+      if(date_rounded.getTime() == bike_stop_time.getTime() || date_rounded.getTime() == bike_start_time.getTime() || (date_rounded.getTime() < bike_stop_time.getTime() && date_rounded.getTime() > bike_start_time.getTime())) 
+      {
+        var bikes_data = bike_data[i];
+        bikes_data.time_line = time_line(bikes_data, bike_stop_time, bike_start_time);
+        bikes_data.minute = bikes_data.time_line.map(function(d,i) {return d.time.getTime();}).indexOf(date_rounded.getTime());  
+        bike_list_minute.push(bikes_data);
+      }
+      i++;
+    }
+    return bike_list_minute;
+
+    //in while loop, if date is between or equal to a bike's starttime and endtime
+      // make the time line for that bike
+      // go through the time line where time == date, make that index the value of minute
+  }
+
+
+
+
+
   function createnewbikes (minidata) {
       var bikes = g.selectAll("bikes")
           .data(minidata)
@@ -243,7 +292,7 @@ function data_loaded() {
             .attr("r", 3)
             .attr("class", "stations");
 
-  var minidata = data_for_minute(current_time, true);
+  var minidata = all_bikes_for_date(current_time);
   var bikes = g.selectAll("bikes")
           .data(minidata)
           .enter()
