@@ -321,7 +321,7 @@ function data_loaded() {
             .style("fill", function(d) {
               return filters[filter](d);
              })
-            .attr("r", 3)
+            .attr("r", 2)
             .attr("class", "bikes")
             .attr("transform",
                     function(d) { 
@@ -337,7 +337,7 @@ function data_loaded() {
             .data(stationsList)
             .enter()
             .append("circle")
-            .attr("r", 3)
+            .attr("r", 4)
             .attr("class", "stations");
 
 
