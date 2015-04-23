@@ -13,9 +13,11 @@
     
     <div id = "intro">
         <div class = "intro-text">
-            <div id = "preintro">CS171 PROJECT</div>
-            <div id = "introtitle">Citi Cycle</div>
+            <div id = "preintro">CS171 PROJECT:</div>
             <div id = "byline">Mirhee Kim, Emily Lovett, Michelle Danoff</div>
+            
+            <div id = "introtitle">Citi Cycle</div>
+            
         </div>
         <div class="dark-cover"></div>
         <div id = "launch"><a href="vis.html">Launch Visualization</a></div>
@@ -30,7 +32,7 @@
     $('#intro').css('min-height', $(window).height());
     $('#intro .dark-cover').height($('#intro').height());
     $('#intro .intro-text').css('top', $('#intro').height()/3.5 - $('#intro .intro-text').height()/2);
-    $('#intro .dark-cover').delay(50).animate({'opacity': 0.6}, 5000);
+    $('#intro .dark-cover').delay(50).animate({'opacity': 0.7}, 6000);
     $('#intro #launch').css('top', $('#intro').height()/3.5 + 2*$('#intro .intro-text').height())
     // $('.arrow').fadeIn(4000).click(function() {
     //     $('html, body').animate({
