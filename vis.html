@@ -68,8 +68,8 @@ html, body {
 // Variables
 var bike_data;
 var station_data;
-var starting_time = new Date("2014-12-01 00:00:00"); 
-var ending_time = new Date("2014-12-02 00:00:00");
+var starting_time = new Date("2014-01-04 00:00:00"); 
+var ending_time = new Date("2014-01-05 00:00:00");
 var current_time = starting_time;
 var filter = "none";
 var filters = {
@@ -100,11 +100,14 @@ queue()
   });
 
 function data_loaded() {
+  console.log("loaded");
   // Edit data
   var stationsList = station_data["stationBeanList"];
   var j =0, bike_data=[];
   while(new Date(full_bike_data[j].starttime) < d3.time.minute.floor(d3.time.minute.offset(ending_time,1))) {
-    bike_data.push(full_bike_data[j]);
+    if(new Date(full_bike_data[j].starttime) >= d3.time.minute.floor(starting_time)) {
+      bike_data.push(full_bike_data[j]);
+    }
     j++;
   }
 
