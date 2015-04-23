@@ -366,11 +366,15 @@ function data_loaded() {
             .attr("transform",
                     function(d) { 
                         new_coordinates = applyLatLngToLayer(d.time_line[d.minute]);
+
+                        // make the circle station a darker oppacity keep for a few secs then remove
+                        if(d.minute == 0) {
+                            emit(new_coordinates);
+                        }
                         return "translate(" +
                              new_coordinates.x + "," +
                              new_coordinates.y + ")";
                     })
-      // make the circle station a darker oppacity keep for a few secs then remove
   }
 
   var stations = g.selectAll("stations")
@@ -428,6 +432,26 @@ function data_loaded() {
     g.attr("transform", "translate(" + (-topLeft[0] + 50) + "," + (-topLeft[1] + 50) + ")");
   }
 
+  function emit(coordinates) {
+      var emit = g.append("circle")
+        .attr("r", 5)
+        .style("fill", "steelblue")
+        .attr("class", "hi")
+        .style("opacity", 0)
+        .attr("transform", function() { 
+          return "translate(" +
+            coordinates.x + "," +
+            coordinates.y + ")";
+      })
+        .transition()
+            .duration(100)
+            .style("opacity", .4)
+            .transition()
+              .duration(100)
+              .style("opacity", 0)
+              .remove()
+  }
+
   function animate() {
    
     svg.selectAll(".bikes")
@@ -453,12 +477,10 @@ function data_loaded() {
         .attr("transform",
                       function(d) {
                           d.minute--;
-                          if(d.minute == 0) {
-                            // make the circle station a darker oppacity keep for a few secs then remove
-                          }
-                          if(d.minute < 0) {
+                          if(d.minute == -1) {
+                            emit_coordinates = applyLatLngToLayer(d.time_line[0]);
+                            emit(emit_coordinates);
                             this.remove();
-                            d.minute = -1;
                             return;
                           }
                           new_coordinates = applyLatLngToLayer(d.time_line[d.minute]);
