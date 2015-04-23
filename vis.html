@@ -34,27 +34,30 @@ html, body {
       CitiBike Visualization
     </div>
     <div class = "vis_text">
+      This is our CS171 Project: CityCycle.
       Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptatem aspernatur facilis ipsum, beatae! Quasi amet ratione perspiciatis velit, excepturi nisi. Magni repellat amet illum ducimus cum. Saepe harum repellendus perspiciatis. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Deleniti hic magnam ullam sed facere voluptas quasi, veritatis ex dolor totam dignissimos repellat nesciunt voluptates iste rerum fugiat suscipit voluptatum, possimus! <br><br>
     </div>
 
-    <div id = "new slider">
+    <div id = "controls">
     <input type="image" src="img/reset.png" name="reset" class="button" id = "reset" />
     <input type="image" src="img/play.png" name="play" class="button" id = "play" />
     <input type="image" src="img/pause.png" name="pause" class="button" id = "pause" />
     <!--<input type="range" data-highlight="true" name="minutes" min="0" max="0" step="1" value="0" class="slider" id="slider-time"; >-->
-    <div id="slider"></div> 
-  </div>
+    
+    
+  </div><div id = "bike_categorize"> 
+        Categorize By:
+        <label><input type="radio" name="filter" value="none" checked> None </label>
+        <label><input type="radio" name="filter" value="gender"> Gender </label>  
+        <label><input type="radio" name="filter" value="subscription"> Subscription </label>
+      </div><br>
+  <div id="slider"></div> <br>
          
     <div id = "description_container">
       <div id = "time"></div>
       <br>
       <div id = "temp"></div>  </div><!-- <div id="map_cover"></div> -->
-      <div id = "bike categorize"> 
-        Categorize By:
-        <label><input type="radio" name="filter" value="none" checked> None </label>
-        <label><input type="radio" name="filter" value="gender"> Gender </label>  
-        <label><input type="radio" name="filter" value="subscription"> Subscription </label>
-      </div>
+      
       <div id="legend"></div> 
       <div id="map"></div>
       
@@ -166,6 +169,9 @@ function data_loaded() {
                 max: ending_time.getTime(),
                 step: 60*1000,
                 slide: function() {
+                  update();
+                },
+                change: function() {
                   update();
                 }
             });

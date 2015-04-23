@@ -132,6 +132,19 @@ opacity: 0.6;
     border-style:none; 
 }
 
+#controls input{
+    float: left;
+}
+
+#controls label {
+    float: none;
+}
+
+#bike_categorize {
+    padding-top: 5px;
+    font-size: 13px;
+}
+
 #launch {
     width: 100%;
     z-index: 10;
