@@ -21,34 +21,7 @@ html, body {
   margin: 0;
   padding: 0;
 }
-.slider
-{
-    display: none;
-    width: 1000px;
-}
 
-.bikes, .stations, .bikes svg, .stations svg {
-  position: absolute;
-}
-
-.bikes, .stations svg {
-  width: 60px;
-  height: 20px;
-  padding-right: 100px;
-  font: 10px sans-serif;
-}
-
-.stations {
-  fill: steelblue;
-  opacity: 0.3;
-/*  stroke: black;
-  stroke-width: .8px;*/
-}
-
-.bikes {
-  z-index: 1;
-  opacity: 1;
-} 
 
     </style>
   </head>
@@ -56,8 +29,8 @@ html, body {
     <div class = "header">
       CitiBike Visualization
     </div>
-    <div>
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptatem aspernatur facilis ipsum, beatae! Quasi amet ratione perspiciatis velit, excepturi nisi. Magni repellat amet illum ducimus cum. Saepe harum repellendus perspiciatis. <br><br>
+    <div class = "vis_text">
+      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptatem aspernatur facilis ipsum, beatae! Quasi amet ratione perspiciatis velit, excepturi nisi. Magni repellat amet illum ducimus cum. Saepe harum repellendus perspiciatis. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Deleniti hic magnam ullam sed facere voluptas quasi, veritatis ex dolor totam dignissimos repellat nesciunt voluptates iste rerum fugiat suscipit voluptatum, possimus! <br><br>
     </div>
 
     <div id = "new slider">
@@ -181,16 +154,16 @@ function data_loaded() {
       });
   }
   make_slider();
-
+var myVar;
   // document.getElementById("#play").oninput = function() { playbyyear(); };
 
   // if we add to end, it'll just iterate through every minute...
   d3.select("#play").style("display", "initial").on("click", playbyyear);
-  d3.select("#pause").on("click", function() {clearInterval();})
+  d3.select("#pause").on("click", function() {clearInterval(myVar);})
 
   function playbyyear() {
     var temp=0;
-    setTimeout(function () {
+    myVar = setTimeout(function () {
         current_time = new Date(current_time.getTime() + 60*1000);
         animate();
         minidata = new_trips(current_time, true);
@@ -321,7 +294,7 @@ function data_loaded() {
             .style("fill", function(d) {
               return filters[filter](d);
              })
-            .attr("r", 3)
+            .attr("r", 2)
             .attr("class", "bikes")
             .attr("transform",
                     function(d) { 
