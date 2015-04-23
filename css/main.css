@@ -12,8 +12,7 @@ body {
     position: absolute;
     clear: both;
 }
-
-#play {
+.button {
     width: 30px;
 }
 
@@ -65,10 +64,6 @@ opacity: 0.6;
   stroke-width: 2px;
   stroke-linecap: round;
   pointer-events: none;
-}
-
-.slider {
-    margin-left: 100px;
 }
 
 #map

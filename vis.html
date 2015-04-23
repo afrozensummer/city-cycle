@@ -61,8 +61,11 @@ html, body {
       Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptatem aspernatur facilis ipsum, beatae! Quasi amet ratione perspiciatis velit, excepturi nisi. Magni repellat amet illum ducimus cum. Saepe harum repellendus perspiciatis. <br><br>
     </div>
 
-    <div id = "new slider"><input type="image" src="img/play.png" name="play" id="play" />
-    <input type="range" name="minutes" min="0" max="0" step="1" value="0" class="slider"id="slider-time"; ></div>
+    <div id = "new slider">
+    <input type="image" src="img/reset.png" name="reset" class="button" id = "reset" />
+    <input type="image" src="img/play.png" name="play" class="button" id = "play" />
+    <input type="image" src="img/pause.png" name="pause" class="button" id = "pause" />
+    <input type="range" name="minutes" min="0" max="0" step="1" value="0" class="slider" id="slider-time"; ></div>
     <div id="slider"></div>      
     <div id = "description_container">
       <div id = "time"></div>
@@ -156,18 +159,27 @@ function data_loaded() {
 
   // if we add to end, it'll just iterate through every minute...
   d3.select("#play").style("display", "initial").on("click", playbyyear);
+  d3.select("#pause").on("click", function() {clearInterval();})
 
   function playbyyear() {
-        setTimeout(function () {
-            current_time = new Date(current_time.getTime() + 60*1000);
-            animate();
-            minidata = new_trips(current_time, true);
-            createnewbikes(minidata);
-
-            if(current_time <= ending_time) {
-              playbyyear();
-            }
-          }, 100) //0.1 second
+    var temp=0;
+    setTimeout(function () {
+        current_time = new Date(current_time.getTime() + 60*1000);
+        animate();
+        minidata = new_trips(current_time, true);
+        createnewbikes(minidata);
+        document.getElementById("time").innerHTML = "Current Time: <br>" + formatDate(current_time);
+        d3.select("#slider-time").attr("value", function() {
+          // console.log(temp)
+          // temp = this.value+1;
+          // console.log(temp)
+          //console.log(d3.select("#ui-slider"))
+          return (this.value + 1);
+        });
+        if(current_time < ending_time) {
+          playbyyear();
+        }
+      }, 100) //0.1 second
   }
 
   // Create a date range slider
