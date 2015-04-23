@@ -92,6 +92,7 @@ queue()
         weather_data = weather;
         data_loaded();
 
+
   });
 
 function data_loaded() {
@@ -102,6 +103,8 @@ function data_loaded() {
     bike_data.push(full_bike_data[j]);
     j++;
   }
+
+
 
   //Format the weather
   document.getElementById("temp").innerHTML = "Temperature: " + weather_data[0]["TMAX"];
@@ -149,23 +152,23 @@ function data_loaded() {
   }
   make_slider();
 
-  d3.select("#play")
-      .on("input", function() {
-        console.log("hi")
-        //console.log(current_time.getTime())
-        while (current_time <= ending_time) {
-          //$("#play").delay("slow");
-          current_time = new Date(current_time.getTime() + 60*1000);
-          console.log(current_time);
-          $("#play").delay("slow").animate();
-          minidata = new_trips(current_time, forward);
-          createnewbikes(minidata);
-        }
+  // document.getElementById("#play").oninput = function() { playbyyear(); };
 
+  // if we add to end, it'll just iterate through every minute...
+  d3.select("#play").style("display", "initial").on("click", playbyyear);
 
-        
-        //d3.select("#slider-time")
-      });
+  function playbyyear() {
+        setTimeout(function () {
+            current_time = new Date(current_time.getTime() + 60*1000);
+            animate();
+            minidata = new_trips(current_time, true);
+            createnewbikes(minidata);
+
+            if(current_time <= ending_time) {
+              playbyyear();
+            }
+          }, 100) //0.1 second
+  }
 
   // Create a date range slider
   //var MyEventHandler = new Object();
@@ -185,6 +188,8 @@ function data_loaded() {
       // console.log(current_time);
     }
   });*/
+
+
 
   // Build the map
   L.mapbox.accessToken = 'pk.eyJ1IjoiY2l0eWN5Y2xlIiwiYSI6IjZ3MXNtRW8ifQ.lmAxO5RTphn4Jo-QV63Vpg';
