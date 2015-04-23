@@ -40,13 +40,12 @@ html, body {
 
 .stations {
   fill: steelblue;
-  opacity: 0.5;
+  opacity: 0.3;
 /*  stroke: black;
   stroke-width: .8px;*/
 }
 
 .bikes {
-  fill: #000;
   z-index: 1;
   opacity: 1;
 } 
@@ -68,25 +67,45 @@ html, body {
       <div id = "time"></div>
       <br>
       <div id = "temp"></div>  </div><!-- <div id="map_cover"></div> -->
+      <div id = "bike categorize"> 
+        Categorize By:
+        <label><input type="radio" name="filter" value="none" checked> None </label>
+        <label><input type="radio" name="filter" value="gender"> Gender </label>  
+        <label><input type="radio" name="filter" value="subscription"> Subscription </label>
+      </div>
+      <div id="legend"></div> 
       <div id="map"></div>
       
 
      
     <script type="text/javascript">
 
-//Variables
+// Variables
 var bike_data;
 var station_data;
 var starting_time = new Date("2014-12-01 00:00:00"); 
 var ending_time = new Date("2014-12-02 00:00:00");
 var current_time = starting_time;
+var filter = "none";
+var filters = {
+    none: function(d) {return "#000"},
+    gender: function(d) { 
+      if(d.gender == 1) return "#0000ff";
+      if(d.gender == 2) return "#FF0000";
+      return "#8A2BE2";
+    },
+    subscription: function(d) { 
+      if(d.usertype == "Customer") return "#0080ff";
+      return "#ffa500";
+    }
+  };
 
 queue()
   .defer(d3.json, "data/stations.json") 
   .defer(d3.csv, "data/december2014.csv")
   .defer(d3.csv, "data/weatherdata.csv")
     .await(function(error, stations, bikes, weather) { 
-        //error handling
+        // error handling
         station_data = stations;
         full_bike_data = bikes;
         weather_data = weather;
@@ -103,13 +122,23 @@ function data_loaded() {
     j++;
   }
 
-  //Format the weather
+  // Format the weather
   document.getElementById("temp").innerHTML = "Temperature: " + weather_data[0]["TMAX"];
 
-  //Format the date
+  // Format the date
   var formatDate = d3.time.format("%a, %b %e, %H:%M");
   document.getElementById("time").innerHTML = "Current Time: <br>" + formatDate(starting_time);
 
+  // Bike Catergorize Functions
+  d3.selectAll("input[name=\"filter\"]").on("click", function () {
+    filter = this.value;
+    svg.selectAll(".bikes")
+      .style("fill", function(d) {
+        return filters[filter](d);
+      });
+  });
+
+  // Make the silder
   function make_slider() {
     // update max value
     var total_minutes = (d3.time.minute.floor(ending_time) - d3.time.minute.floor(starting_time))/(1000*60);
@@ -274,10 +303,19 @@ function data_loaded() {
           .data(minidata)
           .enter()
           .append("circle")
-          .attr("r", 2)
-          .attr("class", "bikes");
-
-          reset();
+            .style("fill", function(d) {
+              return filters[filter](d);
+             })
+            .attr("r", 3)
+            .attr("class", "bikes")
+            .attr("transform",
+                    function(d) { 
+                        new_coordinates = applyLatLngToLayer(d.time_line[d.minute]);
+                        return "translate(" +
+                             new_coordinates.x + "," +
+                             new_coordinates.y + ")";
+                    })
+      // make the circle station a darker oppacity keep for a few secs then remove
   }
 
   var stations = g.selectAll("stations")
@@ -287,8 +325,10 @@ function data_loaded() {
             .attr("r", 3)
             .attr("class", "stations");
 
+
   var minidata = all_bikes_for_date(current_time);
   createnewbikes(minidata);
+  reset();
 
   function applyLatLngToLayer(d) {
       var y = d.latitude;
@@ -336,7 +376,7 @@ function data_loaded() {
   function animate() {
    
     svg.selectAll(".bikes")
-      .transition(0)
+      .transition()
         .attr("transform",
                       function(d) {
                           d.minute++;
@@ -349,7 +389,7 @@ function data_loaded() {
                           return "translate(" +
                                new_coordinates.x + "," +
                                new_coordinates.y + ")";
-                      });
+                      }); 
   }
 
   function animate_backwards() {
@@ -358,6 +398,9 @@ function data_loaded() {
         .attr("transform",
                       function(d) {
                           d.minute--;
+                          if(d.minute == 0) {
+                            // make the circle station a darker oppacity keep for a few secs then remove
+                          }
                           if(d.minute < 0) {
                             this.remove();
                             d.minute = -1;
