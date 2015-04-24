@@ -50,6 +50,7 @@ html, body {
         <label><input type="radio" name="filter" value="none" checked> None </label>
         <label><input type="radio" name="filter" value="gender"> Gender </label>  
         <label><input type="radio" name="filter" value="subscription"> Subscription </label>
+        <label><input type="radio" name="filter" value="age"> Age </label>
       </div><br>
   <div id="slider"></div> <br>
          
@@ -82,6 +83,13 @@ var filters = {
     subscription: function(d) { 
       if(d.usertype == "Customer") return "#0080ff";
       return "#ffa500";
+    },
+    age: function(d) { 
+      var age = 2014 - d["birth year"];
+      if(age < 20) return "#ADD8E6";
+      if(age >= 20 && age < 50) return "#2072BC";
+      if(age > 50) return "#00264A";
+      return "gray"; //no age indicated
     }
   };
 
@@ -166,6 +174,7 @@ function data_loaded() {
   //     });
   // }
   // make_slider();
+
   $("#slider").slider({
                 value: starting_time.getTime(),
                 min: starting_time.getTime(),
@@ -183,7 +192,6 @@ function data_loaded() {
     var new_time = new Date($("#slider").slider('value'));
     document.getElementById("time").innerHTML = "Current Time: <br>" + formatDate(new_time);
     var difference = Math.abs((new_time-current_time)/(60*1000));
-
         if(difference > 15) {
           // remove all the bikes
           svg.selectAll(".bikes").remove();
