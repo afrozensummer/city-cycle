@@ -14,6 +14,7 @@
     <link href='http://fonts.googleapis.com/css?family=Raleway|Poiret+One' rel='stylesheet' type='text/css'>
     
     <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/themes/base/jquery-ui.css" />
+    <script src = "js/averageDayVis.js"></script>
     
     <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
     <link rel="stylesheet" type="text/css" href="css/main.css">
@@ -120,6 +121,10 @@ function data_loaded() {
     j++;
   }
 
+
+  // Initialize the bar chart
+  var averageDay_vis = new averageDayVis(d3.select("#barchart"), full_bike_data)
+
   //Format the weather
   document.getElementById("temp").innerHTML = "Temperature: " + weather_data[0]["TMAX"];
 
@@ -198,12 +203,12 @@ function data_loaded() {
 
   function update_hour_bar() {
     var new_time = new Date($("#slider").slider('value'));
-    var format_hour_time =  d3.time.format("%a, %b %e, %H");
+    //var format_hour_time =  d3.time.format("%a, %b %e, %H");
     var format_minute_only = d3.time.format("%M");
 
     // Update at the start of the hour only
     if (format_minute_only(new_time) == "00"){
-      //averageDay_vis.onSelectionChange(format_hour_time(new_time));
+      averageDay_vis.onSelectionChange(new_time);
     }
 
     // If it is a new hour 

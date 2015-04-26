@@ -14,21 +14,21 @@
  * @param _metaData -- the meta-data / data description object
  * @constructor
  */
-averageDayVis = function(_parentElement, _data, _eventHandler) {
+averageDayVis = function(_parentElement, _data) {
 
     //console.log("age Vis is being called");
 
     //console.log(_data.length);
     this.parentElement = _parentElement;
     this.data = _data;
-    console.log(this.data.length);
-    console.log(this.data);
+    //console.log(this.data.length);
+    //console.log(this.data);
     //this.metaData = _metaData;
-    this.eventHandler = _eventHandler;
+    //this.eventHandler = _eventHandler;
     this.displayData = [];
 
-    this.margin = {top: 20, right: 0, bottom: 450, left: 50},
-    this.width = 600 - this.margin.left - this.margin.right,
+    this.margin = {top: 20, right: 0, bottom: 450, left: 100},
+    this.width = 550 - this.margin.left - this.margin.right,
     this.height = 900 - this.margin.top - this.margin.bottom;
     this.length = _data.length;
 
@@ -171,8 +171,8 @@ averageDayVis.prototype.updateVis = function(){
       .attr("class", "bar")
       .transition()
        .attr("transform", function(d, i) { 
-       	console.log(i);
-        console.log(that.x(that.titles[i]));
+       	//console.log(i);
+        //console.log(that.x(that.titles[i]));
        	return "translate("+that.x(that.titles[i])+",0)"; })
 
     // Remove the extra bars
@@ -222,8 +222,11 @@ averageDayVis.prototype.onSelectionChange= function (day){
 
     var formatDayHour = d3.time.format("%a, %b %e, %H");
 
-    var data = new Date (this.data[0].starttime);
-    var formatted_date = formatDayHour(data);
+    //var data = new Date (this.data[0].starttime);
+    //var formatted_date = formatDayHour(data);
+    day = formatDayHour(day);
+    //console.log(formattedday);
+    //console.log(formatted_date);
     //console.log(formatted_date == day);
     //console.log(formatted_date);
     //console.log(day);
@@ -235,8 +238,11 @@ averageDayVis.prototype.onSelectionChange= function (day){
 
       var data = new Date (d.starttime);
       var formatted_date = formatDayHour(data);
-      return (formatted_date ==  day);
+      //console.log(formatted_date == day)
+      return (formatted_date == day);
     });
+
+    console.log("data is wrangled")
     this.updateVis();
 
 
