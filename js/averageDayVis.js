@@ -138,7 +138,8 @@ averageDayVis.prototype.updateVis = function(){
 
 	//console.log(that.titles);
     this.x.domain(that.titles);
-    this.y.domain([0, d3.max(this.displayData, function(d){ return d})]);
+    this.y.domain([0, 200]);
+    //this.y.domain([0, d3.max(this.displayData, function(d){ return d})]);
     //this.color.domain(that.titles);
 
     //console.log("here1");
