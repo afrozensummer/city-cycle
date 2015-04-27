@@ -203,3 +203,28 @@ opacity: 0.6;
   z-index: 1;
   opacity: 1;
 } 
+
+.day {
+  -moz-box-shadow:inset 0px 1px 0px 0px #ffffff;
+  background-color:#ffffff;
+  border:1px solid #dcdcdc;
+  display:inline-block;
+  cursor:pointer;
+  color:#666666;
+  padding:6px 14px;
+  text-shadow:0px 1px 0px #ffffff;
+}
+.day:hover {
+  background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #f6f6f6), color-stop(1, #ffffff));
+  background:-moz-linear-gradient(top, #f6f6f6 5%, #ffffff 100%);
+  background:-webkit-linear-gradient(top, #f6f6f6 5%, #ffffff 100%);
+  background:-o-linear-gradient(top, #f6f6f6 5%, #ffffff 100%);
+  background:-ms-linear-gradient(top, #f6f6f6 5%, #ffffff 100%);
+  background:linear-gradient(to bottom, #f6f6f6 5%, #ffffff 100%);
+  filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#f6f6f6', endColorstr='#ffffff',GradientType=0);
+  background-color:#f6f6f6;
+}
+/*.day:active {
+  position:relative;
+  top:1px;
+}*/

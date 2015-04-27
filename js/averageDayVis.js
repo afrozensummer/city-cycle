@@ -242,7 +242,7 @@ averageDayVis.prototype.onSelectionChange= function (day){
       return (formatted_date == day);
     });
 
-    console.log("data is wrangled")
+    // console.log("data is wrangled")
     this.updateVis();
 
 
@@ -266,7 +266,7 @@ averageDayVis.prototype.onSelectionChange= function (day){
  */
 averageDayVis.prototype.filterAndAggregate = function(_filter){
 
-    console.log("in filter and aggregate");
+    // console.log("in filter and aggregate");
 
 
     // Set filter to a function that accepts all items
