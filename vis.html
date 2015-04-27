@@ -46,13 +46,18 @@ html, body {
     <!--<input type="range" data-highlight="true" name="minutes" min="0" max="0" step="1" value="0" class="slider" id="slider-time"; >-->
     
     
-  </div><div id = "bike_categorize"> 
+  </div>
+  <div id = "bike_categorize"> 
         Categorize By:
         <label><input type="radio" name="filter" value="none" checked> None </label>
         <label><input type="radio" name="filter" value="gender"> Gender </label>  
         <label><input type="radio" name="filter" value="subscription"> Subscription </label>
         <label><input type="radio" name="filter" value="age"> Age </label>
-      </div><br>
+        <button  class = "day" type="button"> July 4</button>
+        <button class = "day" type="button">Dec 1</button>
+        <button class = "day" type="button">Other Day</button>
+        <button class = "day" type="button">Other Day</button>
+    </div><br>
   <div id="slider"></div> <br>
          
     <div id = "description_container">
@@ -98,11 +103,13 @@ var filters = {
 queue()
   .defer(d3.json, "data/stations.json") 
   .defer(d3.csv, "data/december2014.csv")
+  .defer(d3.csv, "data/december1stweatherdata.csv")
   .defer(d3.csv, "data/weatherdata.csv")
-    .await(function(error, stations, bikes, weather) { 
+    .await(function(error, stations, bikes, decemberfirst, weather) { 
         // error handling
         station_data = stations;
         full_bike_data = bikes;
+        december_first_data = decemberfirst;
         weather_data = weather;
         data_loaded();
 
@@ -110,7 +117,7 @@ queue()
   });
 
 function data_loaded() {
-  console.log("loaded");
+  //console.log("loaded");
   // Edit data
   var stationsList = station_data["stationBeanList"];
   var j =0, bike_data=[];
@@ -126,8 +133,17 @@ function data_loaded() {
   var averageDay_vis = new averageDayVis(d3.select("#barchart"), full_bike_data)
 
   //Format the weather
-  document.getElementById("temp").innerHTML = "Temperature: " + weather_data[0]["TMAX"];
-
+  var hour = d3.time.format("%H");
+  // TODO: add in some filtering function based on day or something.
+  weather_data = december_first_data;
+  function strip(hour) {
+    if (hour > 9)
+      return hour;
+    else {
+      return (hour/10)*10;
+    }
+  }
+  document.getElementById("temp").innerHTML = "Temperature: " + weather_data[strip(hour(current_time))]["DryBulbFarenheit"]+ " F";
   // Format the date
   var formatDate = d3.time.format("%a, %b %e, %H:%M");
   var format_day_hour = d3.time.format("%a, %b %e, %H");
@@ -218,6 +234,7 @@ function data_loaded() {
   function update() {
     var new_time = new Date($("#slider").slider('value'));
     document.getElementById("time").innerHTML = "Current Time: <br>" + formatDate(new_time);
+    document.getElementById("temp").innerHTML = "Temperature: " + weather_data[strip(hour(current_time))]["DryBulbFarenheit"]+ " F";
     var difference = Math.abs((new_time-current_time)/(60*1000));
         if(difference > 15) {
           // remove all the bikes
@@ -262,6 +279,7 @@ function data_loaded() {
         minidata = new_trips(current_time, true);
         createnewbikes(minidata);
         document.getElementById("time").innerHTML = "Current Time: <br>" + formatDate(current_time);
+        document.getElementById("temp").innerHTML = "Temperature: " + weather_data[strip(hour(current_time))]["DryBulbFarenheit"]+ " F";
         d3.select("#slider-time").attr("value", function() {
           // console.log(temp)
           // temp = this.value+1;
