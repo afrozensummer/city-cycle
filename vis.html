@@ -75,6 +75,7 @@ html, body {
 
 // Variables
 var bike_data;
+var barchart_data;
 var station_data;
 var starting_time = new Date("2014-12-04 00:00:00"); 
 var ending_time = new Date("2014-12-05 00:00:00");
@@ -120,13 +121,44 @@ function data_loaded() {
   //console.log("loaded");
   // Edit data
   var stationsList = station_data["stationBeanList"];
-  var j =0, bike_data=[];
+  var j =0, bike_data=[]; 
   while(new Date(full_bike_data[j].starttime) < d3.time.minute.floor(d3.time.minute.offset(ending_time,1))) {
     if(new Date(full_bike_data[j].starttime) >= d3.time.minute.floor(starting_time)) {
       bike_data.push(full_bike_data[j]);
     }
     j++;
   }
+
+  // Bar chart information
+  var day1 = d3.range(23).map(function () {
+        return 0;
+    });
+
+  var formatHour = d3.time.format("%H");
+  var index = 0;
+  var lasthour = "00";
+
+  bike_data.forEach(function(i){
+    var hour = new Date (i.starttime);
+    var now = formatHour(hour);
+
+    // if new hour update the counter
+    if (now != lasthour) {
+      index +=1;
+      lasthour = now;
+    }
+
+    day1[index] += 1;
+  })
+
+  // Update barchart data
+  barchart_data = day1;
+
+
+
+  // Initialize array for December 1
+
+
 
 
   // Initialize the bar chart
@@ -224,7 +256,7 @@ function data_loaded() {
 
     // Update at the start of the hour only
     if (format_minute_only(new_time) == "00"){
-      averageDay_vis.onSelectionChange(new_time);
+      //averageDay_vis.onSelectionChange(new_time);
     }
 
     // If it is a new hour 

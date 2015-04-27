@@ -27,9 +27,9 @@ averageDayVis = function(_parentElement, _data) {
     //this.eventHandler = _eventHandler;
     this.displayData = [];
 
-    this.margin = {top: 20, right: 0, bottom: 450, left: 100},
+    this.margin = {top: 20, right: 0, bottom: 20, left: 100},
     this.width = 550 - this.margin.left - this.margin.right,
-    this.height = 900 - this.margin.top - this.margin.bottom;
+    this.height = 300 - this.margin.top - this.margin.bottom;
     this.length = _data.length;
 
     this.titles = ["average this hour"]
@@ -213,26 +213,17 @@ averageDayVis.prototype.updateVis = function(){
  */
 averageDayVis.prototype.onSelectionChange= function (day){
 
-    // TODO: call wrangle function
-    //console.log("PRAISE DA LAWD");
-    //console.log(day);
-
-
-
     //sconsole.log("this is time");
 
     var formatDayHour = d3.time.format("%a, %b %e, %H");
+    var format_day_only = d3.time.format("%a, %b %e");
 
     //var data = new Date (this.data[0].starttime);
     //var formatted_date = formatDayHour(data);
     day = formatDayHour(day);
-    //console.log(formattedday);
-    //console.log(formatted_date);
-    //console.log(formatted_date == day);
-    //console.log(formatted_date);
-    //console.log(day);
 
     //console.log(this.data[0].starttime);
+    var k = 0;
 
     // Filter for only events on this day
     this.wrangleData(function(d){
@@ -242,6 +233,10 @@ averageDayVis.prototype.onSelectionChange= function (day){
       //console.log(formatted_date == day)
       return (formatted_date == day);
     });
+
+    console.log(this.data.length);
+
+
 
     // console.log("data is wrangled")
     this.updateVis();
