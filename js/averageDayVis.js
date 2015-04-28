@@ -103,7 +103,7 @@ averageDayVis.prototype.updateVis = function(hour) {
     bar_enter.append("rect")
       .attr("class", "bar")
       .attr("y", function(d) { return that.y(d.bikers[index]);}) // or something like that
-      .attr("x", function(d, i) { return that.x(i);})
+      .attr("x", function(d, i) {console.log(that.x(d.date)); return that.x(d.date);})
     .attr("width", this.x.rangeBand())
     .attr("height", function(d, i) {
         return that.height - that.y(d.bikers[index]);
