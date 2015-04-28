@@ -1,207 +1,123 @@
-
-/*
- *
- * ======================================================
- * We follow the vis template of init - wrangle - update
- * ======================================================
- *
- * */
-
 /**
- * AgeVis object for HW3 of CS171
- * @param _parentElement -- the HTML or SVG element (D3 node) to which to attach the vis
- * @param _data -- the data array
- * @param _metaData -- the meta-data / data description object
- * @constructor
+ * Bitches make graphs 
  */
+
+
+//TODO: DO IT ! :) Look at agevis.js for a useful structure
 averageDayVis = function(_parentElement, _data) {
-
-    //console.log("age Vis is being called");
-
-    //console.log(_data.length);
     this.parentElement = _parentElement;
     this.data = _data;
-    //console.log(this.data.length);
-    //console.log(this.data);
-    //this.metaData = _metaData;
-    //this.eventHandler = _eventHandler;
     this.displayData = [];
 
-    this.margin = {top: 20, right: 0, bottom: 20, left: 100},
-    this.width = 550 - this.margin.left - this.margin.right,
-    this.height = 300 - this.margin.top - this.margin.bottom;
-    this.length = _data.length;
+    this.margin = {top: 10, right: 0, bottom: 200, left: 45},
+    this.width = 500 - this.margin.left - this.margin.right,
+    this.height = 405 - this.margin.top - this.margin.bottom;
 
-    this.titles = ["average this hour"]
-
-    //console.log("about to call initVis");
+    this.titles = ["Day 1", "Day 2"];
     this.initVis();
-
 }
-
 
 /**
  * Method that sets up the SVG and the variables
  */
 averageDayVis.prototype.initVis = function(){
 
-    //var that = this; // read about the this
-
-    //TODO: construct or select SVG
+  var that = this;
 
     // constructs SVG layout
     this.svg = this.parentElement.append("svg")
-        .attr("width", this.width + this.margin.left + this.margin.right)
-        .attr("height", this.height + this.margin.top + this.margin.bottom)
-        .append("g")
+      .attr("width", this.width + this.margin.left + this.margin.right)
+      .attr("height", this.height + this.margin.top + this.margin.bottom)
+    .append("g")
         .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
 
     // creates axis and scales
     this.y = d3.scale.linear()
-      .range([this.height,0]);
+        .range([this.height, 0]);
 
     this.x = d3.scale.ordinal()
       .rangeRoundBands([0, this.width], .1);
 
-    //this.color = d3.scale.category20();  
-
-    //this.color = d3.scale.category20();  
-    //TODO: create axis and scales
+    this.xAxis = d3.svg.axis()
+        .scale(this.x)
+        .tickFormat(function(d) {
+        return that.titles[d]})
+        .orient("bottom");
 
     this.yAxis = d3.svg.axis()
       .scale(this.y)
       .orient("left");
 
-    this.xAxis = d3.svg.axis()
-       .scale(this.x)
-       .orient("bottom")
-   
-
-    // // Need to filter the data for just this range.
-    // this.area = d3.svg.area()
-    //    .interpolate("monotone")
-    //    .x(function(d) {return that.x(d.counts); })
-    //    .y0(this.height)
-    //      .y1(function(d) { return that.y(d.key); });  
+    // add axes visual elements
+    this.svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + this.height + ")");
 
     this.svg.append("g")
-        .attr("class", "x axis")
-        .attr("transform", "translate(0," + this.height + ")")
-
-    this.svg.append("g")
-      .attr("class", "y axis")
-      .attr("transform", "translate(0,0)");      
-    // this.svg.append("g")
-    //     .attr("class", "y axis")
-    //   .append("text")
-    //     .attr("transform", "rotate(0)")
-    //     .attr("y", 6)
-    //     .attr("dy", ".71em")
-    //     .style("text-anchor", "beginning")
-    //     .text("Age distribution");
-     
+      .attr("class", "y axis");
 
     // filter, aggregate, modify data
+    //this.wrangleData(null);
 
-    //console.log("init vis is finished except wrangle data");
-    this.wrangleData(null); 
     // call the update method
-    this.updateVis();
+    this.updateVis("00");
 }
-
-
-/**
- * Method to wrangle the data. In this case it takes an options object
- * @param _filterFunction - a function that filters data or "null" if none
- */
-averageDayVis.prototype.wrangleData= function(_filterFunction){
-
-    // displayData should hold the data which is visualized
-    this.displayData = this.filterAndAggregate(_filterFunction);
-
-    //// you might be able to pass some options,
-    //// if you don't pass options -- set the default options
-    //// the default is: var options = {filter: function(){return true;} }
-    //var options = _options || {filter: function(){return true;}};
-}
-
-
 
 /**
  * the drawing function - should use the D3 selection, enter, exit
  */
-averageDayVis.prototype.updateVis = function(){
+averageDayVis.prototype.updateVis = function(hour) {
 
-  //console.log("update vis begins");
+    var index = parseInt(hour);
+    console.log(index);
+    var that = this;
+    console.log(this.data)
+    // updates scales
 
-	var that = this;
-
-	//console.log(that.titles);
-    this.x.domain(that.titles);
-    this.y.domain([0, 200]);
-    //this.y.domain([0, d3.max(this.displayData, function(d){ return d})]);
-    //this.color.domain(that.titles);
-
-    //console.log("here1");
-    //this.y.domain(d3.extent(this.displayData, function(d) { return d.key; }));
-
+    this.y.domain([0,1000]);
+    //this.y.domain([0, d3.max(this.displayData.map(function (d) {return d.count;}))]);
+    //this.x.domain(this.data(function(d) {return d.date;}));
+    this.x.domain(this.titles);
+   
     // updates axis
     this.svg.select(".x.axis")
         .call(this.xAxis)
-        .selectAll("text")
+     .selectAll("text")  
         .style("text-anchor", "end")
-        .attr("transform", "translate(0,0)")
-        .attr("transform", function(d){
-        	return "rotate(-60) translate (0,-10)"
-        })
+        .attr("dx", "-.8em")
+        .attr("dy", ".15em")
+        .attr("transform", function(d) {
+            return "rotate(-65)" 
+         });
 
+    // updates axis
     this.svg.select(".y.axis")
-      .call(this.yAxis)    
+        .call(this.yAxis);
 
-
+    // data join
     var bar = this.svg.selectAll(".bar")
-      .data(this.displayData);
+      .data(this.data);
 
     var bar_enter = bar.enter().append("g");
-      
-    bar_enter.append("rect");
-    bar_enter.append("text"); 
 
-    //console.log(bar);
-    bar
+    bar_enter.append("rect")
       .attr("class", "bar")
+      .attr("y", function(d) { return that.y(d.bikers[index]);}) // or something like that
+      .attr("x", function(d, i) { return that.x(i);})
+    .attr("width", this.x.rangeBand())
+    .attr("height", function(d, i) {
+        return that.height - that.y(d.bikers[index]);
+    })
+    // .style("fill", function(d,i) {
+    //   return that.metaData.priorities[d.type]["item-color"];
+    // });
+
+    bar.exit().remove();
+
+    bar
       .transition()
-       .attr("transform", function(d, i) { 
-       	//console.log(i);
-        //console.log(that.x(that.titles[i]));
-       	return "translate("+that.x(that.titles[i])+",0)"; })
-
-    // Remove the extra bars
-    bar.exit()
-      .remove();
-
-    //console.log(bar); 
-    //var count = -1; 
-
-    bar.select("rect")
-      .attr("x", 0)
-      .attr("y", function(d) {
-
-      	return that.y(d);
-      })
-      .attr("width", this.x.rangeBand())
-      .transition()
-      .attr("height", function(d, i) {
-
-      		//console.log(that.height);
-      		//console.log(that.y(d));
-            return that.height - that.y(d);
-      });
-
-      //console.log("end of update vis");
-
-     
-
+        .attr("y", function(d) { return that.y(d.bikers[index]); })
+        .attr("height", function(d) { return that.height - that.y(d.bikers[index]); });
 }
 
 
@@ -211,47 +127,24 @@ averageDayVis.prototype.updateVis = function(){
  * be defined here.
  * @param selection
  */
-averageDayVis.prototype.onSelectionChange= function (day){
+// PrioVis.prototype.onSelectionChange = function (selectionStart, selectionEnd, is_empty){
 
-    //sconsole.log("this is time");
-
-    var formatDayHour = d3.time.format("%a, %b %e, %H");
-    var format_day_only = d3.time.format("%a, %b %e");
-
-    //var data = new Date (this.data[0].starttime);
-    //var formatted_date = formatDayHour(data);
-    day = formatDayHour(day);
-
-    //console.log(this.data[0].starttime);
-    var k = 0;
-
-    // Filter for only events on this day
-    this.wrangleData(function(d){
-
-      var data = new Date (d.starttime);
-      var formatted_date = formatDayHour(data);
-      //console.log(formatted_date == day)
-      return (formatted_date == day);
-    });
-
-    console.log(this.data.length);
+//     // TODO: call wrangle function
+//     if(is_empty) {
+//         this.wrangleData(null);
+//     } else {
+//         this.wrangleData(function (d) {
+//             return (d.time >= selectionStart && d.time <= selectionEnd);
+//         });
+//     }
+//     this.updateVis();
+// }
 
 
-
-    // console.log("data is wrangled")
-    this.updateVis();
-
-
-}
-
-
-/*
-*
-* ==================================
-* From here on only HELPER functions
-* ==================================
-*
-* */
+// PrioVis.prototype.doesLabelFit = function(datum, label) {
+//   var pixel_per_character = 6;  // obviously a (rough) approximation
+//   return datum.type.length * pixel_per_character < this.x(datum.count);
+// }
 
 
 
@@ -260,42 +153,27 @@ averageDayVis.prototype.onSelectionChange= function (day){
  * @param _filter - A filter can be, e.g.,  a function that is only true for data of a given time range
  * @returns {Array|*}
  */
-averageDayVis.prototype.filterAndAggregate = function(_filter){
+// PrioVis.prototype.filterAndAggregate = function(_filter){
 
-    // console.log("in filter and aggregate");
+//     // Set filter to a function that accepts all items
+//     // ONLY if the parameter _filter is NOT null use this parameter
+//     var filter = function(){return true;}
+//     if (_filter != null){
+//         filter = _filter;
+//     }
+//     //Dear JS hipster, a more hip variant of this construct would be:
+//     // var filter = _filter || function(){return true;}
 
+//     var that = this;
+//     var res = d3.range(16).map(function (d,i) {
+//         return {type:i, count:0};
+//     });
 
-    // Set filter to a function that accepts all items
-    // ONLY if the parameter _filter is NOT null use this parameter
-    var filter = function(){return true;}
-    if (_filter != null){
-        filter = _filter;
-    } 
-
-    var that = this;
-
-    //Dear JS hipster, a more hip variant of this construct would be:
-    // var filter = _filter || function(){return true;}
-
-    // Initialize res to an array of 0s. 
-    var res = d3.range(1).map(function () {
-        return 0;
-    });
-
-    //console.log(this);
-    //res[0] += this.length;
-
-     this.data.filter(filter).forEach(function(j){
-         d3.range(0,1).forEach(function(k){
-             res[k] += 1;
-         })
-     })
-
-     //console.log("about to print res");
-     //console.log(res);
-
-
-    return res;
-
-}
-
+//     // Convert data into summary count format
+//     this.data.filter(filter).forEach( function (d) {
+//         d.prios.forEach( function (e,i) {
+//             res[i].count += e;
+//         })
+//     });
+//     return res;
+// }

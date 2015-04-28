@@ -130,9 +130,10 @@ function data_loaded() {
   }
 
   // Bar chart information
-  var day1 = d3.range(23).map(function () {
+  var day1 = d3.range(24).map(function () {
         return 0;
     });
+  //console.log(day1.length);
 
   var formatHour = d3.time.format("%H");
   var index = 0;
@@ -147,22 +148,27 @@ function data_loaded() {
       index +=1;
       lasthour = now;
     }
-
+    if (index == 24) {
+      return;
+    }
     day1[index] += 1;
+
   })
+  //console.log(index);
+
+  var day2_fake = [50, 90, 75, 78, 639, 64, 75, 86, 85, 85, 64, 64, 98, 76, 23, 87, 34, 87, 678, 78, 346, 763, 354, 576];
+  //console.log(day2_fake.length);
+
+  console.log(day1);
 
   // Update barchart data
-  barchart_data = day1;
+  barchart_data = [{"date":"Day 1", "bikers": day1}, {"date": "Day 2", "bikers": day2_fake}];
 
-
-
-  // Initialize array for December 1
-
-
-
+  console.log(barchart_data);
+  //var average_hour_today = (bike_data.length / 24);
 
   // Initialize the bar chart
-  var averageDay_vis = new averageDayVis(d3.select("#barchart"), full_bike_data)
+  var averageDay_vis = new averageDayVis(d3.select("#barchart"), barchart_data);
 
   //Format the weather
   var hour = d3.time.format("%H");
@@ -238,9 +244,10 @@ function data_loaded() {
                 step: 60*1000,
                 slide: function() {
                   update();
+                  update_hour_bar("manual change");
                 },
                 change: function() {
-                  update_hour_bar();
+                  update_hour_bar("slider change");
                   update();
 
                   // Also update the bar chart here
@@ -249,15 +256,19 @@ function data_loaded() {
             });
 
 
-  function update_hour_bar() {
+  function update_hour_bar(type) {
+
     var new_time = new Date($("#slider").slider('value'));
-    //var format_hour_time =  d3.time.format("%a, %b %e, %H");
     var format_minute_only = d3.time.format("%M");
+    var format_hour_only = d3.time.format("%H");
 
     // Update at the start of the hour only
-    if (format_minute_only(new_time) == "00"){
-      //averageDay_vis.onSelectionChange(new_time);
-    }
+
+
+     if (format_minute_only(new_time) == "00" || (type == "manual change")){
+       console.log("time to update the bar chart");
+       averageDay_vis.updateVis(format_hour_only(new_time)); // actually do this.
+     }
 
     // If it is a new hour 
     // Call graph update here.
@@ -267,6 +278,16 @@ function data_loaded() {
     var new_time = new Date($("#slider").slider('value'));
     document.getElementById("time").innerHTML = "Current Time: <br>" + formatDate(new_time);
     document.getElementById("temp").innerHTML = "Temperature: " + weather_data[strip(hour(current_time))]["DryBulbFarenheit"]+ " F";
+
+    // var format_hour = d3.time.format("%H"); 
+
+    // //console.log(format_hour(new_time) == format_hour(current_time));
+
+    // if (d3.time.hour.floor(new_time).getTime() != d3.time.hour.floor(current_time).getTime()) {
+    //   console.log("new hour");
+    //   //update_hour_bar();
+    // }
+
     var difference = Math.abs((new_time-current_time)/(60*1000));
         if(difference > 15) {
           // remove all the bikes
