@@ -74,7 +74,7 @@ averageDayVis.prototype.updateVis = function(hour) {
     console.log(this.data)
     // updates scales
 
-    this.y.domain([0,1000]);
+    this.y.domain([0, d3.max(this.data.map(function(d) {return d.bikers[index];}))]);
     //this.y.domain([0, d3.max(this.displayData.map(function (d) {return d.count;}))]);
     //this.x.domain(this.data(function(d) {return d.date;}));
     this.x.domain(this.titles);
