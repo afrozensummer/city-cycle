@@ -53,8 +53,8 @@ html, body {
         <label><input type="radio" name="filter" value="gender"> Gender </label>  
         <label><input type="radio" name="filter" value="subscription"> Subscription </label>
         <label><input type="radio" name="filter" value="age"> Age </label>
-        <button  class = "day" type="button"> July 4</button>
-        <button class = "day" type="button">Dec 1</button>
+        <button  class = "day" type="button" value="july_4"> July 4</button>
+        <button class = "day" type="button" value="dec_1">Dec 1</button>
         <button class = "day" type="button">Other Day</button>
         <button class = "day" type="button">Other Day</button>
     </div><br>
@@ -74,11 +74,13 @@ html, body {
     <script type="text/javascript">
 
 // Variables
-var bike_data;
+var current_day = "july_4";
+var dec1_bikes;
+var july4_bikes;
 var barchart_data;
 var station_data;
-var starting_time = new Date("2014-12-04 00:00:00"); 
-var ending_time = new Date("2014-12-05 00:00:00");
+var starting_time = new Date("2014-07-04 00:00:00"); //start with july
+var ending_time = new Date("2014-07-05 00:00:00");
 var current_time = starting_time;
 var filter = "none";
 var filters = {
@@ -103,13 +105,16 @@ var filters = {
 
 queue()
   .defer(d3.json, "data/stations.json") 
-  .defer(d3.csv, "data/december2014.csv")
+  //.defer(d3.csv, "data/december2014.csv")
+  .defer(d3.csv, "data/july4.csv")
+  .defer(d3.csv, "data/december1.csv") 
   .defer(d3.csv, "data/december1stweatherdata.csv")
   .defer(d3.csv, "data/weatherdata.csv")
-    .await(function(error, stations, bikes, decemberfirst, weather) { 
+    .await(function(error, stations, july4_b, dec1_b, decemberfirst, weather) { 
         // error handling
         station_data = stations;
-        full_bike_data = bikes;
+        july4_bikes = july4_b;
+        dec1_bikes = dec1_b;
         december_first_data = decemberfirst;
         weather_data = weather;
         data_loaded();
@@ -121,13 +126,8 @@ function data_loaded() {
   //console.log("loaded");
   // Edit data
   var stationsList = station_data["stationBeanList"];
-  var j =0, bike_data=[]; 
-  while(new Date(full_bike_data[j].starttime) < d3.time.minute.floor(d3.time.minute.offset(ending_time,1))) {
-    if(new Date(full_bike_data[j].starttime) >= d3.time.minute.floor(starting_time)) {
-      bike_data.push(full_bike_data[j]);
-    }
-    j++;
-  }
+  var j =0;
+  bike_data = july4_bikes; //start with december
 
   // Bar chart information
   var day1 = d3.range(23).map(function () {
@@ -151,18 +151,59 @@ function data_loaded() {
     day1[index] += 1;
   })
 
+  // button functions
+  d3.selectAll("button[value=\"july_4\"]").on("click", function () {
+    //if not currently selected
+      //change start time, end time,
+    if(this.value != current_day) {
+      clearInterval(myVar);
+      starting_time = new Date("2014-07-04 00:00:00");
+      ending_time = new Date("2014-07-05 00:00:00");
+
+      //change bike_data
+      bike_data = july4_bikes;
+      //change weather data
+      //reset function
+      $("#slider").slider({
+                value: starting_time.getTime(),
+                min: starting_time.getTime(),
+                max: ending_time.getTime(),
+      });
+      resetbike();
+      current_day = this.value;
+    }
+  });
+
+   d3.selectAll("button[value=\"dec_1\"]").on("click", function () {
+    //if not currently selected
+      //change start time, end time,
+    if(this.value != current_day) {
+      clearInterval(myVar);
+      starting_time = new Date("2014-12-01 00:00:00");
+      ending_time = new Date("2014-12-02 00:00:00");
+
+      //change bike_data
+      bike_data = dec1_bikes;
+      //change weather data
+      //reset function
+      $("#slider").slider({
+                value: starting_time.getTime(),
+                min: starting_time.getTime(),
+                max: ending_time.getTime(),
+      });
+      resetbike();
+      current_day = this.value;
+    }
+  });
+
+
+
+
   // Update barchart data
   barchart_data = day1;
 
-
-
-  // Initialize array for December 1
-
-
-
-
   // Initialize the bar chart
-  var averageDay_vis = new averageDayVis(d3.select("#barchart"), full_bike_data)
+  //var averageDay_vis = new averageDayVis(d3.select("#barchart"), full_bike_data)
 
   //Format the weather
   var hour = d3.time.format("%H");
@@ -306,20 +347,21 @@ function data_loaded() {
   function playbyyear() {
     var temp=0;
     myVar = setTimeout(function () {
-        current_time = new Date(current_time.getTime() + 60*1000);
-        animate();
-        minidata = new_trips(current_time, true);
-        createnewbikes(minidata);
-        document.getElementById("time").innerHTML = "Current Time: <br>" + formatDate(current_time);
-        document.getElementById("temp").innerHTML = "Temperature: " + weather_data[strip(hour(current_time))]["DryBulbFarenheit"]+ " F";
-        d3.select("#slider-time").attr("value", function() {
+        //$("#slider").slider('value', this.value + 1);
+        var update_time = new Date(current_time.getTime() + 60*1000);
+        //animate();
+        //minidata = new_trips(current_time, true);
+        //createnewbikes(minidata);
+        //document.getElementById("time").innerHTML = "Current Time: <br>" + formatDate(current_time);
+        //document.getElementById("temp").innerHTML = "Temperature: " + weather_data[strip(hour(current_time))]["DryBulbFarenheit"]+ " F";
+       /* d3.select("#slider-time").attr("value", function() {
           // console.log(temp)
           // temp = this.value+1;
           // console.log(temp)
           //console.log(d3.select("#ui-slider"))
           return (this.value + 1);
-        });
-        $("#slider").slider('value', current_time.getTime());
+        });*/
+        $("#slider").slider('value', update_time);
         if(current_time < ending_time) {
           playbyyear();
         }
@@ -328,10 +370,11 @@ function data_loaded() {
 
   function resetbike() {
     $("#slider").slider('value', starting_time.getTime());
-    current_time = starting_time;
-    minidata = new_trips(current_time, true);
-    createnewbikes(minidata);
-    document.getElementById("time").innerHTML = "Current Time: <br>" + formatDate(current_time);
+    //current_time = starting_time;
+    //minidata = new_trips(current_time, true);
+    //createnewbikes(minidata);
+    //document.getElementById("time").innerHTML = "Current Time: <br>" + formatDate(current_time);
+    //reset weather
   }
 
   // Create a date range slider
