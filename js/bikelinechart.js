@@ -82,25 +82,16 @@ bikeLineVis.prototype.initVis = function(){
 
     this.yAxis = d3.svg.axis()
       .scale(this.y)
+      .tickSize(5)
       .orient("left");
-
-    this.line = d3.svg.line()
-      .x(function(d, i) { console.log(d); return that.x(i); })
-      .y(function(d, i) { return that.y(d); })
-      ;
 
     // Add axes visual elements
     this.svg.append("g")
         .attr("class", "x axis")
-        .attr("transform", "translate(0, " + (this.height-5) + ")")
+        .attr("transform", "translate(0, " + (this.height-2) + ")")
 
     this.svg.append("g")
         .attr("class", "y axis")
-
-        //.attr("transform", "translate(0, 0)")
-    // filter, aggregate, modify data
-    // this.wrangleData(null);
-
 
     // call the update method
     this.updateVis();
@@ -120,25 +111,16 @@ bikeLineVis.prototype.updateVis = function(){
     this.svg.select(".y.axis")
             .call(this.yAxis)
 
-     var y = d3.scale.linear()
-      .range([this.height, 0]);
+    var linefunction = d3.svg.line()
+        .x(function(d,i) {return that.x(i)})
+        .y(function(d) {console.log(that.y(d)); return that.y(d)})
+        .interpolate('linear');
 
-    var x = d3.scale.linear()
-      .range([0, this.width]);
+console.log(this.bikeperminute)
 
-    var path = that.svg.selectAll(".line")
-          .data(this.bikeperminute)
-
-        path.enter()
-          .append("path")
-          .style("stroke", "#000")
-          .attr("class", "line");
-
-        path
-          .transition()
-          .attr("d", that.line);
-
-        path.exit()
-          .remove();
+    this.svg.append('svg:path')
+        .attr('d', linefunction(this.bikeperminute))
+        .attr('stroke', 'blue')
+        .attr('fill', 'none')
       
 }
