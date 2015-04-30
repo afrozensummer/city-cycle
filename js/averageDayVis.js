@@ -69,9 +69,9 @@ averageDayVis.prototype.initVis = function(){
 averageDayVis.prototype.updateVis = function(hour) {
 
     var index = parseInt(hour);
-    console.log(index);
+    //console.log(index);
     var that = this;
-    console.log(this.data)
+    //console.log(this.data)
     // updates scales
 
     this.y.domain([0, d3.max(this.data.map(function(d) {return d.bikers[index];}))]);
