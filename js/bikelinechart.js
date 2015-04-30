@@ -8,7 +8,7 @@ bikeLineVis = function(_parentElement, _data) {
 
     this.margin = {top: 10, right: 0, bottom: 0, left: 5},
     this.width = 1200 - this.margin.left - this.margin.right,
-    this.height = 130 - this.margin.top - this.margin.bottom;
+    this.height = 120 - this.margin.top - this.margin.bottom;
     
     var currenttime = d3.time.day(new Date(this.data[0]["starttime"]));
     //var endtime = new Date(this.data[this.data.length-1]["stoptime"]);
@@ -82,13 +82,12 @@ bikeLineVis.prototype.initVis = function(){
 
     this.yAxis = d3.svg.axis()
       .scale(this.y)
-      .tickSize(5)
       .orient("left");
 
     // Add axes visual elements
     this.svg.append("g")
         .attr("class", "x axis")
-        .attr("transform", "translate(0, " + (this.height-2) + ")")
+        .attr("transform", "translate(0, " + (this.height) + ")")
 
     this.svg.append("g")
         .attr("class", "y axis")
@@ -108,19 +107,14 @@ bikeLineVis.prototype.updateVis = function(){
     this.svg.select(".x.axis")
         .call(this.xAxis);
 
-    this.svg.select(".y.axis")
-            .call(this.yAxis)
-
     var linefunction = d3.svg.line()
         .x(function(d,i) {return that.x(i)})
-        .y(function(d) {console.log(that.y(d)); return that.y(d)})
+        .y(function(d) { return that.y(d)})
         .interpolate('linear');
-
-console.log(this.bikeperminute)
 
     this.svg.append('svg:path')
         .attr('d', linefunction(this.bikeperminute))
-        .attr('stroke', 'blue')
+        .attr('stroke', 'black')
         .attr('fill', 'none')
       
 }
