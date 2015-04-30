@@ -5,7 +5,7 @@
     <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=true"></script>
     <script src="http://d3js.org/d3.v3.js" charset="utf-8"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6/jquery.min.js"></script>
-    <script src="js/slider.js"></script>
+    
     <link href='https://api.tiles.mapbox.com/mapbox.js/v2.1.8/mapbox.css' rel='stylesheet' />
     <script src="http://cdn.leafletjs.com/leaflet-0.7/leaflet.js"></script>
     <script src='https://api.tiles.mapbox.com/mapbox.js/v2.1.8/mapbox.js'></script>
@@ -15,6 +15,7 @@
     
     <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/themes/base/jquery-ui.css" />
     <script src = "js/averageDayVis.js"></script>
+    <script src="js/bikelinechart.js"></script>
     
     <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
     <link rel="stylesheet" type="text/css" href="css/main.css">
@@ -58,8 +59,9 @@ html, body {
         <button class = "day" type="button">Other Day</button>
         <button class = "day" type="button">Other Day</button>
     </div><br>
+    <div id="bikeline"></div>
   <div id="slider"></div> <br>
-         
+      
     <div id = "description_container">
       <div id = "time"></div>
       <br>
@@ -159,16 +161,17 @@ function data_loaded() {
   var day2_fake = [50, 90, 75, 78, 639, 64, 75, 86, 85, 85, 64, 64, 98, 76, 23, 87, 34, 87, 678, 78, 346, 763, 354, 576];
   //console.log(day2_fake.length);
 
-  console.log(day1);
+  //console.log(day1);
 
   // Update barchart data
   barchart_data = [{"date":"Day 1", "bikers": day1}, {"date": "Day 2", "bikers": day2_fake}];
 
-  console.log(barchart_data);
+  //console.log(barchart_data);
   //var average_hour_today = (bike_data.length / 24);
 
   // Initialize the bar chart
   var averageDay_vis = new averageDayVis(d3.select("#barchart"), barchart_data);
+  var bikeline_vis = new bikeLineVis(d3.select("#bikeline"), bike_data);
 
   //Format the weather
   var hour = d3.time.format("%H");
@@ -197,63 +200,23 @@ function data_loaded() {
       });
   });
 
-  // Make the silder
-  // function make_slider() {
-  //   // update max value
-  //   var total_minutes = (d3.time.minute.floor(ending_time) - d3.time.minute.floor(starting_time))/(1000*60);
-  //   d3.select("#slider-time")
-  //     .attr("max", total_minutes)
-  //     .style("display", "initial")
-  //     .on("input", function() {
-  //       var new_time = new Date(this.value*60*1000 + starting_time.getTime());
-  //       document.getElementById("time").innerHTML = "Current Time: <br>" + formatDate(new_time);
-  //       var difference = Math.abs((new_time-current_time)/(60*1000));
-
-  //       if(difference > 15) {
-  //         // remove all the bikes
-  //         svg.selectAll(".bikes").remove();
-  //         // make the data for all the bikes in that period
-  //         minidata = all_bikes_for_date(new_time);
-  //         createnewbikes(minidata);
-  //         current_time = new_time;
-  //       } else {
-  //         if(new_time > current_time) {
-  //           for(var i = 0; i < difference; i++) {
-  //             current_time = new Date(current_time.getTime() + 60*1000);
-  //             animate();
-  //             minidata = new_trips(current_time, true);
-  //             createnewbikes(minidata);
-  //           }
-  //         } else {
-  //           for(var i = 0; i < difference; i++) {
-  //             current_time = new Date(current_time.getTime() - 60*1000);
-  //             animate_backwards();
-  //             minidata = new_trips(current_time, false);
-  //             createnewbikes(minidata);
-  //           }
-  //         }
-  //       }      
-  //     });
-  // }
-  // make_slider();
-
   $("#slider").slider({
-                value: starting_time.getTime(),
-                min: starting_time.getTime(),
-                max: ending_time.getTime(),
-                step: 60*1000,
-                slide: function() {
-                  update();
-                  update_hour_bar("manual change");
-                },
-                change: function() {
-                  update_hour_bar("slider change");
-                  update();
+      value: starting_time.getTime(),
+      min: starting_time.getTime(),
+      max: ending_time.getTime(),
+      step: 60*1000,
+      slide: function() {
+        update();
+        update_hour_bar("manual change");
+      },
+      change: function() {
+        update_hour_bar("slider change");
+        update();
 
-                  // Also update the bar chart here
-                  
-                }
-            });
+        // Also update the bar chart here
+        
+      }
+  });
 
 
   function update_hour_bar(type) {
@@ -344,7 +307,7 @@ function data_loaded() {
         if(current_time < ending_time) {
           playbyyear();
         }
-      }, 100) //0.1 second
+      }, 75) // < 0.1 second
   }
 
   function resetbike() {
@@ -353,6 +316,7 @@ function data_loaded() {
     minidata = new_trips(current_time, true);
     createnewbikes(minidata);
     document.getElementById("time").innerHTML = "Current Time: <br>" + formatDate(current_time);
+    document.getElementById("temp").innerHTML = "Temperature: " + weather_data[strip(hour(current_time))]["DryBulbFarenheit"]+ " F";
   }
 
   // Create a date range slider
