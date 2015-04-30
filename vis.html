@@ -133,9 +133,14 @@ function data_loaded() {
   var day1 = d3.range(24).map(function () {
         return 0;
     });
-  //console.log(day1.length);
+
+  // Aggregate bar chart
+  var minute_aggregate = d3.range(1440).map(function () {
+        return 0;
+  });
 
   var formatHour = d3.time.format("%H");
+  var formatMinute = d3.time.format("%M");
   var index = 0;
   var lasthour = "00";
 
@@ -154,17 +159,38 @@ function data_loaded() {
     day1[index] += 1;
 
   })
+
+  // Build the minute aggregated information
+  index = 0;
+  bike_data.forEach(function(d){
+    var time = new Date (d.starttime);
+
+    // Calculate index
+    var new_index = (60 * parseInt(formatHour(time))) + parseInt(formatMinute(time));
+    if (new_index == index){
+      minute_aggregate[index] += 1;
+    } else {
+      index +=1;
+      minute_aggregate[index] = minute_aggregate[index - 1] + 1; 
+    //console.log(new_index);
+  }
+
+  })
+  console.log(minute_aggregate);
+
+  //console.log(bike_data);
+  //console.log(bike_data[0].starttime);
   //console.log(index);
 
   var day2_fake = [50, 90, 75, 78, 639, 64, 75, 86, 85, 85, 64, 64, 98, 76, 23, 87, 34, 87, 678, 78, 346, 763, 354, 576];
   //console.log(day2_fake.length);
 
-  console.log(day1);
+  //console.log(day1);
 
   // Update barchart data
   barchart_data = [{"date":"Day 1", "bikers": day1}, {"date": "Day 2", "bikers": day2_fake}];
 
-  console.log(barchart_data);
+  //console.log(barchart_data);
   //var average_hour_today = (bike_data.length / 24);
 
   // Initialize the bar chart
