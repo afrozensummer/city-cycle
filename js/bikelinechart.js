@@ -84,6 +84,12 @@ bikeLineVis.prototype.initVis = function(){
       .scale(this.y)
       .orient("left");
 
+    this.area = d3.svg.area()
+      .interpolate("monotone")
+      .x(function(d, i) {return that.x(i); })
+      .y0(this.height)
+      .y1(function(d, i) { return that.y(d); });
+
     // Add axes visual elements
     this.svg.append("g")
         .attr("class", "x axis")
@@ -107,14 +113,14 @@ bikeLineVis.prototype.updateVis = function(){
     this.svg.select(".x.axis")
         .call(this.xAxis);
 
-    var linefunction = d3.svg.line()
-        .x(function(d,i) {return that.x(i)})
-        .y(function(d) { return that.y(d)})
-        .interpolate('linear');
+    // var area = d3.svg.area()
+    //     .x(function(d,i) {return that.x(i)})
+    //     .y(function(d) { return that.y(d)})
+    //     .interpolate('monotone');
 
     this.svg.append('svg:path')
-        .attr('d', linefunction(this.bikeperminute))
+        .attr('d', that.area(this.bikeperminute))
         .attr('stroke', 'black')
-        .attr('fill', 'none')
+        // .attr('fill', 'none')
       
 }
