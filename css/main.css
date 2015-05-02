@@ -21,6 +21,11 @@ body {
     padding-top: 10px;
 }
 
+.tick
+  {
+    color: #000;
+  }
+
 #intro {
     width: 100%;
     height: 100%;
@@ -31,7 +36,6 @@ body {
     background-position: center;
     position: relative;
     text-align: center;
-    margin-bottom: 30px;
 }
 a {
     z-index: 2;
@@ -51,23 +55,15 @@ opacity: 0.6;
 }
 
 .axis {
-  fill: gray;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  user-select: none;
+  stroke: black;
+  fill: none;
+  stroke-width: 1px;
 }
 
 .axis .halo {
   stroke: gray;
   stroke-width: 2px;
   stroke-linecap: round;
-}
-
-.slider .handle path {
-  stroke: black;
-  stroke-width: 2px;
-  stroke-linecap: round;
-  pointer-events: none;
 }
 
 #map
@@ -121,6 +117,14 @@ opacity: 0.6;
     font-family: 'Raleway';
 }
 
+.ui-slider {
+  top: -3px;
+}
+
+.ui-slider-horizontal {
+  height: 0em;
+}
+
 .ui-slider .ui-slider-handle{
     width:40px; 
     left: -20px;
@@ -172,7 +176,6 @@ opacity: 0.6;
     margin: auto;
     font-size: 50px;
     font-family: 'Poiret One';
-
 }
 
 .slider
