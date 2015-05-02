@@ -10,36 +10,16 @@ bikeLineVis = function(_parentElement, _data) {
     this.width = 1200 - this.margin.left - this.margin.right,
     this.height = 100 - this.margin.top - this.margin.bottom;
     
-    var currenttime = d3.time.day(new Date(this.data[0]["starttime"]));
+    var currenttime = d3.time.day(new Date(this.data[this.data.length-1]["starttime"]));
     //var endtime = new Date(this.data[this.data.length-1]["stoptime"]);
     this.bikeperminute = [];
     var placemarker = 0;
     var endplacemarker = 0;
 
-    // function all_bikes_for_date(date, dataset) {
-    //     var that = this;
-    //     var bike_list_minute = [];
-    //     var date_rounded = d3.time.minute.floor(date);
-    //     var i = 0, count =0; 
-    //     bike_data = dataset;
-    //     while (i < bike_data.length) {
-    //       var bike_start_time = d3.time.minute.floor(new Date(bike_data[i].starttime));
-    //       var bike_stop_time = d3.time.minute.floor(new Date(bike_data[i].stoptime));
-    //       if(date_rounded.getTime() == bike_stop_time.getTime() || date_rounded.getTime() == bike_start_time.getTime() || (date_rounded < bike_stop_time && date_rounded > bike_start_time)) 
-    //       {
-    //         count++;
-    //       }
-    //       i++;
-    //     }
-    //     return count;
-    //   }
-
-    //console.log(all_bikes_for_date(currenttime, this.data))
-
     for (var i = 0; i < 1440; i++) {
         //var counterforminute = all_bikes_for_date(currenttime, this.data);
         var counterforminute = 0;
-        
+
         var datatime = d3.time.minute.floor(currenttime);
         var nextminute = new Date(currenttime.getTime() + 60*1000);
 
@@ -50,8 +30,6 @@ bikeLineVis = function(_parentElement, _data) {
         this.bikeperminute[i] = counterforminute;
         currenttime = new Date(currenttime.getTime() + 60*1000);
     }
-
-console.log(this.data)
 
     // console.log(bikeperminute)
     this.initVis();
