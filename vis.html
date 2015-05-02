@@ -179,6 +179,8 @@ function data_loaded() {
                 min: starting_time.getTime(),
                 max: ending_time.getTime(),
       });
+      d3.select("svg").remove();
+      var bikeline_vis = new bikeLineVis(d3.select("#bikeline"), bike_data);
       resetbike();
       current_day = this.value;
     }
@@ -201,6 +203,8 @@ function data_loaded() {
                 min: starting_time.getTime(),
                 max: ending_time.getTime(),
       });
+      d3.select("svg").remove();
+      var bikeline_vis = new bikeLineVis(d3.select("#bikeline"), bike_data);
       resetbike();
       current_day = this.value;
     }
