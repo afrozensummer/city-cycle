@@ -5,11 +5,15 @@
     <title>City Cycle</title>
     <script src="libs/jquery.min.js" charset="utf-8"></script>
     <script src="libs/d3/d3.min.js" charset="utf-8"></script>
+    <script src="libs/jquery.stellar.min.js" charset="utf-8"></script>
+    <script src="libs/jquery.easing.1.3.js" charset="utf-8"></script>
+    <script type="text/javascript" src="libs/waypoints.min.js"></script>
     <link rel="stylesheet" type="text/css" href="css/main.css">
+    <link rel="stylesheet" type="text/css" href="css/home.css">
     <link href='http://fonts.googleapis.com/css?family=Raleway|Poiret+One' rel='stylesheet' type='text/css'>
 </head>
 <body>
-
+    
     
     <div id = "intro">
         <div class = "intro-text">
@@ -21,7 +25,25 @@
         </div>
         <div class="dark-cover"></div>
         <div id = "launch"><a href="vis.html">Launch Visualization</a></div>
-    </div>        
+    </div>      
+
+    <ul class="navigation">
+        <li data-slide="1">Slide 1</li>
+        <li data-slide="2">Slide 2</li>
+        <li data-slide="3">Slide 3</li>
+        <li data-slide="4">Slide 4</li>
+    </ul>
+    <div class="slide" id="slide1" data-slide="1" data-stellar-background-ratio="0.5">                        
+        <a class="button" data-slide="2" title=""></a>   
+        <span class="slideno">Slide 1</span>
+    </div><!--End Slide 1-->  
+    
+    <div class="slide" id="slide2" data-slide="2" data-stellar-background-ratio="0.5">                        
+        <a class="button" data-slide="2" title=""></a>
+        <div class = "text" data-slide = "3" data-stellar-background-ratio="0.8">
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dignissimos qui itaque eius optio nihil et odit aliquid, nostrum excepturi enim cupiditate, labore reprehenderit non ex accusamus possimus eligendi earum! Porro.Lorem ipsum dolor sit amet, consectetur adipisicing elit. Officiis, praesentium sint non, alias quisquam corporis quas dignissimos labore ducimus nesciunt rem atque voluptas quod et adipisci sed facere quo molestias.
+        </div> 
+    </div>
 
 <!--     <div class = "container">
         
@@ -32,13 +54,83 @@
     $('#intro').css('min-height', $(window).height());
     $('#intro .dark-cover').height($('#intro').height());
     $('#intro .intro-text').css('top', $('#intro').height()/3.5 - $('#intro .intro-text').height()/2);
-    $('#intro .dark-cover').delay(50).animate({'opacity': 0.7}, 3000);
+    $('#intro .dark-cover').delay(50).animate({'opacity': 0.7}, 2000);
     $('#intro #launch').css('top', $('#intro').height()/3.5 + 2*$('#intro .intro-text').height())
     // $('.arrow').fadeIn(4000).click(function() {
     //     $('html, body').animate({
     //         scrollTop: $("#intro").height()
     //     }, 1000);
     // });
+
+    jQuery(document).ready(function ($) {
+ 
+ 
+        //initialise Stellar.js
+        $(window).stellar();
+     
+        //Cache some variables
+        var links = $('.navigation').find('li');
+        slide = $('.slide');
+        button = $('.button');
+        mywindow = $(window);
+        htmlbody = $('html,body');
+     
+     
+        //Setup waypoints plugin
+        slide.waypoint(function (event, direction) {
+     
+            //cache the variable of the data-slide attribute associated with each slide
+            dataslide = $(this).attr('data-slide');
+     
+            //If the user scrolls up change the navigation link that has the same data-slide attribute as the slide to active and 
+            //remove the active class from the previous navigation link 
+            if (direction === 'down') {
+                $('.navigation li[data-slide="' + dataslide + '"]').addClass('active').prev().removeClass('active');
+            }
+            // else If the user scrolls down change the navigation link that has the same data-slide attribute as the slide to active and 
+            //remove the active class from the next navigation link 
+            else {
+                $('.navigation li[data-slide="' + dataslide + '"]').addClass('active').next().removeClass('active');
+            }
+     
+        });
+     
+        //waypoints doesnt detect the first slide when user scrolls back up to the top so we add this little bit of code, that removes the class 
+        //from navigation link slide 2 and adds it to navigation link slide 1. 
+        mywindow.scroll(function () {
+            if (mywindow.scrollTop() == 0) {
+                $('.navigation li[data-slide="1"]').addClass('active');
+                $('.navigation li[data-slide="2"]').removeClass('active');
+            }
+        });
+     
+        //Create a function that will be passed a slide number and then will scroll to that slide using jquerys animate. The Jquery
+        //easing plugin is also used, so we passed in the easing method of 'easeInOutQuint' which is available throught the plugin.
+        function goToByScroll(dataslide) {
+            htmlbody.animate({
+                scrollTop: $('.slide[data-slide="' + dataslide + '"]').offset().top
+            }, 2000, 'easeInOutQuint');
+        }
+     
+     
+     
+        //When the user clicks on the navigation links, get the data-slide attribute value of the link and pass that variable to the goToByScroll function
+        links.click(function (e) {
+            e.preventDefault();
+            dataslide = $(this).attr('data-slide');
+            goToByScroll(dataslide);
+        });
+     
+        //When the user clicks on the button, get the get the data-slide attribute value of the button and pass that variable to the goToByScroll function
+        button.click(function (e) {
+            e.preventDefault();
+            dataslide = $(this).attr('data-slide');
+            goToByScroll(dataslide);
+     
+        });
+     
+     
+    });
 
 });
     </script>
