@@ -67,7 +67,9 @@ html, body {
     <div id = "description_container">
       <div id = "time"></div>
       <br>
-      <div id = "temp"></div>  </div><!-- <div id="map_cover"></div> -->
+      <div id = "temp"></div>  
+      <div id = "weathericon"><img src="/img/sun.png" alt=""></div>
+    </div><!-- <div id="map_cover"></div> -->
       
       <div id="legend"></div> 
       <div id="map"></div>
@@ -275,6 +277,7 @@ function data_loaded() {
     }
   }
   document.getElementById("temp").innerHTML = "Temperature: " + weather_data[strip(hour(current_time))]["DryBulbFarenheit"]+ " F";
+
   // Format the date
   var formatDate = d3.time.format("%a, %b %e, %H:%M");
   var format_day_hour = d3.time.format("%a, %b %e, %H");
@@ -331,6 +334,12 @@ function data_loaded() {
     var new_time = new Date($("#slider").slider('value'));
     document.getElementById("time").innerHTML = "Current Time: <br>" + formatDate(new_time);
     document.getElementById("temp").innerHTML = "Temperature: " + weather_data[strip(hour(current_time))]["DryBulbFarenheit"]+ " F";
+    if (weather_data[strip(hour(current_time))]["WeatherType"] == "-RA") {
+      document.getElementById("weathericon").innerHTML = "<img src='/img/rain.png' >";
+    }
+    else if (weather_data[strip(hour(current_time))]["WeatherType"] == " ") {
+      document.getElementById("weathericon").innerHTML = "<img src='/img/sun.png' >";
+    }
 
     // var format_hour = d3.time.format("%H"); 
 
@@ -398,7 +407,7 @@ function data_loaded() {
         if(current_time < ending_time) {
           playbyyear();
         }
-      }, 75) // < 0.1 second
+      }, 100) // < 0.1 second
   }
 
   function resetbike() {
