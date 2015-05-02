@@ -116,15 +116,13 @@ queue()
   .defer(d3.csv, "data/july4weather.csv")
   .defer(d3.csv, "data/december1.csv") 
   .defer(d3.csv, "data/december1stweatherdata.csv")
-  .defer(d3.csv, "data/weatherdata.csv")
-    .await(function(error, stations, july4_b, july4_w, dec1_b, decemberfirst, weather) { 
+    .await(function(error, stations, july4_b, july4_w, dec1_b, decemberfirst) { 
         // error handling
         station_data = stations;
         july4_bikes = july4_b;
         july4_weather = july4_w;
         dec1_bikes = dec1_b;
         december_first_data = decemberfirst;
-        weather_data = weather;
         data_loaded();
 
 
@@ -268,7 +266,6 @@ function data_loaded() {
   //Format the weather
   var hour = d3.time.format("%H");
   // TODO: add in some filtering function based on day or something.
-  weather_data = december_first_data;
   function strip(hour) {
     if (hour > 9)
       return hour;
@@ -407,7 +404,7 @@ function data_loaded() {
         if(current_time < ending_time) {
           playbyyear();
         }
-      }, 100) // < 0.1 second
+      }, 75) // < 0.1 second
   }
 
   function resetbike() {
