@@ -8,7 +8,7 @@ bikeLineVis = function(_parentElement, _data) {
 
     this.margin = {top: 10, right: 0, bottom: 0, left: 5},
     this.width = 1200 - this.margin.left - this.margin.right,
-    this.height = 120 - this.margin.top - this.margin.bottom;
+    this.height = 100 - this.margin.top - this.margin.bottom;
     
     var currenttime = d3.time.day(new Date(this.data[0]["starttime"]));
     //var endtime = new Date(this.data[this.data.length-1]["stoptime"]);
@@ -120,7 +120,7 @@ bikeLineVis.prototype.updateVis = function(){
 
     this.svg.append('svg:path')
         .attr('d', that.area(this.bikeperminute))
-        .attr('stroke', 'black')
-        // .attr('fill', 'none')
+        .attr('stroke', '#ffc966')
+        .attr('fill', '#ffc966')
       
 }

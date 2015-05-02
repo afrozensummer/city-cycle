@@ -15,6 +15,12 @@ body, html{
     margin:0 auto;
     position:relative;
 }
+
+.header {
+    margin: auto;
+    top: 20px;
+    font-size: 30px;
+}
 .slideno {
     position:absolute;
     bottom:0px;
