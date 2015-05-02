@@ -3,6 +3,7 @@
  */
 
 bikeLineVis = function(_parentElement, _data) {
+    console.log(_data);
     this.parentElement = _parentElement;
     this.data = _data;
 
