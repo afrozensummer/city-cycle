@@ -24,6 +24,8 @@
 html, body {
   width: 100%;
   height: 100%;
+  background: url(../img/skyline.jpg) no-repeat center center fixed;
+  background-size: cover;
   margin: 0;
   padding: 0;
 }
@@ -54,7 +56,7 @@ html, body {
         <label><input type="radio" name="filter" value="gender"> Gender </label>  
         <label><input type="radio" name="filter" value="subscription"> Subscription </label>
         <label><input type="radio" name="filter" value="age"> Age </label>
-        <button  class = "day" type="button" value="july_4"> July 4</button>
+        <button  class = "buttonactive" type="button" value="july_4"> July 4</button>
         <button class = "day" type="button" value="dec_1">Dec 1</button>
         <button class = "day" type="button">Other Day</button>
         <button class = "day" type="button">Other Day</button>
@@ -109,13 +111,15 @@ queue()
   .defer(d3.json, "data/stations.json") 
   //.defer(d3.csv, "data/december2014.csv")
   .defer(d3.csv, "data/july4.csv")
+  .defer(d3.csv, "data/july4weather.csv")
   .defer(d3.csv, "data/december1.csv") 
   .defer(d3.csv, "data/december1stweatherdata.csv")
   .defer(d3.csv, "data/weatherdata.csv")
-    .await(function(error, stations, july4_b, dec1_b, decemberfirst, weather) { 
+    .await(function(error, stations, july4_b, july4_w, dec1_b, decemberfirst, weather) { 
         // error handling
         station_data = stations;
         july4_bikes = july4_b;
+        july4_weather = july4_w;
         dec1_bikes = dec1_b;
         december_first_data = decemberfirst;
         weather_data = weather;
@@ -130,6 +134,7 @@ function data_loaded() {
   var stationsList = station_data["stationBeanList"];
   var j =0;
   bike_data = july4_bikes; //start with december
+  weather_data = july4_weather;
   // Bar chart information
   var day1 = d3.range(24).map(function () {
         return 0;
@@ -172,6 +177,7 @@ function data_loaded() {
 
       //change bike_data
       bike_data = july4_bikes;
+      weather_data = july4_weather;
       //change weather data
       //reset function
       $("#slider").slider({
@@ -181,6 +187,8 @@ function data_loaded() {
       });
       d3.select("svg").remove();
       var bikeline_vis = new bikeLineVis(d3.select("#bikeline"), bike_data);
+      d3.selectAll("button").attr("class", 'day');
+      d3.selectAll("button[value=\"july_4\"]").attr("class", 'buttonactive');
       resetbike();
       current_day = this.value;
     }
@@ -197,6 +205,7 @@ function data_loaded() {
       //change bike_data
       bike_data = dec1_bikes;
       //change weather data
+      weather_data = december_first_data;
       //reset function
       $("#slider").slider({
                 value: starting_time.getTime(),
@@ -205,6 +214,8 @@ function data_loaded() {
       });
       d3.select("svg").remove();
       var bikeline_vis = new bikeLineVis(d3.select("#bikeline"), bike_data);
+      d3.selectAll("button").attr("class", 'day')
+      d3.selectAll("button[value=\"dec_1\"]").attr("class", 'buttonactive');
       resetbike();
       current_day = this.value;
     }
@@ -425,7 +436,7 @@ function data_loaded() {
   var layer = L.mapbox.tileLayer('citycycle.lnkh0jpk');
   var map = L.map('map')
       .addLayer(layer)
-      .setView([40.72332345541449, -73.99], 12);
+      .setView([40.72332345541449, -73.99], 13);
 
   var svg = d3.select(map.getPanes().overlayPane).append("svg");
   var g = svg.append("g").attr("class", "leaflet-zoom-hide");

@@ -60,7 +60,7 @@ a {
 #map
 {
   width: 40%;
-  height: 80%;
+  height: 65%;
   float: left;
 /*  margin: auto;*/
   padding: 0;
@@ -112,6 +112,7 @@ a {
 
 .ui-slider {
   top: -3px;
+  width: 1200px;
 }
 
 .ui-slider-horizontal {
@@ -120,7 +121,7 @@ a {
 
 .ui-slider .ui-slider-handle{
     width:40px; 
-    left: -20px;
+    margin-left: -20px;
     height:40px; 
     background:url(../img/bike.png) no-repeat; 
     background-size: 40px;
@@ -142,6 +143,14 @@ a {
     font-size: 13px;
 }
 
+.background {
+  background-color: white;
+  float: left;
+  position: absolute;
+  opacity: 0.4;
+  width: 100%;
+  height: 100%;
+}
 
 .viscontainer {
     width: 90%;
@@ -157,12 +166,6 @@ a {
     margin: auto;
     font-size: 50px;
     font-family: 'Poiret One';
-}
-
-.slider
-{
-    display: none;
-    width: 85%;
 }
 
 .bikes, .stations, .bikes svg, .stations svg {
@@ -188,15 +191,22 @@ a {
   opacity: 1;
 } 
 
+.buttonactive {
+  background-color: #388E8E;
+  color: #FFF;
+    border:1px solid #dcdcdc;
+  display:inline-block;
+  cursor:pointer;
+  padding:6px 14px;
+}
+
 .day {
-  -moz-box-shadow:inset 0px 1px 0px 0px #ffffff;
-  background-color:#ffffff;
+  background-color:rgba(255,255,255,0.3);
   border:1px solid #dcdcdc;
   display:inline-block;
   cursor:pointer;
   color:#666666;
   padding:6px 14px;
-  text-shadow:0px 1px 0px #ffffff;
 }
 .day:hover {
   background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #f6f6f6), color-stop(1, #ffffff));
@@ -209,6 +219,5 @@ a {
   background-color:#f6f6f6;
 }
 /*.day:active {
-  position:relative;
-  top:1px;
+  background-color: #4682B4;
 }*/

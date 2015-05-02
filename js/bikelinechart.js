@@ -3,15 +3,15 @@
  */
 
 bikeLineVis = function(_parentElement, _data) {
-    console.log(_data);
     this.parentElement = _parentElement;
     this.data = _data;
 
-    this.margin = {top: 10, right: 0, bottom: 0, left: 5},
+    this.margin = {top: 10, right: 0, bottom: 0, left: 0},
     this.width = 1200 - this.margin.left - this.margin.right,
     this.height = 100 - this.margin.top - this.margin.bottom;
     
     var currenttime = d3.time.day(new Date(this.data[this.data.length-1]["starttime"]));
+    var newday = d3.time.day(new Date(this.data[this.data.length-1]["starttime"]));
     //var endtime = new Date(this.data[this.data.length-1]["stoptime"]);
     this.bikeperminute = [];
     var placemarker = 0;
@@ -23,6 +23,12 @@ bikeLineVis = function(_parentElement, _data) {
 
         var datatime = d3.time.minute.floor(currenttime);
         var nextminute = new Date(currenttime.getTime() + 60*1000);
+
+        if (new Date(this.data[placemarker]["starttime"]) <= newday) {
+            while(new Date(this.data[placemarker]["starttime"]) <= newday) {
+            placemarker++;
+        }
+        }
 
         while(new Date(this.data[placemarker]["starttime"]) <= currenttime) {
             counterforminute++;

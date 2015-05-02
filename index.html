@@ -23,7 +23,7 @@
             <div id = "introtitle">Citi Cycle</div>
             
         </div>
-        <img src="/img/citibike.png" alt="">
+        <img id = "cutebike" src="/img/cutebike.png" alt="">
         <div class="dark-cover"></div>
         <div id = "launch">
             <button><a href="vis.html">Launch Visualization</a></button>
@@ -66,9 +66,11 @@
     $('#intro').css('min-height', $(window).height());
     $('#intro .dark-cover').height($('#intro').height());
     $('#intro .intro-text').css('top', $('#intro').height()/3.5 - $('#intro .intro-text').height()/2);
-    $('#intro .dark-cover').delay(1250).animate({'opacity': 0.7}, 2000);
+    $('#intro .dark-cover').delay(1250).animate({'opacity': 0.8}, 2000);
     $('#intro .intro-text').animate({'opacity': 1}, 3000)
-    $('#intro #launch').css('top', $('#intro').height()/3.5 + 1.5*$('#intro .intro-text').height())
+    $('#intro #launch').delay(1500).animate({'left': $('#intro').width()/2 - 250}, 7000)
+    $('#intro #cutebike').delay(1000).animate({'left': $('#intro').width() - 150}, 10000).animate({'opacity': 0}, 0)
+    // $('#intro #launch').css('top', $('#intro').height()/3.5 + 1.5*$('#intro .intro-text').height())
     // $('.arrow').fadeIn(4000).click(function() {
     //     $('html, body').animate({
     //         scrollTop: $("#intro").height()
