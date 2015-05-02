@@ -23,8 +23,13 @@
             <div id = "introtitle">Citi Cycle</div>
             
         </div>
+        <img src="/img/citibike.png" alt="">
         <div class="dark-cover"></div>
-        <div id = "launch"><a href="vis.html">Launch Visualization</a></div>
+        <div id = "launch">
+            <button><a href="vis.html">Launch Visualization</a></button>
+            <button><div id = "story"><a href="#slide1">Read Our Story</a></div></button>
+        </div>
+        
     </div>      
 
     <ul class="navigation">
@@ -36,10 +41,10 @@
     <div class="slide" id="slide1" data-slide="1" data-stellar-background-ratio="0.5">    
 
         <div class = "header" data-slide>
-            Why NYC?
+            Why CitiBike?
         </div>      
-        <div>
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Rem, accusamus. Reiciendis eveniet, esse expedita cum quo, similique, nihil at enim rerum ipsum commodi excepturi hic, tempore porro. Vitae, culpa voluptates?
+        <div class = "text">
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Rem, accusamus. Reiciendis eveniet, esse expedita cum quo, similique, nihil at enim rerum ipsum commodi excepturi hic, tempore porro. Vitae, culpa voluptates?Lorem ipsum dolor sit amet, consectetur adipisicing elit. Facere repudiandae asperiores, maxime cum itaque explicabo! Cupiditate doloribus odio tempore architecto, voluptatem consectetur aspernatur deleniti eveniet tempora ullam possimus, dolores natus!Lorem ipsum dolor sit amet, consectetur adipisicing elit. Pariatur id ad, voluptatem. Inventore saepe vero, animi debitis pariatur sint reiciendis eius, architecto, praesentium repellat excepturi perspiciatis. Natus omnis temporibus libero.
         </div>              
         <a class="button" data-slide="2" title=""></a>   
         <span class="slideno">Slide 1</span>
@@ -61,8 +66,9 @@
     $('#intro').css('min-height', $(window).height());
     $('#intro .dark-cover').height($('#intro').height());
     $('#intro .intro-text').css('top', $('#intro').height()/3.5 - $('#intro .intro-text').height()/2);
-    $('#intro .dark-cover').delay(50).animate({'opacity': 0.7}, 2000);
-    $('#intro #launch').css('top', $('#intro').height()/3.5 + 2*$('#intro .intro-text').height())
+    $('#intro .dark-cover').delay(1250).animate({'opacity': 0.7}, 2000);
+    $('#intro .intro-text').animate({'opacity': 1}, 3000)
+    $('#intro #launch').css('top', $('#intro').height()/3.5 + 1.5*$('#intro .intro-text').height())
     // $('.arrow').fadeIn(4000).click(function() {
     //     $('html, body').animate({
     //         scrollTop: $("#intro").height()
