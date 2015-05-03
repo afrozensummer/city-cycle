@@ -21,6 +21,11 @@ body {
     padding-top: 10px;
 }
 
+.tick
+  {
+    color: #000;
+  }
+
 #intro {
     width: 100%;
     height: 100%;
@@ -31,19 +36,9 @@ body {
     background-position: center;
     position: relative;
     text-align: center;
-    margin-bottom: 30px;
 }
 a {
     z-index: 2;
-}
-
-#launch a{
-color: #FFF;
-opacity: 0.6;
-}
-
-#launch a:hover{
-    opacity: 1;
 }
 
 .row {
@@ -51,10 +46,9 @@ opacity: 0.6;
 }
 
 .axis {
-  fill: gray;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  user-select: none;
+  stroke: black;
+  fill: none;
+  stroke-width: 1px;
 }
 
 .axis .halo {
@@ -63,17 +57,10 @@ opacity: 0.6;
   stroke-linecap: round;
 }
 
-.slider .handle path {
-  stroke: black;
-  stroke-width: 2px;
-  stroke-linecap: round;
-  pointer-events: none;
-}
-
 #map
 {
   width: 40%;
-  height: 80%;
+  height: 65%;
   float: left;
 /*  margin: auto;*/
   padding: 0;
@@ -110,6 +97,11 @@ opacity: 0.6;
     display: inline-block;
     width: 100%;
     margin: auto;
+    opacity: 0;
+}
+
+#weathericon img {
+  width: 40px;
 }
 
 #preintro, #byline{
@@ -121,9 +113,18 @@ opacity: 0.6;
     font-family: 'Raleway';
 }
 
+.ui-slider {
+  top: -3px;
+  width: 1200px;
+}
+
+.ui-slider-horizontal {
+  height: 0em;
+}
+
 .ui-slider .ui-slider-handle{
     width:40px; 
-    left: -20px;
+    margin-left: -20px;
     height:40px; 
     background:url(../img/bike.png) no-repeat; 
     background-size: 40px;
@@ -145,17 +146,13 @@ opacity: 0.6;
     font-size: 13px;
 }
 
-#launch {
-    width: 100%;
-    z-index: 10;
-    position: absolute;
-    color: #fff;
-    text-align: center;
-/*    bottom: 250px;*/
-    font-family: "Raleway";
-    font-size: 20px;
-    bottom: 30px;
-    opacity: 0.7;
+.background {
+  background-color: white;
+  float: left;
+  position: absolute;
+  opacity: 0.4;
+  width: 100%;
+  height: 100%;
 }
 
 .viscontainer {
@@ -172,13 +169,6 @@ opacity: 0.6;
     margin: auto;
     font-size: 50px;
     font-family: 'Poiret One';
-
-}
-
-.slider
-{
-    display: none;
-    width: 85%;
 }
 
 .bikes, .stations, .bikes svg, .stations svg {
@@ -204,15 +194,22 @@ opacity: 0.6;
   opacity: 1;
 } 
 
+.buttonactive {
+  background-color: #388E8E;
+  color: #FFF;
+    border:1px solid #dcdcdc;
+  display:inline-block;
+  cursor:pointer;
+  padding:6px 14px;
+}
+
 .day {
-  -moz-box-shadow:inset 0px 1px 0px 0px #ffffff;
-  background-color:#ffffff;
+  background-color:rgba(255,255,255,0.3);
   border:1px solid #dcdcdc;
   display:inline-block;
   cursor:pointer;
   color:#666666;
   padding:6px 14px;
-  text-shadow:0px 1px 0px #ffffff;
 }
 .day:hover {
   background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #f6f6f6), color-stop(1, #ffffff));
@@ -225,6 +222,5 @@ opacity: 0.6;
   background-color:#f6f6f6;
 }
 /*.day:active {
-  position:relative;
-  top:1px;
+  background-color: #4682B4;
 }*/
