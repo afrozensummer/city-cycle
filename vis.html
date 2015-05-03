@@ -15,6 +15,8 @@
     
     <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/themes/base/jquery-ui.css" />
     <script src = "js/averageDayVis.js"></script>
+    <script src = "js/aggregateVis.js"></script>
+
     
     <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
     <link rel="stylesheet" type="text/css" href="css/main.css">
@@ -68,6 +70,8 @@ html, body {
       <div id="legend"></div> 
       <div id="map"></div>
       <div id="barchart"></div>
+      <div id="aggregate_chart"></div>
+
       
 
      
@@ -129,15 +133,19 @@ function data_loaded() {
     j++;
   }
 
-  // Bar chart information
+  // Build data arrays for bar charts
   var day1 = d3.range(24).map(function () {
         return 0;
     });
 
-  // Aggregate bar chart
+
   var minute_aggregate = d3.range(1440).map(function () {
         return 0;
   });
+
+  
+
+  //console.log(minute_fake);
 
   var formatHour = d3.time.format("%H");
   var formatMinute = d3.time.format("%M");
@@ -148,7 +156,6 @@ function data_loaded() {
     var hour = new Date (i.starttime);
     var now = formatHour(hour);
 
-    // if new hour update the counter
     if (now != lasthour) {
       index +=1;
       lasthour = now;
@@ -163,38 +170,32 @@ function data_loaded() {
   // Build the minute aggregated information
   index = 0;
   bike_data.forEach(function(d){
-    var time = new Date (d.starttime);
 
-    // Calculate index
+    var time = new Date (d.starttime);
     var new_index = (60 * parseInt(formatHour(time))) + parseInt(formatMinute(time));
     if (new_index == index){
       minute_aggregate[index] += 1;
     } else {
       index +=1;
       minute_aggregate[index] = minute_aggregate[index - 1] + 1; 
-    //console.log(new_index);
-  }
-
+    }
   })
-  console.log(minute_aggregate);
 
-  //console.log(bike_data);
-  //console.log(bike_data[0].starttime);
-  //console.log(index);
+  var minute_fake = d3.range(minute_aggregate.length).map(function(i){
+    return i;
+  })
+
+  aggregate_info = [{"date":"Day 1", "bikers": minute_aggregate}, {"date": "Day 2", "bikers": minute_fake}];
+  console.log(aggregate_info);
 
   var day2_fake = [50, 90, 75, 78, 639, 64, 75, 86, 85, 85, 64, 64, 98, 76, 23, 87, 34, 87, 678, 78, 346, 763, 354, 576];
-  //console.log(day2_fake.length);
-
-  //console.log(day1);
 
   // Update barchart data
   barchart_data = [{"date":"Day 1", "bikers": day1}, {"date": "Day 2", "bikers": day2_fake}];
 
-  //console.log(barchart_data);
-  //var average_hour_today = (bike_data.length / 24);
-
-  // Initialize the bar chart
+  // Initialize the bar charts
   var averageDay_vis = new averageDayVis(d3.select("#barchart"), barchart_data);
+  var aggregate_vis = new aggregateVis(d3.select("#aggregate_chart"), aggregate_info);
 
   //Format the weather
   var hour = d3.time.format("%H");
@@ -281,6 +282,7 @@ function data_loaded() {
                 }
             });
 
+  
 
   function update_hour_bar(type) {
 
@@ -292,16 +294,22 @@ function data_loaded() {
 
 
      if (format_minute_only(new_time) == "00" || (type == "manual change")){
-       console.log("time to update the bar chart");
+       //console.log("time to update the bar chart");
        averageDay_vis.updateVis(format_hour_only(new_time)); // actually do this.
      }
+  }
 
-    // If it is a new hour 
-    // Call graph update here.
-    //averageDay_vis.onSelectionChange()
+  function update_aggregate_bar(time){
+    console.log("about to update hour bar");
+    var format_minute_only = d3.time.format("%M");
+    var format_hour_only = d3.time.format("%H");
+    console.log(format_hour_only(time));
+    console.log(format_minute_only(time));
+    aggregateVis.updateVis(format_hour_only(time), format_minute_only(time));
   }
   function update() {
     var new_time = new Date($("#slider").slider('value'));
+    update_aggregate_bar(new_time);
     document.getElementById("time").innerHTML = "Current Time: <br>" + formatDate(new_time);
     document.getElementById("temp").innerHTML = "Temperature: " + weather_data[strip(hour(current_time))]["DryBulbFarenheit"]+ " F";
 
