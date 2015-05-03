@@ -142,56 +142,61 @@ function data_loaded() {
 
   bike_data = july4_bikes; //start with december
   weather_data = july4_weather;
-  // Bar chart information
-
-  var minute_aggregate = d3.range(1440).map(function () {
-        return 0;
-  });
-
 
   function format_hour_bar (bike_data) {
 
-    console.log(bike_data);
-    var day_array = d3.range(24).map(function () {
-        return 0;
-    });
+    var day_array = d3.range(24).map(function () { return 0; });
 
     var index = 0;
     var lasthour = "00";
-    //console.log(bike_data.length / 2);
     var date = new Date (bike_data[1000].starttime);
     var true_date = formatDate(date);
     console.log(true_date);
-
 
     bike_data.forEach(function(i){
       var hour = new Date (i.starttime);
       var now = formatHour(hour);
       var this_date = formatDate(hour);
-      //console.log(this_date == true_date);
 
       if (this_date == true_date){
         if (now != lasthour) {
           index +=1;
           lasthour = now;
         }
-        // if (index == 24) {
-        //   return;
-        // }
         day_array[index] += 1;
-      }
-      
+      }   
     })
     return day_array
-  }  
+  } 
 
+  function format_aggregate_bar (bike_data) {
 
-  console.log(format_hour_bar(july4_bikes));
+    var minute_aggregate = d3.range(1440).map(function () { return 0; });
+    var index = 0;
+    var date = new Date (bike_data[1000].starttime);
+    var true_date = formatDate(date);
+
+    bike_data.forEach(function(d){
+
+      var time = new Date (d.starttime);
+      if (formatDate(time) == true_date){
+        var new_index = (60 * parseInt(formatHour(time))) + parseInt(formatMinute(time));
+        if (new_index == index){
+          minute_aggregate[index] += 1;
+        } else {
+          index +=1;
+          minute_aggregate[index] = minute_aggregate[index - 1] + 1; 
+        }
+      }
+    })
+    return minute_aggregate;
+  }
 
   barchart_data = [{"date":"July 4", "bikers": format_hour_bar(july4_bikes)}, {"date": "December 1", "bikers": format_hour_bar(dec1_bikes)}];
 
-  console.log(barchart_data);
-  //console.log(minute_fake);
+  aggregate_info = [{"date":"July 4", "bikers": format_aggregate_bar(july4_bikes)}, {"date": "December 1", "bikers": format_aggregate_bar(dec1_bikes)}];
+
+  console.log(aggregate_info);
   
   // button functions
   d3.selectAll("button[value=\"july_4\"]").on("click", function () {
@@ -248,25 +253,25 @@ function data_loaded() {
     }
   });
 
-  // Build the minute aggregated information
-  index = 0;
-  bike_data.forEach(function(d){
+  // // Build the minute aggregated information
+  // index = 0;
+  // bike_data.forEach(function(d){
 
-    var time = new Date (d.starttime);
-    var new_index = (60 * parseInt(formatHour(time))) + parseInt(formatMinute(time));
-    if (new_index == index){
-      minute_aggregate[index] += 1;
-    } else {
-      index +=1;
-      minute_aggregate[index] = minute_aggregate[index - 1] + 1; 
-    }
-  })
+  //   var time = new Date (d.starttime);
+  //   var new_index = (60 * parseInt(formatHour(time))) + parseInt(formatMinute(time));
+  //   if (new_index == index){
+  //     minute_aggregate[index] += 1;
+  //   } else {
+  //     index +=1;
+  //     minute_aggregate[index] = minute_aggregate[index - 1] + 1; 
+  //   }
+  // })
 
-  var minute_fake = d3.range(minute_aggregate.length).map(function(i){
-    return i;
-  })
+  // var minute_fake = d3.range(minute_aggregate.length).map(function(i){
+  //   return i;
+  // })
 
-  aggregate_info = [{"date":"Day 1", "bikers": minute_aggregate}, {"date": "Day 2", "bikers": minute_fake}];
+  //aggregate_info = [{"date":"Day 1", "bikers": minute_aggregate}, {"date": "Day 2", "bikers": minute_fake}];
   //console.log(aggregate_info);
 
   //var day2_fake = [50, 90, 75, 78, 639, 64, 75, 86, 85, 85, 64, 64, 98, 76, 23, 87, 34, 87, 678, 78, 346, 763, 354, 576];
@@ -276,7 +281,7 @@ function data_loaded() {
 
   // Initialize the bar charts
   var averageDay_vis = new averageDayVis(d3.select("#barchart"), barchart_data);
-  var aggregate_vis = new aggregateVis(d3.select("#aggregate_chart"), aggregate_info);
+  //var aggregate_vis = new aggregateVis(d3.select("#aggregate_chart"), aggregate_info);
 
   // Update barchart data
   //barchart_data = day1;
