@@ -132,45 +132,67 @@ queue()
   });
 
 function data_loaded() {
-  //console.log("loaded");
-  // Edit data
+
+  var formatHour = d3.time.format("%H");
+  var formatMinute = d3.time.format("%M");
+  var formatDate = d3.time.format("%a, %b %e");
+  //var formatDay = d3.time.format("%");
+  
   var stationsList = station_data["stationBeanList"];
 
   bike_data = july4_bikes; //start with december
   weather_data = july4_weather;
   // Bar chart information
 
-  var day1 = d3.range(24).map(function () {
-        return 0;
-    });
-
-
   var minute_aggregate = d3.range(1440).map(function () {
         return 0;
   });
 
+
+  function format_hour_bar (bike_data) {
+
+    console.log(bike_data);
+    var day_array = d3.range(24).map(function () {
+        return 0;
+    });
+
+    var index = 0;
+    var lasthour = "00";
+    //console.log(bike_data.length / 2);
+    var date = new Date (bike_data[1000].starttime);
+    var true_date = formatDate(date);
+    console.log(true_date);
+
+
+    bike_data.forEach(function(i){
+      var hour = new Date (i.starttime);
+      var now = formatHour(hour);
+      var this_date = formatDate(hour);
+      //console.log(this_date == true_date);
+
+      if (this_date == true_date){
+        if (now != lasthour) {
+          index +=1;
+          lasthour = now;
+        }
+        // if (index == 24) {
+        //   return;
+        // }
+        day_array[index] += 1;
+      }
+      
+    })
+    return day_array
+  }  
+
+
+  console.log(format_hour_bar(july4_bikes));
+
+  barchart_data = [{"date":"July 4", "bikers": format_hour_bar(july4_bikes)}, {"date": "December 1", "bikers": format_hour_bar(dec1_bikes)}];
+
+  console.log(barchart_data);
   //console.log(minute_fake);
-
-  var formatHour = d3.time.format("%H");
-  var formatMinute = d3.time.format("%M");
-  var index = 0;
-  var lasthour = "00";
-
-  bike_data.forEach(function(i){
-    var hour = new Date (i.starttime);
-    var now = formatHour(hour);
-
-    if (now != lasthour) {
-      index +=1;
-      lasthour = now;
-    }
-    if (index == 24) {
-      return;
-    }
-    day1[index] += 1;
-
-  })
-
+  
   // button functions
   d3.selectAll("button[value=\"july_4\"]").on("click", function () {
     //if not currently selected
@@ -245,19 +267,19 @@ function data_loaded() {
   })
 
   aggregate_info = [{"date":"Day 1", "bikers": minute_aggregate}, {"date": "Day 2", "bikers": minute_fake}];
-  console.log(aggregate_info);
+  //console.log(aggregate_info);
 
-  var day2_fake = [50, 90, 75, 78, 639, 64, 75, 86, 85, 85, 64, 64, 98, 76, 23, 87, 34, 87, 678, 78, 346, 763, 354, 576];
+  //var day2_fake = [50, 90, 75, 78, 639, 64, 75, 86, 85, 85, 64, 64, 98, 76, 23, 87, 34, 87, 678, 78, 346, 763, 354, 576];
 
   // Update barchart data
-  barchart_data = [{"date":"Day 1", "bikers": day1}, {"date": "Day 2", "bikers": day2_fake}];
+ 
 
   // Initialize the bar charts
   var averageDay_vis = new averageDayVis(d3.select("#barchart"), barchart_data);
   var aggregate_vis = new aggregateVis(d3.select("#aggregate_chart"), aggregate_info);
 
   // Update barchart data
-  barchart_data = day1;
+  //barchart_data = day1;
 
   // Initialize the bar chart
   //var averageDay_vis = new averageDayVis(d3.select("#barchart"), full_bike_data)

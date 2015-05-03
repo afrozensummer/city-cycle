@@ -10,10 +10,10 @@ averageDayVis = function(_parentElement, _data) {
     this.displayData = [];
 
     this.margin = {top: 10, right: 0, bottom: 200, left: 45},
-    this.width = 500 - this.margin.left - this.margin.right,
+    this.width = 400 - this.margin.left - this.margin.right,
     this.height = 405 - this.margin.top - this.margin.bottom;
 
-    this.titles = ["Day 1", "Day 2"];
+    this.titles = ["July 4", "December 1"];
     this.initVis();
 }
 
