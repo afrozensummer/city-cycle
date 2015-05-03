@@ -8,10 +8,10 @@ aggregateVis = function(_parentElement, _data) {
     this.displayData = [];
 
     this.margin = {top: 10, right: 0, bottom: 200, left: 45},
-    this.width = 500 - this.margin.left - this.margin.right,
-    this.height = 405 - this.margin.top - this.margin.bottom;
+    this.width = 400 - this.margin.left - this.margin.right,
+    this.height = 350 - this.margin.top - this.margin.bottom;
 
-    this.titles = ["Day 1", "Day 2"];
+    this.titles = ["July 4", "December 1"];
     this.initVis();
 }
 
@@ -57,15 +57,14 @@ aggregateVis.prototype.initVis = function(){
 
 aggregateVis.prototype.updateVis = function(hour, minute) {
 
-    console.log("in update vis");
+    //console.log("in update vis");
 
     var index = (60 * parseInt(hour)) + parseInt(minute);
-    console.log(this.data);
-    console.log(index);
     var that = this;
 
-    this.y.domain([0, d3.max(this.data.map(function(d) {return d.bikers[index];}))]);
+    //this.y.domain([0, d3.max(this.data.map(function(d) {return d.bikers[index];}))]);
     this.x.domain(this.titles);
+    this.y.domain([0, 20000]);
    
     // updates axis
     this.svg.select(".x.axis")
@@ -91,7 +90,7 @@ aggregateVis.prototype.updateVis = function(hour, minute) {
     bar_enter.append("rect")
       .attr("class", "bar")
       .attr("y", function(d) { return that.y(d.bikers[index]);}) // or something like that
-      .attr("x", function(d, i) {console.log(that.x(d.date)); return that.x(d.date);})
+      .attr("x", function(d, i) {return that.x(d.date);})
     .attr("width", this.x.rangeBand())
     .attr("height", function(d, i) {
         return that.height - that.y(d.bikers[index]);

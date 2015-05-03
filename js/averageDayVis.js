@@ -9,9 +9,9 @@ averageDayVis = function(_parentElement, _data) {
     this.data = _data;
     this.displayData = [];
 
-    this.margin = {top: 10, right: 0, bottom: 200, left: 45},
+    this.margin = {top: 10, right: 0, bottom: 100, left: 45},
     this.width = 400 - this.margin.left - this.margin.right,
-    this.height = 405 - this.margin.top - this.margin.bottom;
+    this.height = 250 - this.margin.top - this.margin.bottom;
 
     this.titles = ["July 4", "December 1"];
     this.initVis();
@@ -103,7 +103,7 @@ averageDayVis.prototype.updateVis = function(hour) {
     bar_enter.append("rect")
       .attr("class", "bar")
       .attr("y", function(d) { return that.y(d.bikers[index]);}) // or something like that
-      .attr("x", function(d, i) {console.log(that.x(d.date)); return that.x(d.date);})
+      .attr("x", function(d, i) {return that.x(d.date);})
     .attr("width", this.x.rangeBand())
     .attr("height", function(d, i) {
         return that.height - that.y(d.bikers[index]);
