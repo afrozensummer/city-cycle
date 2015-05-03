@@ -36,7 +36,8 @@ aggregateVis.prototype.initVis = function(){
     this.xAxis = d3.svg.axis()
         .scale(this.x)
         .tickFormat(function(d) {
-        return that.titles[d]})
+        console.log(d);
+        return d})
         .orient("bottom");
 
     this.yAxis = d3.svg.axis()
@@ -46,10 +47,18 @@ aggregateVis.prototype.initVis = function(){
     // add axes visual elements
     this.svg.append("g")
       .attr("class", "x axis")
-      .attr("transform", "translate(0," + this.height + ")");
+      .attr("transform", "translate(0," + this.height + ")")
 
     this.svg.append("g")
-      .attr("class", "y axis");
+      .attr("class", "y axis")
+      .append("text")
+         
+         //.attr("transform", "translate(0, 100)", "")
+         .attr("transform", "translate(100, 0)")
+         .attr("y", 6)
+         .attr("dy", ".71em")
+         .style("text-anchor", "beginning")
+         .text("Total Bikers So Far Today");
 
     // call the update method
     this.updateVis("00", "00");

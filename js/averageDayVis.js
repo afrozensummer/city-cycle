@@ -10,7 +10,7 @@ averageDayVis = function(_parentElement, _data) {
     this.displayData = [];
 
     this.margin = {top: 10, right: 0, bottom: 100, left: 45},
-    this.width = 400 - this.margin.left - this.margin.right,
+    this.width = 350 - this.margin.left - this.margin.right,
     this.height = 250 - this.margin.top - this.margin.bottom;
 
     this.titles = ["July 4", "December 1"];
@@ -41,7 +41,7 @@ averageDayVis.prototype.initVis = function(){
     this.xAxis = d3.svg.axis()
         .scale(this.x)
         .tickFormat(function(d) {
-        return that.titles[d]})
+        return d})
         .orient("bottom");
 
     this.yAxis = d3.svg.axis()
@@ -54,7 +54,15 @@ averageDayVis.prototype.initVis = function(){
       .attr("transform", "translate(0," + this.height + ")");
 
     this.svg.append("g")
-      .attr("class", "y axis");
+      .attr("class", "y axis")
+      .append("text")
+         
+         //.attr("transform", "translate(0, 100)", "")
+         .attr("transform", "translate(100,0)")
+         .attr("y", 6)
+         .attr("dy", ".71em")
+         .style("text-anchor", "beginning")
+         .text("Average Bikers This Hour");
 
     // filter, aggregate, modify data
     //this.wrangleData(null);
@@ -74,10 +82,11 @@ averageDayVis.prototype.updateVis = function(hour) {
     //console.log(this.data)
     // updates scales
 
-    this.y.domain([0, d3.max(this.data.map(function(d) {return d.bikers[index];}))]);
+    //this.y.domain([0, d3.max(this.data.map(function(d) {return d.bikers[index];}))]);
     //this.y.domain([0, d3.max(this.displayData.map(function (d) {return d.count;}))]);
     //this.x.domain(this.data(function(d) {return d.date;}));
     this.x.domain(this.titles);
+    this.y.domain([0, 2000]);
    
     // updates axis
     this.svg.select(".x.axis")
