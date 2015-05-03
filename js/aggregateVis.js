@@ -7,7 +7,7 @@ aggregateVis = function(_parentElement, _data) {
     this.data = _data;
     this.displayData = [];
 
-    this.margin = {top: 10, right: 0, bottom: 200, left: 45},
+    this.margin = {top: 10, right: 0, bottom: 200, left: 50},
     this.width = 400 - this.margin.left - this.margin.right,
     this.height = 350 - this.margin.top - this.margin.bottom;
 
@@ -61,12 +61,13 @@ aggregateVis.prototype.initVis = function(){
          .text("Total Bikers So Far Today");
 
     // call the update method
-    this.updateVis("00", "00");
+    this.updateVis("00", "00", "July 4");
 }
 
-aggregateVis.prototype.updateVis = function(hour, minute) {
+aggregateVis.prototype.updateVis = function(hour, minute, today_date) {
 
     //console.log("in update vis");
+    console.log(today_date);
 
     var index = (60 * parseInt(hour)) + parseInt(minute);
     var that = this;
@@ -104,6 +105,11 @@ aggregateVis.prototype.updateVis = function(hour, minute) {
     .attr("height", function(d, i) {
         return that.height - that.y(d.bikers[index]);
     })
+    .style("fill", function(d,i) {
+        if (d.date == today_date) {
+            return "teal";
+        }
+     });
     // .style("fill", function(d,i) {
     //   return that.metaData.priorities[d.type]["item-color"];
     // });

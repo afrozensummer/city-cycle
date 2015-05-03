@@ -320,23 +320,28 @@ function data_loaded() {
     var new_time = new Date($("#slider").slider('value'));
     var format_minute_only = d3.time.format("%M");
     var format_hour_only = d3.time.format("%H");
+    var format_day = d3.time.format("%b %e");
 
     // Update at the start of the hour only
 
 
      if (format_minute_only(new_time) == "00" || (type == "manual change")){
        //console.log("time to update the bar chart");
-       averageDay_vis.updateVis(format_hour_only(new_time)); // actually do this.
+       console.log(new_time);
+       //console.log(format_day(new_time));
+       averageDay_vis.updateVis(format_hour_only(new_time), format_day(new_time)); // actually do this.
      }
   }
 
   function update_aggregate_bar(time){
-    console.log("about to update hour bar");
+    //console.log("about to update hour bar");
     var format_minute_only = d3.time.format("%M");
     var format_hour_only = d3.time.format("%H");
+    var format_day = d3.time.format("%b %e");
+    console.log(format_day(time));
     //console.log(format_hour_only(time));
     //console.log(format_minute_only(time));
-    aggregate_vis.updateVis(format_hour_only(time), format_minute_only(time));
+    aggregate_vis.updateVis(format_hour_only(time), format_minute_only(time), format_day(time));
   }
 
   function update() {

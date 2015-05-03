@@ -68,17 +68,18 @@ averageDayVis.prototype.initVis = function(){
     //this.wrangleData(null);
 
     // call the update method
-    this.updateVis("00");
+    this.updateVis("00", "July 4");
 }
 
 /**
  * the drawing function - should use the D3 selection, enter, exit
  */
-averageDayVis.prototype.updateVis = function(hour) {
+averageDayVis.prototype.updateVis = function(hour, today_date) {
 
     var index = parseInt(hour);
     //console.log(index);
     var that = this;
+    //console.log(today_date);
     //console.log(this.data)
     // updates scales
 
@@ -117,9 +118,11 @@ averageDayVis.prototype.updateVis = function(hour) {
     .attr("height", function(d, i) {
         return that.height - that.y(d.bikers[index]);
     })
-    // .style("fill", function(d,i) {
-    //   return that.metaData.priorities[d.type]["item-color"];
-    // });
+     .style("fill", function(d,i) {
+        if (d.date == today_date) {
+            return "teal";
+        }
+     });
 
     bar.exit().remove();
 
