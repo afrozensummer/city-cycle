@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/themes/base/jquery-ui.css" />
     <script src = "js/averageDayVis.js"></script>
     <script src = "js/aggregateVis.js"></script>
+    <script src = "js/station_line_chart.js"></script>
     <script src="js/bikelinechart.js"></script>
     
     <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
@@ -74,10 +75,8 @@ html, body {
       <div id="map"></div>
       <div id="barchart"></div>
       <div id="aggregate_chart"></div>
+      <div id="stations_chart"></div>
 
-      
-
-     
     <script type="text/javascript">
 
 // Variables
@@ -87,7 +86,7 @@ var july4_bikes;
 var barchart_data;
 var station_data;
 var starting_time = new Date("2014-07-04 00:00:00"); //start with july
-var ending_time = new Date("2014-07-05 00:00:00");
+var ending_time = new Date("2014-07-04 23:59:00");
 var current_time = starting_time;
 var filter = "none";
 var filters = {
@@ -142,7 +141,9 @@ function data_loaded() {
   var data_test = [july4_bikes, dec1_bikes];
   var averageDay_vis = new averageDayVis(d3.select("#barchart"), data_test);
   var aggregate_vis = new aggregateVis(d3.select("#aggregate_chart"), data_test);
+  var stations_vis = new StationVis(d3.select("#stations_chart"), bike_data, ["1 Ave & E 15 St", "E 43 St & Vanderbilt Ave", "Centre St & Worth St"]);
 
+// "E 43 St & Vanderbilt Ave"
 
   // function format_hour_bar (bike_data) {
 
@@ -546,7 +547,6 @@ function data_loaded() {
     });
   }
 
-
   function all_bikes_for_date(date) {
     var bike_list_minute = [];
     var date_rounded = d3.time.minute.floor(date);
@@ -690,7 +690,7 @@ function data_loaded() {
             .duration(100)
             .style("opacity", .4)
             .transition()
-              .duration(100)
+              .duration(500)
               .style("opacity", 0)
               .remove()
   }
