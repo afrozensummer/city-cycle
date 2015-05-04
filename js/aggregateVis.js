@@ -5,7 +5,11 @@
 aggregateVis = function(_parentElement, _data) {
     this.parentElement = _parentElement;
     this.data = _data;
-    this.displayData = [];
+    //this.displayData = [];
+
+    this.nofilter_data = [];
+    this.gender_filter_data = [];
+    this.subsc_filter_data = [];
 
     this.margin = {top: 10, right: 0, bottom: 200, left: 50},
     this.width = 400 - this.margin.left - this.margin.right,
@@ -16,6 +20,88 @@ aggregateVis = function(_parentElement, _data) {
 }
 
 aggregateVis.prototype.initVis = function(){
+
+  var no_filter = [];
+  var gender_filter = [];
+  var subsc_filter = []
+
+  console.log(this.data);
+
+  var formatHour = d3.time.format("%H");
+  var formatMinute = d3.time.format("%M");
+  var formatDate = d3.time.format("%a, %b %e");
+   var formatTitle = d3.time.format("%b %e");
+
+  this.data.forEach(function(d){
+    var no_filter_array = d3.range(1440).map(function () { return 0; });
+    var female_array = d3.range(1440).map(function () { return 0; });
+    var male_array = d3.range(1440).map(function () { return 0; });
+    var yes_subscribe = d3.range(1440).map(function () { return 0; });
+    var no_subscribe = d3.range(1440).map(function () { return 0; });
+
+    var index = 0;
+    var date = new Date (d[1000].starttime);
+    var true_date = formatDate(date);
+
+    d.forEach(function(i){
+
+      var time = new Date (i.starttime);
+      if (formatDate(time) == true_date){
+        var new_index = (60 * parseInt(formatHour(time))) + parseInt(formatMinute(time));
+        if (new_index == index){
+          no_filter_array[index] += 1;
+          if (i.gender == 1){
+            male_array[index] +=1
+          } if (i.gender == 2) {
+            female_array[index] +=1;
+          }
+        } else {
+          index +=1;
+          no_filter_array[index] = no_filter_array[index - 1] + 1;
+
+          // Gender stuff
+          if (i.gender == 1){
+            male_array[index] = male_array[index - 1] + 1;
+            female_array[index] = female_array[index -1 ]
+          } else if (i.gender == 2) {
+            female_array[index] = female_array[index-1] + 1;
+            male_array[index] = male_array[index-1];
+          } else {
+            male_array[index] = male_array[index-1];
+            female_array[index] = female_array[index-1];
+          }
+
+          // Subscription information
+          if (i.usertype == "Customer"){
+            no_subscribe[index] = no_subscribe[index - 1] + 1;
+            yes_subscribe[index] = yes_subscribe[index-1]
+
+          } else if (i.usertype == "Subscriber"){
+            yes_subscribe[index] = yes_subscribe[index-1] + 1;
+            no_subscribe[index] = no_subscribe[index-1];
+          } else {
+            yes_subscribe[index] = yes_subscribe[index-1]
+            no_subscribe[index] = no_subscribe[index-1];
+          }
+
+        }
+      }
+    })
+    no_filter.push({"date": formatTitle(date), "bikers":no_filter_array});
+    gender_filter.push({"date": formatTitle(date), "gender": "male", "bikers":male_array});
+    gender_filter.push({"date": formatTitle(date), "gender": "female", "bikers":female_array});
+    subsc_filter.push({"date": formatTitle(date), "type": "subscriber", "bikers":yes_subscribe});
+    subsc_filter.push({"date": formatTitle(date), "type": "customer", "bikers":no_subscribe});
+  })
+
+  console.log(no_filter);
+  console.log(gender_filter);
+  console.log(subsc_filter);
+
+  this.nofilter_data = no_filter;
+  this.gender_filter_data = gender_filter;
+  this.subsc_filter_data = subsc_filter;
+
 
   var that = this;
 
@@ -70,6 +156,8 @@ aggregateVis.prototype.updateVis = function(hour, minute, today_date) {
    // console.log(today_date);
 
     var index = (60 * parseInt(hour)) + parseInt(minute);
+
+    this.data = this.nofilter_data;
     var that = this;
 
     //this.y.domain([0, d3.max(this.data.map(function(d) {return d.bikers[index];}))]);

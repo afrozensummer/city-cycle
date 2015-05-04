@@ -32,12 +32,12 @@ averageDayVis.prototype.initVis = function(){
 
   //var day_array = d3.range(24).map(function () { return 0; });
 
+  var formatHour = d3.time.format("%H");
+  var formatDate = d3.time.format("%a, %b %e");
+  var formatTitle = d3.time.format("%b %e");
 
   this.data.forEach(function(d){
 
-    var formatHour = d3.time.format("%H");
-    var formatDate = d3.time.format("%a, %b %e");
-    var formatTitle = d3.time.format("%b %e");
 
     var day_array = d3.range(24).map(function () { return 0; });
     var female_array = d3.range(24).map(function () { return 0; });
