@@ -7,13 +7,15 @@
 averageDayVis = function(_parentElement, _data) {
     this.parentElement = _parentElement;
     this.data = _data;
-    this.displayData = [];
+    this.nofilter_data = [];
+    this.gender_filter_data = [];
+    this.subsc_filter_data = [];
 
     this.margin = {top: 10, right: 0, bottom: 100, left: 45},
     this.width = 350 - this.margin.left - this.margin.right,
     this.height = 250 - this.margin.top - this.margin.bottom;
 
-    this.titles = ["July 4", "December 1"];
+    this.titles = ["Jul 4", "Dec 1"];
     this.initVis();
 }
 
@@ -21,6 +23,82 @@ averageDayVis = function(_parentElement, _data) {
  * Method that sets up the SVG and the variables
  */
 averageDayVis.prototype.initVis = function(){
+
+  //console.log(this.data);  
+
+  var no_filter = [];
+  var gender_filter = [];
+  var subsc_filter = []
+
+  //var day_array = d3.range(24).map(function () { return 0; });
+
+
+  this.data.forEach(function(d){
+
+    var formatHour = d3.time.format("%H");
+    var formatDate = d3.time.format("%a, %b %e");
+    var formatTitle = d3.time.format("%b %e");
+
+    var day_array = d3.range(24).map(function () { return 0; });
+    var female_array = d3.range(24).map(function () { return 0; });
+    var male_array = d3.range(24).map(function () { return 0; });
+    var yes_subscribe = d3.range(24).map(function () { return 0; });
+    var no_subscribe = d3.range(24).map(function () { return 0; });
+
+    var index = 0;
+    var lasthour = "00";
+    var date = new Date (d[1000].starttime);
+    var true_date = formatDate(date);
+
+    //console.log(d);
+
+    d.forEach(function(i){
+      var hour = new Date (i.starttime);
+      var now = formatHour(hour);
+      var this_date = formatDate(hour);
+
+
+      if (this_date == true_date){
+        if (now != lasthour) {
+          index +=1;
+          lasthour = now;
+        }
+
+        // Add to unfiltered data
+        day_array[index] += 1;
+
+        // Now add to where the gender is filtered
+        if (i.gender == 1){
+            male_array[index] +=1;
+        } if (i.gender == 2){
+            female_array[index] +=1;
+        } if (i.usertype == "Customer") {
+            no_subscribe[index] += 1;
+        } if (i.usertype == "Subscriber") {
+            yes_subscribe[index] += 1;
+        }
+      }   
+    })
+
+    //console.log(day_array);
+    no_filter.push({"date": formatTitle(date), "bikers":day_array});
+    gender_filter.push({"date": formatTitle(date), "gender": "male", "bikers":male_array});
+    gender_filter.push({"date": formatTitle(date), "gender": "female", "bikers":female_array});
+    subsc_filter.push({"date": formatTitle(date), "type": "subscriber", "bikers":yes_subscribe});
+    subsc_filter.push({"date": formatTitle(date), "type": "customer", "bikers":no_subscribe});
+  });
+  //console.log(no_filter);
+  //console.log(gender_filter);
+  //console.log(subsc_filter);
+
+  this.nofilter_data = no_filter;
+  this.gender_filter_data = gender_filter;
+  this.subsc_filter_data = subsc_filter;
+
+  console.log(this);
+
+  // Create the regular data
+
 
   var that = this;
 
@@ -68,9 +146,41 @@ averageDayVis.prototype.initVis = function(){
     //this.wrangleData(null);
 
     // call the update method
-    this.updateVis("00", "July 4");
+    this.updateVis("00", "Jul 4");
 }
 
+averageDayVis.prototype.filter_called = function(filter, hour, today_date) {
+
+    all_data = [];
+    console.log(this);
+    //var day_array = d3.range(24).map(function () { return 0; });
+
+    // filter the data here
+    // if(filter == "gender") {
+
+    //     this.data.forEach(function(d){
+
+    //     })
+    //     var female_array = d3.range(24).map(function () { return 0; });
+    //     var male_array = d3.range(24).map(function () { return 0; });
+
+
+    // }
+
+    if(filter == "subscription") {
+        //sort the data this way
+    }
+
+    if(filter == "none") {
+        //sort the data this way
+    }
+
+    // remove all the bars
+     this.svg.select("bar").remove();
+
+    // call updateVis
+    this.updateVis(hour, today_date);
+}
 /**
  * the drawing function - should use the D3 selection, enter, exit
  */
@@ -79,6 +189,9 @@ averageDayVis.prototype.updateVis = function(hour, today_date) {
     var index = parseInt(hour);
     //console.log(index);
     var that = this;
+    this.data = this.nofilter_data;
+    console.log(this.nofilter_data);
+    console.log(this.titles);
     //console.log(today_date);
     //console.log(this.data)
     // updates scales
@@ -110,19 +223,25 @@ averageDayVis.prototype.updateVis = function(hour, today_date) {
 
     var bar_enter = bar.enter().append("g");
 
+   /* catagorie: 1,2
+    gender: 1(dont move),2(move over)
+    none: 0
+
+    {day, bikers, filter:0}, {day, bikers, filter:1}*/
+
     bar_enter.append("rect")
       .attr("class", "bar")
-      .attr("y", function(d) { return that.y(d.bikers[index]);}) // or something like that
-      .attr("x", function(d, i) {return that.x(d.date);})
+      .attr("y", function(d) {console.log(d.bikers[index]); return that.y(d.bikers[index]);}) // or something like that
+      .attr("x", function(d, i) {console.log(d.date); return that.x(d.date);})
     .attr("width", this.x.rangeBand())
     .attr("height", function(d, i) {
         return that.height - that.y(d.bikers[index]);
     })
-     .style("fill", function(d,i) {
-        if (d.date == today_date) {
-            return "teal";
-        }
-     });
+     // .style("fill", function(d,i) {
+     //    if (d.date == today_date) {
+     //        return "teal";
+     //    }
+     // });
 
     bar.exit().remove();
 
