@@ -237,7 +237,7 @@ function data_loaded() {
   // aggregate_info = [{"date":"July 4", "bikers": format_aggregate_bar(july4_bikes)}, {"date": "December 1", "bikers": format_aggregate_bar(dec1_bikes)}];
 
   // console.log(aggregate_info);
-  
+
   // button functions
   d3.selectAll("button[value=\"july_4\"]").on("click", function () {
     //if not currently selected
@@ -294,15 +294,7 @@ function data_loaded() {
 
   // Initialize the bar charts
   
-  
 
-  // Update barchart data
-  //barchart_data = day1;
-
-  // Initialize the bar chart
-  //var averageDay_vis = new averageDayVis(d3.select("#barchart"), full_bike_data)
-  //console.log(barchart_data);
-  //var average_hour_today = (bike_data.length / 24);
 
   // Initialize the bar chart
   //var averageDay_vis = new averageDayVis(d3.select("#barchart"), barchart_data);
@@ -365,10 +357,8 @@ function data_loaded() {
 
     var new_time = new Date($("#slider").slider('value'));
 
-    // Update at the start of the hour only
+    // Update at the start of the hour only or when slid
      if (format_minute_only(new_time) == "00" || (type == "manual change")) {
-       //console.log("time to update the bar chart");
-       //console.log(format_day(new_time));
        averageDay_vis.updateVis(format_hour_only(new_time)); // actually do this.
      }
   }
