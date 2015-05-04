@@ -36,7 +36,7 @@ aggregateVis.prototype.initVis = function(){
     this.xAxis = d3.svg.axis()
         .scale(this.x)
         .tickFormat(function(d) {
-        console.log(d);
+        //console.log(d);
         return d})
         .orient("bottom");
 
@@ -67,7 +67,7 @@ aggregateVis.prototype.initVis = function(){
 aggregateVis.prototype.updateVis = function(hour, minute, today_date) {
 
     //console.log("in update vis");
-    console.log(today_date);
+   // console.log(today_date);
 
     var index = (60 * parseInt(hour)) + parseInt(minute);
     var that = this;
