@@ -15,11 +15,11 @@ aggregateVis = function(_parentElement, _data) {
     this.width = 400 - this.margin.left - this.margin.right,
     this.height = 350 - this.margin.top - this.margin.bottom;
 
-    this.titles = ["July 4", "December 1"];
+    this.titles = ["Jul  4", "Dec  1"];
     this.initVis();
 }
 
-aggregateVis.prototype.initVis = function(){
+aggregateVis.prototype.initVis = function() {
 
   var no_filter = [];
   var gender_filter = [];
@@ -87,11 +87,11 @@ aggregateVis.prototype.initVis = function(){
         }
       }
     })
-    no_filter.push({"date": formatTitle(date), "bikers":no_filter_array});
-    gender_filter.push({"date": formatTitle(date), "gender": "male", "bikers":male_array});
-    gender_filter.push({"date": formatTitle(date), "gender": "female", "bikers":female_array});
-    subsc_filter.push({"date": formatTitle(date), "type": "subscriber", "bikers":yes_subscribe});
-    subsc_filter.push({"date": formatTitle(date), "type": "customer", "bikers":no_subscribe});
+    no_filter.push({"date": formatTitle(date), "type": 0, "bikers":no_filter_array, "color":"black"});
+    gender_filter.push({"date": formatTitle(date), "type": 1, "bikers":male_array, "color":"blue"});
+    gender_filter.push({"date": formatTitle(date), "type": 2, "bikers":female_array, "color":"red"}); 
+    subsc_filter.push({"date": formatTitle(date), "type": 1, "bikers":yes_subscribe, "color":"#ffa500"});
+    subsc_filter.push({"date": formatTitle(date), "type": 2, "bikers":no_subscribe, "color":"#0080ff"});
   })
 
   console.log(no_filter);
@@ -147,12 +147,30 @@ aggregateVis.prototype.initVis = function(){
          .text("Total Bikers So Far Today");
 
     // call the update method
-    this.updateVis("00", "00", "July 4");
+    this.data_to_use = this.nofilter_data;
+    this.updateVis("00", "00");
+}
+aggregateVis.prototype.filter_called = function(filter, hour, minute) {
+    this.svg.selectAll(".bar").remove();
+    
+    if(filter == "gender") {
+      this.data_to_use = this.gender_filter_data;
+    }
+
+    if(filter == "subscription") {
+      this.data_to_use = this.subsc_filter_data;
+    }
+
+    if(filter == "none") {
+      this.data_to_use = this.nofilter_data;
+    }
+    // call updateVis
+    this.updateVis(hour, minute);
 }
 
-aggregateVis.prototype.updateVis = function(hour, minute, today_date) {
+aggregateVis.prototype.updateVis = function(hour, minute) {
 
-    //console.log("in update vis");
+   //console.log("in update vis");
    // console.log(today_date);
 
     var index = (60 * parseInt(hour)) + parseInt(minute);
@@ -161,8 +179,9 @@ aggregateVis.prototype.updateVis = function(hour, minute, today_date) {
     var that = this;
 
     //this.y.domain([0, d3.max(this.data.map(function(d) {return d.bikers[index];}))]);
+    var max = d3.max(this.data_to_use.map(function (d) {return d3.max(d.bikers);}));
+    this.y.domain([0, max]);
     this.x.domain(this.titles);
-    this.y.domain([0, 20000]);
    
     // updates axis
     this.svg.select(".x.axis")
@@ -181,11 +200,33 @@ aggregateVis.prototype.updateVis = function(hour, minute, today_date) {
 
     // data join
     var bar = this.svg.selectAll(".bar")
-      .data(this.data);
+      .data(this.data_to_use);
 
     var bar_enter = bar.enter().append("g");
 
     bar_enter.append("rect")
+      .attr("class", "bar")
+      .attr("y", function(d) { return that.y(d.bikers[index]);}) // or something like that
+      .attr("x", function(d, i) { 
+        if(d.type != 2) {
+          return that.x(d.date);
+        }
+        return that.x(d.date) + (that.x.rangeBand()/2);
+      })
+      .attr("width", function(d, i) { 
+        if(d.type == 0) {
+          return that.x.rangeBand();
+        }
+        return that.x.rangeBand()/2;
+      })
+      .attr("height", function(d, i) {
+        return that.height - that.y(d.bikers[index]);
+      })
+      .style("fill", function(d) {
+        return d.color;
+      })
+
+   /* bar_enter.append("rect")
       .attr("class", "bar")
       .attr("y", function(d) { return that.y(d.bikers[index]);}) // or something like that
       .attr("x", function(d, i) {return that.x(d.date);})
@@ -201,7 +242,7 @@ aggregateVis.prototype.updateVis = function(hour, minute, today_date) {
     // .style("fill", function(d,i) {
     //   return that.metaData.priorities[d.type]["item-color"];
     // });
-
+  */
     bar.exit().remove();
 
     bar

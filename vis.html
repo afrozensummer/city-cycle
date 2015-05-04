@@ -30,8 +30,6 @@ html, body {
   margin: 0;
   padding: 0;
 }
-
-
     </style>
   </head>
   <body class = "viscontainer"> 
@@ -127,8 +125,6 @@ queue()
         dec1_bikes = dec1_b;
         december_first_data = decemberfirst;
         data_loaded();
-
-
   });
 
 function data_loaded() {
@@ -136,7 +132,7 @@ function data_loaded() {
   var formatHour = d3.time.format("%H");
   var formatMinute = d3.time.format("%M");
   var formatDate = d3.time.format("%a, %b %e");
-  //var formatDay = d3.time.format("%");
+  var formatDay = d3.time.format("%");
   
   var stationsList = station_data["stationBeanList"];
 
@@ -343,6 +339,7 @@ function data_loaded() {
 
     // update the bar chart
     averageDay_vis.filter_called(filter, format_hour_only(current_time));
+    aggregate_vis.filter_called(filter, format_hour_only(current_time), format_minute_only(current_time));
   });
 
   $("#slider").slider({
@@ -374,18 +371,10 @@ function data_loaded() {
        averageDay_vis.updateVis(format_hour_only(new_time)); // actually do this.
      }
   }
-  
-  function update_aggregate_bar(time){
-   
-    //console.log(format_day(time));
-    //console.log(format_hour_only(time));
-    //console.log(format_minute_only(time));
-    aggregate_vis.updateVis(format_hour_only(time), format_minute_only(time), format_day(time));
-  }
 
   function update() {
     var new_time = new Date($("#slider").slider('value'));
-    update_aggregate_bar(new_time);
+    aggregate_vis.updateVis(format_hour_only(new_time), format_minute_only(new_time));
     document.getElementById("time").innerHTML = "Current Time: <br>" + formatDate(new_time);
     document.getElementById("temp").innerHTML = "Temperature: " + weather_data[strip(hour(current_time))]["DryBulbFarenheit"]+ " F";
     if (weather_data[strip(hour(current_time))]["WeatherType"] == "-RA") {

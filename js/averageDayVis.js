@@ -143,7 +143,7 @@ averageDayVis.prototype.initVis = function() {
 
     // call the update method
     this.data_to_use = this.nofilter_data;
-    this.updateVis("00", "Jul 4");
+    this.updateVis("00");
 }
 
 averageDayVis.prototype.filter_called = function(filter, hour) {
