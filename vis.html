@@ -607,12 +607,42 @@ function data_loaded() {
                     })
   }
 
+  var stations_selected = [];
   var stations = g.selectAll("stations")
             .data(stationsList)
             .enter()
             .append("circle")
             .attr("r", 4)
-            .attr("class", "stations");
+            .attr("class", "stations")
+            .attr("highlighted", "false")
+            .on("click", function(d) {
+              d3.select(this).style("fill", function(d) {
+                  if(d3.select(this).attr("highlighted") == "false") {
+                    if(stations_selected.length < 5) {
+                      stations_selected.push(d.stationName);
+                      // new station added to line graph, update it
+                      console.log(stations_selected);
+                      d3.select(this).attr("highlighted", "true");
+                      return "red";
+                    }
+                  }
+                  var i = stations_selected.indexOf(d.stationName);
+                  if(i != -1) {
+                    stations_selected.splice(i, 1);
+                    //station removed from line graph, update it
+                  }
+                  console.log(stations_selected);
+                  d3.select(this).attr("highlighted", "false");
+                  return  "steelblue";
+              });
+            })
+            .on("mouseover", function(d) {
+              d3.select(this).attr("r", 9);
+            })
+            .on("mouseout", function(d) {
+              d3.select(this).attr("r", 4);
+            });
+            
 
 
   var minidata = all_bikes_for_date(current_time);
@@ -665,7 +695,7 @@ function data_loaded() {
   function emit(coordinates) {
       var emit = g.append("circle")
         .attr("r", 5)
-        .style("fill", "steelblue")
+        .style("fill", "black")
         .attr("class", "hi")
         .style("opacity", 0)
         .attr("transform", function() { 
