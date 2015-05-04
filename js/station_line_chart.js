@@ -90,6 +90,9 @@ StationVis.prototype.initVis = function(){
 
     // call the update method
     this.updateVis();
+
+    //remove first call
+    this.svg.selectAll(".line").remove();
 }
 
 /**
@@ -100,43 +103,48 @@ StationVis.prototype.wrangleData= function() {
 
     // time interval in minutes
     //var total_time = 24
+    console.log(this.data);
     var interval = 10;
-
-    var time_line = [];
     var starttime = d3.time.day(new Date(this.data[this.data.length-1]["starttime"]));
-    for(var i = 0; i <= 24*60; i ++) {
-        time_line.push({
-            date:new Date(starttime.getTime() + i*1000*60),
-            count: 0
-        });
-    }
 
     var line_data = [];
     this.station_list.forEach(function(d) {
+        var time_line = [];
+        for(var i = 0; i <= 24; i ++) {
+            time_line.push({
+                date:new Date(starttime.getTime() + i*60*1000*60),
+                count: 0
+            });
+        }
         line_data.push({name:d, bikers:time_line});
     });
-    
-    console.log(line_data);
 
     this.data.forEach( function(d,i) {
         bikes_starting_time = d3.time.minute.floor(new Date(d.starttime));
         if(bikes_starting_time >= starttime) {
             line_data.forEach( function (e,j) {
                 if(e.name == d["start station name"]) {
-                    var index = ((bikes_starting_time.getTime() - starttime.getTime())/(60*1000));
-                    //(Math.ceil(index / 10) * 10)/10;
-                    line_data[j].bikers[index].count ++;
-                    console.log(e.name + d["start station name"] + ":" + bikes_starting_time + ":" + line_data[j].bikers[index].count);
-                    console.log(line_data[j].bikers);
+                    var index = ((d3.time.hour.floor(bikes_starting_time).getTime() - starttime.getTime())/(60*60*1000));
+                    e.bikers[index+1].count ++;
                 }
             });
         }
     });
-
-    console.log(line_data);
     this.displayData = line_data;
+    console.log(this.displayData);
 }
 
+StationVis.prototype.change_day = function(data) {
+    this.data = data;
+    this.wrangleData();
+    this.updateVis();
+}
+
+StationVis.prototype.change_stations = function(station_list) {
+    this.station_list = station_list;
+    this.wrangleData();
+    this.updateVis();
+}
 
 /**
  * the drawing function - should use the D3 selection, enter, exit
@@ -145,20 +153,18 @@ StationVis.prototype.updateVis = function() {
     
     var that = this;
 
+    if(this.displayData.length > 0) {
     // updates scales
-    console.log(this.displayData);
-    this.x.domain([
-        d3.min(this.displayData, function(c) { return d3.min(c.bikers, function(v) { return v.date; }); }),
-        d3.max(this.displayData, function(c) { return d3.max(c.bikers, function(v) { return v.date; }); })
-    ]);
+        this.x.domain([
+            d3.min(this.displayData, function(c) { return d3.min(c.bikers, function(v) { return v.date; }); }),
+            d3.max(this.displayData, function(c) { return d3.max(c.bikers, function(v) { return v.date; }); })
+        ]);
 
-    console.log(d3.max(this.displayData, function(c) { return d3.max(c.bikers, function(v) { return v.date; })}));
-    console.log(d3.max(this.displayData, function(c) { return d3.max(c.bikers, function(v) { return v.count; })}));
-
-    this.y.domain([
-        d3.min(this.displayData, function(c) { return d3.min(c.bikers, function(v) { return v.count; }); }),
-        d3.max(this.displayData, function(c) { return d3.max(c.bikers, function(v) { return v.count; }); })
-    ]);
+        this.y.domain([
+            d3.min(this.displayData, function(c) { return d3.min(c.bikers, function(v) { return v.count; }); }),
+            d3.max(this.displayData, function(c) { return d3.max(c.bikers, function(v) { return v.count; }); })
+        ]);
+    }
 
     this.svg.select(".x.axis")
         .call(this.xAxis);
@@ -174,93 +180,10 @@ StationVis.prototype.updateVis = function() {
             .attr("class", "line");
 
     lines
-        .attr("d", function(d,i) {console.log(d); return that.line(d.bikers);})
+        .attr("d", function(d,i) {return that.line(d.bikers);})
         .attr("fill", "none")
-        .style("stroke", function(d,i) {
-            if(i == 1) return "blue";
-            else return "red";
-        });
+        .style("stroke", "red");
 
    lines.exit()
         .remove();
-}
-
-
-/**
- * Gets called by event handler and should create new aggregated data
- * aggregation is done by the function "aggregate(filter)". Filter has to
- * be defined here.
- * @param selection
- */
-StationVis.prototype.onSelectionChange = function (selectionStart, selectionEnd, is_empty){
-
-    // TODO: call wrangle function
-    if(is_empty) {
-        this.wrangleData(null);
-    } else {
-        this.wrangleData(function (d) {
-            return (d.time >= selectionStart && d.time <= selectionEnd);
-        });
-    }
-    this.updateVis();
-}
-
-
-StationVis.prototype.doesLabelFit = function(datum, label) {
-  var pixel_per_character = 6;  // obviously a (rough) approximation
-  return datum.type.length * pixel_per_character < this.x(datum.count);
-}
-
-StationVis.prototype.filterAndAggregateAverages = function(_filter) {
-    
-    var that = this;
-    var filter = function(){return true;}
-    if (_filter != null){
-        filter = _filter;
-    }
-
-    var average_data = this.checked.map( function (d) {
-        return {values:[], priority:d};
-    });
-
-    this.data.filter(filter).forEach(function(d,i) {
-        average_data.forEach( function(e,f) {
-            e.values.push({date:d.time, count:that.averages[e.priority]});
-            }
-        )
-    });
-
-    return average_data;
-
-}
-
-/**
- * The aggregate function that creates the counts for each age for a given filter.
- * @param _filter - A filter can be, e.g.,  a function that is only true for data of a given time range
- * @returns {Array|*}
- */
-StationVis.prototype.filterAndAggregate = function(_filter){
-
-    // Set filter to a function that accepts all items
-    // ONLY if the parameter _filter is NOT null use this parameter
-    var filter = function(){return true;}
-    if (_filter != null){
-        filter = _filter;
-    }
-   
-    var that = this;
-    var res = this.checked.map( function (d) {
-        return {values:[], priority:d};
-    });
-
-    this.data.filter(filter).forEach( function (d) {
-        d.prios.forEach( function (e,i) {
-            res.forEach( function(f,g) {
-                if(f.priority == i) {
-                    f.values.push({count:e, date:d.time});
-                }
-            })
-        })
-    });
-    return res;
 }

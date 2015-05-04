@@ -25,8 +25,6 @@ aggregateVis.prototype.initVis = function() {
   var gender_filter = [];
   var subsc_filter = []
 
-  console.log(this.data);
-
   var formatHour = d3.time.format("%H");
   var formatMinute = d3.time.format("%M");
   var formatDate = d3.time.format("%a, %b %e");
@@ -99,10 +97,6 @@ aggregateVis.prototype.initVis = function() {
     subsc_filter.push({"date": formatTitle(date), "type": 2, "bikers":no_subscribe, "color":"#0080ff"});
   })
 
-  console.log(no_filter);
-  console.log(gender_filter);
-  console.log(subsc_filter);
-
   this.nofilter_data = no_filter;
   this.gender_filter_data = gender_filter;
   this.subsc_filter_data = subsc_filter;
@@ -127,7 +121,6 @@ aggregateVis.prototype.initVis = function() {
     this.xAxis = d3.svg.axis()
         .scale(this.x)
         .tickFormat(function(d) {
-        //console.log(d);
         return d})
         .orient("bottom");
 
