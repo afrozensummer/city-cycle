@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/themes/base/jquery-ui.css" />
     <script src = "js/averageDayVis.js"></script>
     <script src = "js/aggregateVis.js"></script>
+    <script src = "js/station_line_chart.js"></script>
     <script src="js/bikelinechart.js"></script>
     
     <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
@@ -75,10 +76,8 @@ html, body {
       <div id="map"></div>
       <div id="barchart"></div>
       <div id="aggregate_chart"></div>
+      <div id="stations_chart"></div>
 
-      
-
-     
     <script type="text/javascript">
 
 // Variables
@@ -88,7 +87,7 @@ var july4_bikes;
 var barchart_data;
 var station_data;
 var starting_time = new Date("2014-07-04 00:00:00"); //start with july
-var ending_time = new Date("2014-07-05 00:00:00");
+var ending_time = new Date("2014-07-04 23:59:00");
 var current_time = starting_time;
 var filter = "none";
 var filters = {
@@ -143,7 +142,103 @@ function data_loaded() {
   var data_test = [july4_bikes, dec1_bikes];
   var averageDay_vis = new averageDayVis(d3.select("#barchart"), data_test);
   var aggregate_vis = new aggregateVis(d3.select("#aggregate_chart"), data_test);
-  
+  var stations_vis = new StationVis(d3.select("#stations_chart"), bike_data, ["1 Ave & E 15 St"]);
+
+// "E 43 St & Vanderbilt Ave"
+
+  // function format_hour_bar (bike_data) {
+
+  //   var day_array = d3.range(24).map(function () { return 0; });
+
+  //   var index = 0;
+  //   var lasthour = "00";
+  //   var date = new Date (bike_data[1000].starttime);
+  //   var true_date = formatDate(date);
+  //   console.log(true_date);
+
+  //   bike_data.forEach(function(i){
+  //     var hour = new Date (i.starttime);
+  //     var now = formatHour(hour);
+  //     var this_date = formatDate(hour);
+
+  //     if (this_date == true_date){
+  //       if (now != lasthour) {
+  //         index +=1;
+  //         lasthour = now;
+  //       }
+  //       day_array[index] += 1;
+  //     }   
+  //   })
+  //   return day_array
+  // } 
+
+  // function format_hour_bar_gender (bike_data) {
+
+  //   var female_array = d3.range(24).map(function () { return 0; });
+  //   var male_array = d3.range(24).map(function () { return 0; });
+
+  //   var index = 0;
+  //   var lasthour = "00";
+  //   var date = new Date (bike_data[1000].starttime);
+  //   var true_date = formatDate(date);
+  //   //console.log(true_date);
+  //   console.log(bike_data);
+
+  //   bike_data.forEach(function(i){
+  //     var hour = new Date (i.starttime);
+  //     var now = formatHour(hour);
+  //     var this_date = formatDate(hour);
+
+  //     if (this_date == true_date){
+  //       if (now != lasthour) {
+  //         index +=1;
+  //         lasthour = now;
+  //       } 
+  //       if (i.gender == 1){
+  //         male_array[index] += 1;
+  //       } if (i.gender == 2){
+  //         female_array[index] +=1;
+  //       }
+  //     }   
+  //   })
+  //   return [male_array, female_array]
+  // }
+
+  //console.log(format_hour_bar_gender(july4_bikes));
+
+  // function format_aggregate_bar (bike_data) {
+
+  //   var minute_aggregate = d3.range(1440).map(function () { return 0; });
+  //   var index = 0;
+  //   var date = new Date (bike_data[1000].starttime);
+  //   var true_date = formatDate(date);
+
+  //   bike_data.forEach(function(d){
+
+  //     var time = new Date (d.starttime);
+  //     if (formatDate(time) == true_date){
+  //       var new_index = (60 * parseInt(formatHour(time))) + parseInt(formatMinute(time));
+  //       if (new_index == index){
+  //         minute_aggregate[index] += 1;
+  //       } else {
+  //         index +=1;
+  //         minute_aggregate[index] = minute_aggregate[index - 1] + 1; 
+  //       }
+  //     }
+  //   })
+  //   return minute_aggregate;
+  // }
+
+  // gender_barchart_data = [{"date":"July 4", "gender": "male", "bikers": format_hour_bar_gender(july4_bikes)[0]}, {"date":"July 4", "gender": "female", "bikers": format_hour_bar_gender(july4_bikes)[1]},{"date": "December 1", "gender": "male", "bikers": format_hour_bar_gender(dec1_bikes)[0]},{"date": "December 1", "gender": "female", "bikers": format_hour_bar_gender(dec1_bikes)[1]}];
+
+  // console.log(gender_barchart_data);
+
+  // barchart_data = [{"date":"July 4", "bikers": format_hour_bar(july4_bikes)}, {"date": "December 1", "bikers": format_hour_bar(dec1_bikes)}];
+
+  // aggregate_info = [{"date":"July 4", "bikers": format_aggregate_bar(july4_bikes)}, {"date": "December 1", "bikers": format_aggregate_bar(dec1_bikes)}];
+
+  // console.log(aggregate_info);
+
   // button functions
   d3.selectAll("button[value=\"july_4\"]").on("click", function () {
     //if not currently selected
@@ -165,6 +260,7 @@ function data_loaded() {
       });
       d3.select("svg").remove();
       var bikeline_vis = new bikeLineVis(d3.select("#bikeline"), bike_data);
+      stations_vis.change_day(bike_data);
       d3.selectAll("button").attr("class", 'day');
       d3.selectAll("button[value=\"july_4\"]").attr("class", 'buttonactive');
       resetbike();
@@ -190,6 +286,7 @@ function data_loaded() {
       });
       d3.select("svg").remove();
       var bikeline_vis = new bikeLineVis(d3.select("#bikeline"), bike_data);
+      stations_vis.change_day(bike_data);
       d3.selectAll("button").attr("class", 'day')
       d3.selectAll("button[value=\"dec_1\"]").attr("class", 'buttonactive');
       resetbike();
@@ -443,7 +540,6 @@ function data_loaded() {
     });
   }
 
-
   function all_bikes_for_date(date) {
     var bike_list_minute = [];
     var date_rounded = d3.time.minute.floor(date);
@@ -498,9 +594,10 @@ function data_loaded() {
             .on("click", function(d) {
               d3.select(this).style("fill", function(d) {
                   if(d3.select(this).attr("highlighted") == "false") {
-                    if(stations_selected.length < 5) {
+                    if(stations_selected.length < 3) {
                       stations_selected.push(d.stationName);
                       // new station added to line graph, update it
+                      stations_vis.change_stations(stations_selected);
                       console.log(stations_selected);
                       d3.select(this).attr("highlighted", "true");
                       return "red";
@@ -510,6 +607,7 @@ function data_loaded() {
                   if(i != -1) {
                     stations_selected.splice(i, 1);
                     //station removed from line graph, update it
+                    stations_vis.change_stations(stations_selected);
                   }
                   console.log(stations_selected);
                   d3.select(this).attr("highlighted", "false");
@@ -587,7 +685,7 @@ function data_loaded() {
             .duration(100)
             .style("opacity", .4)
             .transition()
-              .duration(100)
+              .duration(500)
               .style("opacity", 0)
               .remove()
   }
