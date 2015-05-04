@@ -145,6 +145,7 @@ function data_loaded() {
 
   var data_test = [july4_bikes, dec1_bikes];
   var averageDay_vis = new averageDayVis(d3.select("#barchart"), data_test);
+  var aggregate_vis = new aggregateVis(d3.select("#aggregate_chart"), data_test);
 
 
   // function format_hour_bar (bike_data) {
@@ -207,28 +208,28 @@ function data_loaded() {
 
   //console.log(format_hour_bar_gender(july4_bikes));
 
-  function format_aggregate_bar (bike_data) {
+  // function format_aggregate_bar (bike_data) {
 
-    var minute_aggregate = d3.range(1440).map(function () { return 0; });
-    var index = 0;
-    var date = new Date (bike_data[1000].starttime);
-    var true_date = formatDate(date);
+  //   var minute_aggregate = d3.range(1440).map(function () { return 0; });
+  //   var index = 0;
+  //   var date = new Date (bike_data[1000].starttime);
+  //   var true_date = formatDate(date);
 
-    bike_data.forEach(function(d){
+  //   bike_data.forEach(function(d){
 
-      var time = new Date (d.starttime);
-      if (formatDate(time) == true_date){
-        var new_index = (60 * parseInt(formatHour(time))) + parseInt(formatMinute(time));
-        if (new_index == index){
-          minute_aggregate[index] += 1;
-        } else {
-          index +=1;
-          minute_aggregate[index] = minute_aggregate[index - 1] + 1; 
-        }
-      }
-    })
-    return minute_aggregate;
-  }
+  //     var time = new Date (d.starttime);
+  //     if (formatDate(time) == true_date){
+  //       var new_index = (60 * parseInt(formatHour(time))) + parseInt(formatMinute(time));
+  //       if (new_index == index){
+  //         minute_aggregate[index] += 1;
+  //       } else {
+  //         index +=1;
+  //         minute_aggregate[index] = minute_aggregate[index - 1] + 1; 
+  //       }
+  //     }
+  //   })
+  //   return minute_aggregate;
+  // }
 
   // gender_barchart_data = [{"date":"July 4", "gender": "male", "bikers": format_hour_bar_gender(july4_bikes)[0]}, {"date":"July 4", "gender": "female", "bikers": format_hour_bar_gender(july4_bikes)[1]},{"date": "December 1", "gender": "male", "bikers": format_hour_bar_gender(dec1_bikes)[0]},{"date": "December 1", "gender": "female", "bikers": format_hour_bar_gender(dec1_bikes)[1]}];
 
@@ -236,9 +237,9 @@ function data_loaded() {
 
   // barchart_data = [{"date":"July 4", "bikers": format_hour_bar(july4_bikes)}, {"date": "December 1", "bikers": format_hour_bar(dec1_bikes)}];
 
-  aggregate_info = [{"date":"July 4", "bikers": format_aggregate_bar(july4_bikes)}, {"date": "December 1", "bikers": format_aggregate_bar(dec1_bikes)}];
+  // aggregate_info = [{"date":"July 4", "bikers": format_aggregate_bar(july4_bikes)}, {"date": "December 1", "bikers": format_aggregate_bar(dec1_bikes)}];
 
-  console.log(aggregate_info);
+  // console.log(aggregate_info);
   
   // button functions
   d3.selectAll("button[value=\"july_4\"]").on("click", function () {
@@ -296,7 +297,7 @@ function data_loaded() {
 
   // Initialize the bar charts
   
-  var aggregate_vis = new aggregateVis(d3.select("#aggregate_chart"), aggregate_info);
+  
 
   // Update barchart data
   //barchart_data = day1;
