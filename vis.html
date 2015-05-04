@@ -325,6 +325,10 @@ function data_loaded() {
   // Format the date
   var formatDate = d3.time.format("%a, %b %e, %H:%M");
   var format_day_hour = d3.time.format("%a, %b %e, %H");
+  var format_minute_only = d3.time.format("%M");
+  var format_hour_only = d3.time.format("%H");
+  var format_day = d3.time.format("%b %e");
+
 
   document.getElementById("time").innerHTML = "Current Time: <br>" + formatDate(starting_time);
 
@@ -337,7 +341,7 @@ function data_loaded() {
       });
 
     // update the bar chart
-    averageDay_vis.filter_called(filter, 0, 0);
+    averageDay_vis.filter_called(filter, format_hour_only(current_time));
   });
 
   $("#slider").slider({
@@ -358,30 +362,20 @@ function data_loaded() {
       }
   });
 
-
   function update_hour_bar(type) {
 
     var new_time = new Date($("#slider").slider('value'));
-    var format_minute_only = d3.time.format("%M");
-    var format_hour_only = d3.time.format("%H");
-    var format_day = d3.time.format("%b %e");
 
     // Update at the start of the hour only
-
-
-     if (format_minute_only(new_time) == "00" || (type == "manual change")){
+     if (format_minute_only(new_time) == "00" || (type == "manual change")) {
        //console.log("time to update the bar chart");
-       console.log(new_time);
        //console.log(format_day(new_time));
-       averageDay_vis.updateVis(format_hour_only(new_time), format_day(new_time)); // actually do this.
+       averageDay_vis.updateVis(format_hour_only(new_time)); // actually do this.
      }
   }
-
+  
   function update_aggregate_bar(time){
-    //console.log("about to update hour bar");
-    var format_minute_only = d3.time.format("%M");
-    var format_hour_only = d3.time.format("%H");
-    var format_day = d3.time.format("%b %e");
+   
     //console.log(format_day(time));
     //console.log(format_hour_only(time));
     //console.log(format_minute_only(time));

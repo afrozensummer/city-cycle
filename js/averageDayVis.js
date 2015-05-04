@@ -15,14 +15,14 @@ averageDayVis = function(_parentElement, _data) {
     this.width = 350 - this.margin.left - this.margin.right,
     this.height = 250 - this.margin.top - this.margin.bottom;
 
-    this.titles = ["Jul 4", "Dec 1"];
+    this.titles = [ "Jul  4", "Dec  1"];
     this.initVis();
 }
 
 /**
  * Method that sets up the SVG and the variables
  */
-averageDayVis.prototype.initVis = function(){
+averageDayVis.prototype.initVis = function() {
 
   //console.log(this.data);  
 
@@ -57,7 +57,6 @@ averageDayVis.prototype.initVis = function(){
       var now = formatHour(hour);
       var this_date = formatDate(hour);
 
-
       if (this_date == true_date){
         if (now != lasthour) {
           index +=1;
@@ -81,11 +80,11 @@ averageDayVis.prototype.initVis = function(){
     })
 
     //console.log(day_array);
-    no_filter.push({"date": formatTitle(date), "bikers":day_array});
-    gender_filter.push({"date": formatTitle(date), "gender": "male", "bikers":male_array});
-    gender_filter.push({"date": formatTitle(date), "gender": "female", "bikers":female_array});
-    subsc_filter.push({"date": formatTitle(date), "type": "subscriber", "bikers":yes_subscribe});
-    subsc_filter.push({"date": formatTitle(date), "type": "customer", "bikers":no_subscribe});
+    no_filter.push({"date": formatTitle(date), "type": 0, "bikers":day_array, "color":"black"});
+    gender_filter.push({"date": formatTitle(date), "type": 1, "bikers":male_array, "color":"blue"});
+    gender_filter.push({"date": formatTitle(date), "type": 2, "bikers":female_array, "color":"red"}); 
+    subsc_filter.push({"date": formatTitle(date), "type": 1, "bikers":yes_subscribe, "color":"#ffa500"});
+    subsc_filter.push({"date": formatTitle(date), "type": 2, "bikers":no_subscribe, "color":"#0080ff"});
   });
   //console.log(no_filter);
   //console.log(gender_filter);
@@ -94,9 +93,6 @@ averageDayVis.prototype.initVis = function(){
   this.nofilter_data = no_filter;
   this.gender_filter_data = gender_filter;
   this.subsc_filter_data = subsc_filter;
-
-  console.log(this);
-
   // Create the regular data
 
 
@@ -146,52 +142,37 @@ averageDayVis.prototype.initVis = function(){
     //this.wrangleData(null);
 
     // call the update method
+    this.data_to_use = this.nofilter_data;
     this.updateVis("00", "Jul 4");
 }
 
-averageDayVis.prototype.filter_called = function(filter, hour, today_date) {
-
-    all_data = [];
-    console.log(this);
-    //var day_array = d3.range(24).map(function () { return 0; });
-
-    // filter the data here
-    // if(filter == "gender") {
-
-    //     this.data.forEach(function(d){
-
-    //     })
-    //     var female_array = d3.range(24).map(function () { return 0; });
-    //     var male_array = d3.range(24).map(function () { return 0; });
-
-
-    // }
+averageDayVis.prototype.filter_called = function(filter, hour) {
+    this.svg.selectAll(".bar").remove();
+    
+    if(filter == "gender") {
+      this.data_to_use = this.gender_filter_data;
+    }
 
     if(filter == "subscription") {
-        //sort the data this way
+      this.data_to_use = this.subsc_filter_data;
     }
 
     if(filter == "none") {
-        //sort the data this way
+      this.data_to_use = this.nofilter_data;
     }
-
-    // remove all the bars
-     this.svg.select("bar").remove();
-
     // call updateVis
-    this.updateVis(hour, today_date);
+    this.updateVis(hour);
 }
 /**
  * the drawing function - should use the D3 selection, enter, exit
  */
-averageDayVis.prototype.updateVis = function(hour, today_date) {
+averageDayVis.prototype.updateVis = function(hour) {
+
 
     var index = parseInt(hour);
     //console.log(index);
     var that = this;
-    this.data = this.nofilter_data;
-    console.log(this.nofilter_data);
-    console.log(this.titles);
+   
     //console.log(today_date);
     //console.log(this.data)
     // updates scales
@@ -199,8 +180,10 @@ averageDayVis.prototype.updateVis = function(hour, today_date) {
     //this.y.domain([0, d3.max(this.data.map(function(d) {return d.bikers[index];}))]);
     //this.y.domain([0, d3.max(this.displayData.map(function (d) {return d.count;}))]);
     //this.x.domain(this.data(function(d) {return d.date;}));
+
+    var max = d3.max(this.data_to_use.map(function (d) {return d3.max(d.bikers);}));
+    this.y.domain([0, max]);
     this.x.domain(this.titles);
-    this.y.domain([0, 2000]);
    
     // updates axis
     this.svg.select(".x.axis")
@@ -219,7 +202,7 @@ averageDayVis.prototype.updateVis = function(hour, today_date) {
 
     // data join
     var bar = this.svg.selectAll(".bar")
-      .data(this.data);
+      .data(this.data_to_use);
 
     var bar_enter = bar.enter().append("g");
 
@@ -231,17 +214,25 @@ averageDayVis.prototype.updateVis = function(hour, today_date) {
 
     bar_enter.append("rect")
       .attr("class", "bar")
-      .attr("y", function(d) {console.log(d.bikers[index]); return that.y(d.bikers[index]);}) // or something like that
-      .attr("x", function(d, i) {console.log(d.date); return that.x(d.date);})
-    .attr("width", this.x.rangeBand())
-    .attr("height", function(d, i) {
+      .attr("y", function(d) { return that.y(d.bikers[index]);}) // or something like that
+      .attr("x", function(d, i) { 
+        if(d.type != 2) {
+          return that.x(d.date);
+        }
+        return that.x(d.date) + (that.x.rangeBand()/2);
+      })
+      .attr("width", function(d, i) { 
+        if(d.type == 0) {
+          return that.x.rangeBand();
+        }
+        return that.x.rangeBand()/2;
+      })
+      .attr("height", function(d, i) {
         return that.height - that.y(d.bikers[index]);
-    })
-     // .style("fill", function(d,i) {
-     //    if (d.date == today_date) {
-     //        return "teal";
-     //    }
-     // });
+      })
+      .style("fill", function(d) {
+        return d.color;
+      })
 
     bar.exit().remove();
 
