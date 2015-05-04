@@ -43,7 +43,7 @@ aggregateVis.prototype.initVis = function() {
     var date = new Date (d[1000].starttime);
     var true_date = formatDate(date);
 
-    d.forEach(function(i){
+    d.forEach(function(i) {
 
       var time = new Date (i.starttime);
       if (formatDate(time) == true_date){
@@ -54,6 +54,11 @@ aggregateVis.prototype.initVis = function() {
             male_array[index] +=1
           } if (i.gender == 2) {
             female_array[index] +=1;
+          }
+          if (i.usertype == "Subscriber") {
+            yes_subscribe[index] +=1
+          } if (i.usertype == "Customer") {
+            no_subscribe[index] +=1;
           }
         } else {
           index +=1;
