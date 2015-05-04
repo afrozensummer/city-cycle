@@ -244,9 +244,6 @@ aggregateVis.prototype.updateVis = function(hour, minute) {
             return "teal";
         }
      });
-    // .style("fill", function(d,i) {
-    //   return that.metaData.priorities[d.type]["item-color"];
-    // });
   */
     bar.exit().remove();
 
