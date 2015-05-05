@@ -112,7 +112,7 @@ body, html{
  SLIDE 2 
 *******************************/
 #slide2{
-    background-color:#005c99;
+    background-color:url(../img/geometry2.png);
      
 }
 #slide2 img:first-child{
@@ -159,23 +159,24 @@ left: -150px;
 .navigation {   
     position:fixed;     
     z-index:1;      
-    top:20px;  
+    top:30px;  
 }  
-.navigation li {    
+.navigation li, .navigation a {    
     color:#333333;      
     display:block;      
     padding: 0 10px;    
     line-height:30px;   
     margin-bottom:2px;      
-    font-weight:bold;   
+    font-weight:bold;
+    text-decoration: none;   
     -webkit-transition: all .2s ease-in-out;    
     border-bottom:1px solid black;      
     text-align:left;    
-    width:53px;  
+    width:70px;  
 }  
 .navigation li:hover,
 .active {   
-    font-size:25px;     
+    font-size:20px;     
     cursor:pointer;     
     width:100px!important;  
 }
