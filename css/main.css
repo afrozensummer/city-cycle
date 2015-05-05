@@ -264,17 +264,17 @@ a {
 }
 
 #line_legend {
-  float: right;
-  top: -320px;
-  position: relative;
+  right: 100px;
+  top: 420px;
+  position: absolute;
   text-align: right;
 }
 
 #line_buttons {
-  float: left;
-  left: 80px;
-  position: relative;
-  top: -300px;
+  width: 50%;
+  right: 30px;
+  top: 415px;
+  position: absolute;
 }
 
 #pause {
