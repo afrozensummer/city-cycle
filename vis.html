@@ -93,9 +93,9 @@ html, body {
       <div id="aggregate_chart"></div>
       <div id="stations_chart"></div>
       <div> 
-         <button  class = "buttonactive" type="button" name="starting"> Trips Starting </button>
-         <button  class = "day" type="button" value="ending"> Trips ending </button>
-         <button  class = "day" type="button" value="reset"> Reset </button>
+         <button  type="button" name="starting"> Trips Starting </button>
+         <button  type="button" name="ending"> Trips ending </button>
+         <button  type="button" name="reset"> Reset </button>
       </div>
       <div id="line legend"> 
         <span id= "red">E 43 St & Vanderbilt Ave</span> <br>
@@ -501,6 +501,28 @@ function data_loaded() {
     }
   });
 
+  d3.selectAll("button[name=\"reset\"]").on("click", function () {
+    stations_selected = [];
+    stations_vis.change_stations(stations_selected);
+
+    svg.selectAll(".stations")
+      .attr("highlighted", false)
+      .style("fill", "steelblue")
+      .style("opacity", .3);
+
+    document.getElementById("red").innerHTML = "";
+    document.getElementById("blue").innerHTML = "";
+    document.getElementById("green").innerHTML = "";
+  });
+
+  d3.selectAll("button[name=\"ending\"]").on("click", function () {
+    stations_vis.ending();
+  });
+
+  d3.selectAll("button[name=\"starting\"]").on("click", function () {
+    stations_vis.starting();
+  });
+
   // Initialize the bar chart
   //var averageDay_vis = new averageDayVis(d3.select("#barchart"), barchart_data);
   var bikeline_vis = new bikeLineVis(d3.select("#bikeline"), bike_data);
@@ -646,7 +668,7 @@ function data_loaded() {
     update();
 
     svg.selectAll(".bikes").remove();
-    minidata = all_bikes_for_date(new_time);
+    minidata = all_bikes_for_date(current_time);
     createnewbikes(minidata);
   }
 
@@ -797,8 +819,8 @@ function data_loaded() {
                         }
                       });
 
-                      if(red == true) this_color = "red";
                       if(blue == true) this_color = "blue";
+                      if(red == true) this_color = "red";
                      
                       stations_selected.push({name:d.stationName, color:this_color});
                       // new station added to line graph, update it

@@ -9,6 +9,7 @@ StationVis = function(_parentElement, day_data, station_list) {
     this.parentElement = _parentElement;
     this.data = day_data;
     this.station_list = station_list;
+    this.start_trips = true;
     
     this.margin = {top: 10, right: 0, bottom: 25, left: 35},
     this.width = parseInt(d3.select('#stations_chart').style('width'), 10) - this.margin.left - this.margin.right,
@@ -90,6 +91,7 @@ StationVis.prototype.initVis = function(){
     this.svg.append("g")
         .attr("class", "y axis")
       .append("text")
+        .attr("class", "ytext")
         .attr("transform", "rotate(-90)")
         .attr("y", 6)
         .attr("dy", ".71em")
@@ -112,34 +114,79 @@ StationVis.prototype.wrangleData= function() {
     // time interval in minutes
     //var total_time = 24
     // console.log(this.data);
-    var interval = 10;
-    var starttime = d3.time.day(new Date(this.data[this.data.length-1]["starttime"]));
+    if(this.start_trips == true) {
+        var interval = 10;
+        var starttime = d3.time.day(new Date(this.data[this.data.length-1]["starttime"]));
 
-    var line_data = [];
-    this.station_list.forEach(function(d) {
-        var time_line = [];
-        for(var i = 0; i <= 24; i ++) {
-            time_line.push({
-                date:new Date(starttime.getTime() + i*60*1000*60),
-                count: 0
-            });
-        }
-        line_data.push({name:d.name, color:d.color, bikers:time_line});
-    });
+        var line_data = [];
+        this.station_list.forEach(function(d) {
+            var time_line = [];
+            for(var i = 0; i <= 24; i ++) {
+                time_line.push({
+                    date:new Date(starttime.getTime() + i*60*1000*60),
+                    count: 0
+                });
+            }
+            line_data.push({name:d.name, color:d.color, bikers:time_line});
+        });
 
-    this.data.forEach( function(d,i) {
-        bikes_starting_time = d3.time.minute.floor(new Date(d.starttime));
-        if(bikes_starting_time >= starttime) {
+        this.data.forEach( function(d,i) {
+            bikes_starting_time = d3.time.minute.floor(new Date(d.starttime));
+            if(bikes_starting_time >= starttime) {
+                line_data.forEach( function (e,j) {
+                    if(e.name == d["start station name"]) {
+                        var index = ((d3.time.hour.floor(bikes_starting_time).getTime() - starttime.getTime())/(60*60*1000));
+                        e.bikers[index].count ++;
+                    }
+                });
+            }
+        });
+        this.displayData = line_data;
+    } else {
+        var interval = 10;
+        var starttime = d3.time.day(new Date(this.data[this.data.length-1]["starttime"]));
+        var line_data = [];
+        this.station_list.forEach(function(d) {
+            var time_line = [];
+            for(var i = 0; i <= 24; i ++) {
+                time_line.push({
+                    date:new Date(starttime.getTime() + i*60*1000*60),
+                    count: 0
+                });
+            }
+            line_data.push({name:d.name, color:d.color, bikers:time_line});
+        });
+
+        this.data.forEach( function(d,i) {
+            bikes_ending_time = d3.time.minute.floor(new Date(d.stoptime));
             line_data.forEach( function (e,j) {
-                if(e.name == d["start station name"]) {
-                    var index = ((d3.time.hour.floor(bikes_starting_time).getTime() - starttime.getTime())/(60*60*1000));
+                if(e.name == d["end station name"]) {
+                    var index = ((d3.time.hour.floor(bikes_ending_time).getTime() - starttime.getTime())/(60*60*1000));
                     e.bikers[index].count ++;
                 }
             });
-        }
-    });
-    this.displayData = line_data;
+        });
+        this.displayData = line_data;
+
+        // go through all the bikes
+            // check out endingtime time
+            // if a trip's ending station matches in the lists name, add to the list in correct index
+    }
     // console.log(this.displayData);
+}
+
+StationVis.prototype.ending = function() {
+    this.svg.selectAll(".ytext").text("Trips Ending at the Station in this Hour");
+    this.start_trips = false;
+    this.wrangleData();
+    this.updateVis();
+}
+
+StationVis.prototype.starting = function() {
+    this.svg.selectAll(".ytext").text("Trips Starting from the Station in this Hour");
+    this.start_trips = true;
+    this.wrangleData();
+    this.updateVis();
 }
 
 StationVis.prototype.change_day = function(data) {
