@@ -1,9 +1,4 @@
-/**
- * Created by Hendrik Strobelt (hendrik.strobelt.com) on 1/28/15.
- */
 
-
-//TODO: DO IT ! :) Look at agevis.js for a useful structure
 StationVis = function(_parentElement, day_data, station_list) {
    	var stationvis = this;
     this.parentElement = _parentElement;
@@ -17,26 +12,16 @@ StationVis = function(_parentElement, day_data, station_list) {
 
     d3.selectAll(window).on('resize', resize);
     function resize() {
-        // update width
-        console.log(stationvis)
         that.width = parseInt(d3.select('#stations_chart').style('width'), 10) - that.margin.left - that.margin.right;
-        // reset x range
-        console.log("hi")
-        // d3.select("svg").remove();
         that.initVis();
     }
 
     this.initVis();
 }
 
-/**
- * Method that sets up the SVG and the variables
- */
-StationVis.prototype.initVis = function(){
+StationVis.prototype.initVis = function() {
 
-
-    var that = this; // read about the this
-
+    var that = this;
     this.svg = this.parentElement.append("svg") 
             .attr("width", this.width + this.margin.left + this.margin.right)
             .attr("height", this.height + this.margin.top + this.margin.bottom)
@@ -44,27 +29,7 @@ StationVis.prototype.initVis = function(){
         .append("g")
             .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
 
-    /*var legend = this.svg.selectAll('.legend')
-        .data([": overall average"])
-        .enter()
-        .append('g')
-        .attr('class', 'legend');
-
-    legend.append('line')
-        .attr("x1", this.width - 100)
-        .attr("x2", this.width - 70)
-        .attr("y1", 16)
-        .attr("y2", 16)
-        .style("stroke-dasharray", ("3, 3")) 
-        .style("stroke", "black");
-
-    legend.append('text')
-        .attr('x', this.width - 70)
-        .attr('y', 10)
-        .attr("dy", ".71em")
-        .text(function(d) { return d; });*/
-
-    // creates axis and scales
+    // Creates axis and scales
     this.x = d3.time.scale()
         .range([0, this.width]);
 
@@ -98,22 +63,15 @@ StationVis.prototype.initVis = function(){
         .style("text-anchor", "end")
         .text("Trips Starting from the Station in this Hour");
 
-    // modify the data
+    //Modify the data
     this.wrangleData();
 
-    // call the update method
+    //Call the update method
     this.updateVis();
 }
 
-/**
- * Method to wrangle the data. In this case it takes an options object
- * @param _filterFunction - a function that filters data or "null" if none
- */
 StationVis.prototype.wrangleData= function() {
 
-    // time interval in minutes
-    //var total_time = 24
-    // console.log(this.data);
     if(this.start_trips == true) {
         var interval = 10;
         var starttime = d3.time.day(new Date(this.data[this.data.length-1]["starttime"]));
@@ -136,7 +94,9 @@ StationVis.prototype.wrangleData= function() {
                 line_data.forEach( function (e,j) {
                     if(e.name == d["start station name"]) {
                         var index = ((d3.time.hour.floor(bikes_starting_time).getTime() - starttime.getTime())/(60*60*1000));
-                        e.bikers[index].count ++;
+                        if(index != -1) {
+                            e.bikers[index].count ++;
+                        }
                     }
                 });
             }
@@ -162,17 +122,14 @@ StationVis.prototype.wrangleData= function() {
             line_data.forEach( function (e,j) {
                 if(e.name == d["end station name"]) {
                     var index = ((d3.time.hour.floor(bikes_ending_time).getTime() - starttime.getTime())/(60*60*1000));
-                    e.bikers[index].count ++;
+                    if(index != -1 && index < 25) {
+                        e.bikers[index].count ++;
+                    }
                 }
             });
         });
         this.displayData = line_data;
-
-        // go through all the bikes
-            // check out endingtime time
-            // if a trip's ending station matches in the lists name, add to the list in correct index
     }
-    // console.log(this.displayData);
 }
 
 StationVis.prototype.ending = function() {
@@ -201,9 +158,6 @@ StationVis.prototype.change_stations = function(station_list) {
     this.updateVis();
 }
 
-/**
- * the drawing function - should use the D3 selection, enter, exit
- */
 StationVis.prototype.updateVis = function() {
     
     var that = this;
