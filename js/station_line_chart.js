@@ -11,7 +11,7 @@ StationVis = function(_parentElement, day_data, station_list) {
     this.station_list = station_list;
     
     this.margin = {top: 10, right: 30, bottom: 25, left: 45},
-    this.width = 950 - this.margin.left - this.margin.right,
+    this.width = 650 - this.margin.left - this.margin.right,
     this.height = 300 - this.margin.top - this.margin.bottom;
 
     this.initVis();

@@ -11,9 +11,9 @@ aggregateVis = function(_parentElement, _data) {
     this.gender_filter_data = [];
     this.subsc_filter_data = [];
 
-    this.margin = {top: 10, right: 0, bottom: 200, left: 50},
-    this.width = 400 - this.margin.left - this.margin.right,
-    this.height = 350 - this.margin.top - this.margin.bottom;
+    this.margin = {top: 10, right: 0, bottom: 50, left: 50},
+    this.width = 300 - this.margin.left - this.margin.right,
+    this.height = 200 - this.margin.top - this.margin.bottom;
 
     this.titles = ["Jul  4", "Dec  1"];
     this.initVis();

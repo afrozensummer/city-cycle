@@ -17,6 +17,12 @@ body {
     width: 30px;
 }
 
+#time {
+  font-size: 18px;
+  font-family: "Poiret One";
+  float: right;
+}
+
 .vis_text {
     padding-top: 10px;
 }
@@ -57,10 +63,22 @@ a {
   stroke-linecap: round;
 }
 
+#barchart {
+  float: left;
+}
+
+#aggregate_chart {
+  float: right;
+}
+
+#stations_chart {
+  float: right;
+}
+
 #map
 {
   width: 40%;
-  height: 65%;
+  height: 70%;
   float: left;
 /*  margin: auto;*/
   padding: 0;
