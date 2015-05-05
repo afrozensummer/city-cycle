@@ -129,7 +129,7 @@ averageDayVis.prototype.initVis = function() {
          .attr("y", 6)
          .attr("dy", ".71em")
          .style("text-anchor", "beginning")
-         .text("Average Bikers This Hour");
+         .text("Bikers This Hour");
 
     // call the update method
     this.data_to_use = this.nofilter_data;
