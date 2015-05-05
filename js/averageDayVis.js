@@ -48,7 +48,6 @@ averageDayVis.prototype.initVis = function() {
 
   this.data.forEach(function(d){
 
-
     var day_array = d3.range(24).map(function () { return 0; });
     var female_array = d3.range(24).map(function () { return 0; });
     var male_array = d3.range(24).map(function () { return 0; });
@@ -100,8 +99,6 @@ averageDayVis.prototype.initVis = function() {
   this.nofilter_data = no_filter;
   this.gender_filter_data = gender_filter;
   this.subsc_filter_data = subsc_filter;
-  // Create the regular data
-
 
   var that = this;
 
@@ -145,9 +142,6 @@ averageDayVis.prototype.initVis = function() {
          .style("text-anchor", "beginning")
          .text("Average Bikers This Hour");
 
-    // filter, aggregate, modify data
-    //this.wrangleData(null);
-
     // call the update method
     this.data_to_use = this.nofilter_data;
     this.updateVis("00");
@@ -170,29 +164,18 @@ averageDayVis.prototype.filter_called = function(filter, hour) {
     // call updateVis
     this.updateVis(hour);
 }
-/**
- * the drawing function - should use the D3 selection, enter, exit
- */
+
 averageDayVis.prototype.updateVis = function(hour) {
 
 
     var index = parseInt(hour);
-    //console.log(index);
     var that = this;
-   
-    //console.log(today_date);
-    //console.log(this.data)
-    // updates scales
-
-    //this.y.domain([0, d3.max(this.data.map(function(d) {return d.bikers[index];}))]);
-    //this.y.domain([0, d3.max(this.displayData.map(function (d) {return d.count;}))]);
-    //this.x.domain(this.data(function(d) {return d.date;}));
 
     var max = d3.max(this.data_to_use.map(function (d) {return d3.max(d.bikers);}));
     this.y.domain([0, max]);
     this.x.domain(this.titles);
    
-    // updates axis
+    // Update x axis
     this.svg.select(".x.axis")
         .call(this.xAxis)
      .selectAll("text")  
@@ -215,7 +198,7 @@ averageDayVis.prototype.updateVis = function(hour) {
 
     bar_enter.append("rect")
       .attr("class", "bar")
-      .attr("y", function(d) { return that.y(d.bikers[index]);}) // or something like that
+      .attr("y", function(d) { return that.y(d.bikers[index]);}) 
       .attr("x", function(d, i) { 
         if(d.type != 2) {
           return that.x(d.date);
