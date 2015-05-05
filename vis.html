@@ -592,8 +592,15 @@ function data_loaded() {
   // document.getElementById("#play").oninput = function() { playbyyear(); };
 
   // if we add to end, it'll just iterate through every minute...
-  d3.select("#play").style("display", "initial").on("click", playbyyear);
-  d3.select("#pause").on("click", function() {clearInterval(myVar);})
+  d3.select("#play").style("display", "initial").on("click", function() {
+    playbyyear();
+    d3.select("#play").style("display", "none");
+    d3.select("#pause").style("display", "initial");
+  });
+  d3.select("#pause").on("click", function() { clearInterval(myVar);
+    d3.select("#play").style("display", "initial");
+    d3.select("#pause").style("display", "none");
+  })
   d3.select("#reset").style("display", "initial").on("click", resetbike);
 
   function playbyyear() {
@@ -601,18 +608,7 @@ function data_loaded() {
     myVar = setTimeout(function () {
         //$("#slider").slider('value', this.value + 1);
         var update_time = new Date(current_time.getTime() + 60*1000);
-        //animate();
-        //minidata = new_trips(current_time, true);
-        //createnewbikes(minidata);
-        //document.getElementById("time").innerHTML = "Current Time: <br>" + formatDate(current_time);
-        //document.getElementById("temp").innerHTML = "Temperature: " + weather_data[strip(hour(current_time))]["DryBulbFarenheit"]+ " F";
-       /* d3.select("#slider-time").attr("value", function() {
-          // console.log(temp)
-          // temp = this.value+1;
-          // console.log(temp)
-          //console.log(d3.select("#ui-slider"))
-          return (this.value + 1);
-        });*/
+
         $("#slider").slider('value', update_time);
         if(current_time < ending_time) {
           playbyyear();
@@ -624,31 +620,7 @@ function data_loaded() {
     $("#slider").slider('value', starting_time.getTime());
     update();
 
-    // svg.selectAll(".bikes").remove();
-    // minidata = all_bikes_for_date(current_time);
-    // createnewbikes(minidata); 
   }
-
-  // Create a date range slider
-  //var MyEventHandler = new Object();
-  //var slider = new Slider(d3.select("#slider"), [], MyEventHandler);
-
-  // Handle the event for the slider
-  /*$(MyEventHandler).bind("selectionChanged", function(event, value) {
-    document.getElementById("time").innerHTML = "Current Time: <br>" + formatDate(value.time);
-    
-    if(d3.time.minute.floor(new Date(value.time)) > d3.time.minute.floor(current_time)) {
-
-      animate();
-      current_time = new Date(value.time);
-      minidata = data_for_minute(current_time);
-      createnewbikes(minidata);
-      // console.log(minidata)
-      // console.log(current_time);
-    }
-  });*/
-
-
 
   // Build the map
   L.mapbox.accessToken = 'pk.eyJ1IjoiY2l0eWN5Y2xlIiwiYSI6IjZ3MXNtRW8ifQ.lmAxO5RTphn4Jo-QV63Vpg';

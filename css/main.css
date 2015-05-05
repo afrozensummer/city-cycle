@@ -257,6 +257,11 @@ a {
   stroke-width: .8px;*/
 }
 
+#pause {
+  display: none;
+  padding-right: 5px;
+}
+
 .bikes {
   z-index: 1;
   opacity: 1;
