@@ -1,6 +1,6 @@
 
 StationVis = function(_parentElement, day_data, station_list) {
-   	var stationvis = this;
+    var stationvis = this;
     this.parentElement = _parentElement;
     this.data = day_data;
     this.station_list = station_list;

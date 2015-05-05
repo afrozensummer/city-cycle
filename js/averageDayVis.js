@@ -1,9 +1,7 @@
 /**
- * Bitches make graphs 
+ * Bitches make graphs pt. 1
  */
 
-
-//TODO: DO IT ! :) Look at agevis.js for a useful structure
 averageDayVis = function(_parentElement, _data) {
     this.parentElement = _parentElement;
     this.data = _data;
@@ -31,12 +29,7 @@ averageDayVis = function(_parentElement, _data) {
     this.initVis();
 }
 
-/**
- * Method that sets up the SVG and the variables
- */
 averageDayVis.prototype.initVis = function() {
-
-  //console.log(this.data);  
 
   var no_filter = [];
   var gender_filter = [];
@@ -48,7 +41,6 @@ averageDayVis.prototype.initVis = function() {
 
   this.data.forEach(function(d){
 
-
     var day_array = d3.range(24).map(function () { return 0; });
     var female_array = d3.range(24).map(function () { return 0; });
     var male_array = d3.range(24).map(function () { return 0; });
@@ -59,8 +51,6 @@ averageDayVis.prototype.initVis = function() {
     var lasthour = "00";
     var date = new Date (d[d.length-1].starttime);
     var true_date = formatDate(date);
-
-    //console.log(d);
 
     d.forEach(function(i){
       var hour = new Date (i.starttime);
@@ -76,7 +66,7 @@ averageDayVis.prototype.initVis = function() {
         // Add to unfiltered data
         day_array[index] += 1;
 
-        // Now add to where the gender is filtered
+        // Now add to filtered data sets
         if (i.gender == 1){
             male_array[index] +=1;
         } if (i.gender == 2){
@@ -89,7 +79,6 @@ averageDayVis.prototype.initVis = function() {
       }   
     })
 
-    //console.log(day_array);
     no_filter.push({"date": formatTitle(date), "type": 0, "bikers":day_array, "color":"#4D4D4D"});
     gender_filter.push({"date": formatTitle(date), "type": 1, "bikers":male_array, "color":"#3399FF"});
     gender_filter.push({"date": formatTitle(date), "type": 2, "bikers":female_array, "color":"#FF6699"}); 
@@ -100,8 +89,6 @@ averageDayVis.prototype.initVis = function() {
   this.nofilter_data = no_filter;
   this.gender_filter_data = gender_filter;
   this.subsc_filter_data = subsc_filter;
-  // Create the regular data
-
 
   var that = this;
 
@@ -138,15 +125,11 @@ averageDayVis.prototype.initVis = function() {
       .attr("class", "y axis")
       .append("text")
          
-         //.attr("transform", "translate(0, 100)", "")
          .attr("transform", "translate(100,0)")
          .attr("y", 6)
          .attr("dy", ".71em")
          .style("text-anchor", "beginning")
          .text("Average Bikers This Hour");
-
-    // filter, aggregate, modify data
-    //this.wrangleData(null);
 
     // call the update method
     this.data_to_use = this.nofilter_data;
@@ -167,32 +150,21 @@ averageDayVis.prototype.filter_called = function(filter, hour) {
     if(filter == "none") {
       this.data_to_use = this.nofilter_data;
     }
-    // call updateVis
+    // Call updateVis
     this.updateVis(hour);
 }
-/**
- * the drawing function - should use the D3 selection, enter, exit
- */
+
 averageDayVis.prototype.updateVis = function(hour) {
 
 
     var index = parseInt(hour);
-    //console.log(index);
     var that = this;
-   
-    //console.log(today_date);
-    //console.log(this.data)
-    // updates scales
-
-    //this.y.domain([0, d3.max(this.data.map(function(d) {return d.bikers[index];}))]);
-    //this.y.domain([0, d3.max(this.displayData.map(function (d) {return d.count;}))]);
-    //this.x.domain(this.data(function(d) {return d.date;}));
 
     var max = d3.max(this.data_to_use.map(function (d) {return d3.max(d.bikers);}));
     this.y.domain([0, max]);
     this.x.domain(this.titles);
    
-    // updates axis
+    // Update x axis
     this.svg.select(".x.axis")
         .call(this.xAxis)
      .selectAll("text")  
@@ -203,11 +175,11 @@ averageDayVis.prototype.updateVis = function(hour) {
             return "rotate(-65)" 
          });
 
-    // updates axis
+    // Updates axis
     this.svg.select(".y.axis")
         .call(this.yAxis);
 
-    // data join
+    // Data join
     var bar = this.svg.selectAll(".bar")
       .data(this.data_to_use);
 
@@ -215,7 +187,7 @@ averageDayVis.prototype.updateVis = function(hour) {
 
     bar_enter.append("rect")
       .attr("class", "bar")
-      .attr("y", function(d) { return that.y(d.bikers[index]);}) // or something like that
+      .attr("y", function(d) { return that.y(d.bikers[index]);}) 
       .attr("x", function(d, i) { 
         if(d.type != 2) {
           return that.x(d.date);
