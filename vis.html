@@ -640,6 +640,9 @@ function data_loaded() {
     $("#slider").slider('value', starting_time.getTime());
     update();
 
+    svg.selectAll(".bikes").remove();
+    minidata = all_bikes_for_date(new_time);
+    createnewbikes(minidata);
   }
 
   // Build the map
