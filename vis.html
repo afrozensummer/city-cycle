@@ -43,33 +43,42 @@ html, body {
       Feel free to drag the bike along the timeline to jump to a particular moment you'd like to see or switch days. To learn more about our motivation behind this project and why we selected these particular days, please go to 'Read Our Story' from our homepage! <br><br> -->
     </div>
 
-    <div id = "controls">
-    <input type="image" src="img/reset.png" name="reset" class="button" id = "reset" />
+<div id = "controls">
+            <input type="image" src="img/reset.png" name="reset" class="button" id = "reset" />
     <input type="image" src="img/play.png" name="play" class="button" id = "play" />
-    <input type="image" src="img/pause.png" name="pause" class="button" id = "pause" />
-    <!--<input type="range" data-highlight="true" name="minutes" min="0" max="0" step="1" value="0" class="slider" id="slider-time"; >-->
+    <input type="image" src="img/pause.png" name="pause" class="button" id = "pause" />  
+      </div>
+  <div id = "dates">
+              <button  class = "buttonactive" type="button" value="july_4"> July 4</button>
+        <button class = "day" type="button" value="dec_1">Dec 1</button>
+        <button class = "day" type="button">Other Day</button>
+        <button class = "day" type="button">Other Day</button>
+    </div>
+
     
-    
-  </div>
-  <div id = "bike_categorize"> 
+
+    <div id = "time"></div>
+      
+<br><br>    
+      <div id = "weathericon"><img src="/img/sun.png" alt=""></div>
+      <div id = "temp"></div>  
+      
+      <div id = "filters">
         Categorize By:
         <label><input type="radio" name="filter" value="none" checked> None </label>
         <label><input type="radio" name="filter" value="gender"> Gender </label>  
         <label><input type="radio" name="filter" value="subscription"> Subscription </label>
         <label><input type="radio" name="filter" value="age"> Age </label>
-        <button  class = "buttonactive" type="button" value="july_4"> July 4</button>
-        <button class = "day" type="button" value="dec_1">Dec 1</button>
-        <button class = "day" type="button">Other Day</button>
-        <button class = "day" type="button">Other Day</button>
-    </div><div id = "time"></div>
+      </div>  
+
+    
     <div id="bikeline"></div>
   <div id="slider"></div> <br>
       
     <div id = "description_container">
       
       <br>
-      <div id = "temp"></div>  
-      <div id = "weathericon"><img src="/img/sun.png" alt=""></div>
+      
     </div><!-- <div id="map_cover"></div> -->
       
       <div id="legend"></div> 

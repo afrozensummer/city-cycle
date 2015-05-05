@@ -6,7 +6,7 @@ bikeLineVis = function(_parentElement, _data) {
     this.parentElement = _parentElement;
     this.data = _data;
 
-    this.margin = {top: 10, right: 0, bottom: 0, left: 0},
+    this.margin = {top: 0, right: 0, bottom: 0, left: 0},
     this.width = 1200 - this.margin.left - this.margin.right,
     this.height = 100 - this.margin.top - this.margin.bottom;
     
