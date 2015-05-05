@@ -71,7 +71,6 @@ html, body {
         <label><input type="radio" name="filter" value="none" checked> None </label>
         <label><input type="radio" name="filter" value="gender"> Gender </label>  
         <label><input type="radio" name="filter" value="subscription"> Subscription </label>
-        <label><input type="radio" name="filter" value="age"> Age </label>
       </div>  
 
     
@@ -84,7 +83,11 @@ html, body {
       
     </div><!-- <div id="map_cover"></div> -->
       
-      <div id="category legend"></div> 
+      <div id="category legend">
+          <span id= "option 1"></span> <br>
+          <span id= "option 2"></span> <br>
+          <span id= "option 3"></span>
+      </div> 
       <div id="map"></div>
       <div id="barchart"></div>
       <div id="aggregate_chart"></div>
@@ -115,13 +118,30 @@ var ending_time = new Date("2014-06-29 23:59:00");
 var current_time = starting_time;
 var filter = "none";
 var filters = {
-    none: function(d) {return "#000"},
+    none: function(d) {
+
+      document.getElementById("option 1").innerHTML = "";
+      document.getElementById("option 2").innerHTML = "";
+      document.getElementById("option 3").innerHTML = "";
+
+      return "#000"
+    },
     gender: function(d) { 
+
+      document.getElementById("option 1").innerHTML = '<font color="#0000ff"> <font face="verdana"> &#8226 </font> Male </font>';
+      document.getElementById("option 2").innerHTML = '<font color="#FF0000"> <font face="verdana"> &#8226 </font> Female </font>';
+      document.getElementById("option 3").innerHTML = '<font color="#8A2BE2"> <font face="verdana"> &#8226 </font> Unspecified </font>';
+
       if(d.gender == 1) return "#0000ff";
       if(d.gender == 2) return "#FF0000";
       return "#8A2BE2";
     },
-    subscription: function(d) { 
+    subscription: function(d) {
+
+      document.getElementById("option 1").innerHTML = '<font color="#0080ff"><font face="verdana"> &#8226 </font> New Customer </font>';
+      document.getElementById("option 2").innerHTML = '<font color="#ffa500"><font face="verdana"> &#8226 </font> Yearly Subscriber </font>';
+      document.getElementById("option 3").innerHTML = "";
+
       if(d.usertype == "Customer") return "#0080ff";
       return "#ffa500";
     }
@@ -753,7 +773,9 @@ function data_loaded() {
             .attr("highlighted", "false")
             .style("fill", function(d) {
               if(d.stationName == "E 43 St & Vanderbilt Ave") {
-                d3.select(this).attr("highlighted", "true");
+                d3.select(this)
+                  .attr("highlighted", "true")
+                  .style("opacity", .6);
                 return "red";
               }
             })
@@ -762,7 +784,9 @@ function data_loaded() {
                   if(d3.select(this).attr("highlighted") == "false") {
                     if(stations_selected.length < 3) {
                       
-                      d3.select(this).attr("highlighted", "true");
+                      d3.select(this)
+                        .attr("highlighted", "true")
+                        .style("opacity", .6);
                       
                       var red = true;
                       var blue = true;
@@ -803,8 +827,9 @@ function data_loaded() {
                     stations_vis.change_stations(stations_selected);
 
                   }
-                  console.log(stations_selected);
-                  d3.select(this).attr("highlighted", "false");
+                  d3.select(this)
+                    .attr("highlighted", "false")
+                    .style("opacity", .3);
                   return  "steelblue";
               });
             })
