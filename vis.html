@@ -137,8 +137,14 @@ queue()
   .defer(d3.csv, "data/july3.csv")
   .defer(d3.csv, "data/july4.csv")
   .defer(d3.csv, "data/july5.csv")
+  .defer(d3.csv, "data/jun29_weather.csv")
+  .defer(d3.csv, "data/jun30_weather.csv")
+  .defer(d3.csv, "data/jul1_weather.csv")
+  .defer(d3.csv, "data/jul2_weather.csv")
+  .defer(d3.csv, "data/jul3_weather.csv")
   .defer(d3.csv, "data/july4weather.csv")
-    .await(function(error, stations, june29_b, june30_b, july1_b, july_extra, july2_b, july3_b, july4_b, july5_b, july4_w) { 
+  .defer(d3.csv, "data/jul5_weather.csv")
+    .await(function(error, stations, june29_b, june30_b, july1_b, july_extra, july2_b, july3_b, july4_b, july5_b, june29_w, june30_w, july1_w, july2_w, july3_w, july4_w, july5_w) { 
         // error handling
         station_data = stations;
 
@@ -150,7 +156,13 @@ queue()
         july4_bikes = july4_b;
         july5_bikes = july5_b;
 
+        june29_weather = june29_w;
+        june30_weather = june30_w;
+        july1_weather = july1_w;
+        july2_weather = july2_w;
+        july3_weather = july3_w;
         july4_weather = july4_w;
+        july5_weather = july5_w;
 
         data_loaded();
   });
@@ -278,7 +290,7 @@ function data_loaded() {
 
       //change bike_data
       bike_data = june29_bikes;
-      //weather_data = june30_weather;
+      weather_data = june29_weather;
 
       //reset function
       $("#slider").slider({
@@ -306,7 +318,7 @@ function data_loaded() {
 
       //change bike_data
       bike_data = june30_bikes;
-      //weather_data = june30_weather;
+      weather_data = june30_weather;
 
       //reset function
       $("#slider").slider({
@@ -334,7 +346,7 @@ function data_loaded() {
 
       //change bike_data
       bike_data = july1_bikes;
-      //weather_data = july1_weather;
+      weather_data = july1_weather;
 
       //reset function
       $("#slider").slider({
@@ -362,7 +374,7 @@ function data_loaded() {
 
       //change bike_data
       bike_data = july2_bikes;
-      //weather_data = july2_weather;
+      weather_data = july2_weather;
 
       //reset function
       $("#slider").slider({
@@ -390,7 +402,7 @@ function data_loaded() {
 
       //change bike_data
       bike_data = july3_bikes;
-      //weather_data = july3_weather;
+      weather_data = july3_weather;
 
       //reset function
       $("#slider").slider({
@@ -446,7 +458,7 @@ function data_loaded() {
 
       //change bike_data
       bike_data = july5_bikes;
-      //weather_data = july5_weather;
+      weather_data = july5_weather;
       //change weather data
       //reset function
       $("#slider").slider({
@@ -536,17 +548,17 @@ function data_loaded() {
     var new_time = new Date($("#slider").slider('value'));
     aggregate_vis.updateVis(format_hour_only(new_time), format_minute_only(new_time));
     document.getElementById("time").innerHTML = "Current Time: " + formatTime(new_time);
-    // console.log(weather_data[strip(hour(current_time))]["WeatherType"])
+    //console.log(weather_data[strip(hour(current_time))]["WeatherType"])
     document.getElementById("temp").innerHTML = "Temperature: " + weather_data[strip(hour(current_time))]["DryBulbFarenheit"]+ " °F";
-    if (weather_data[strip(hour(current_time))]["WeatherType"] == "-RA") {
+    if (weather_data[strip(hour(current_time))]["WeatherType"] == "-RA" || weather_data[strip(hour(current_time))]["WeatherType"] == "RA") {
       document.getElementById("weathericon").innerHTML = "<img src='/img/rain.png' >";
     }
-    else if (weather_data[strip(hour(current_time))]["WeatherType"] == " ") {
+    else {
       document.getElementById("weathericon").innerHTML = "<img src='/img/sun.png' >";
     }
-    else if (weather_data[strip(hour(current_time))]["WeatherType"] == "BR") {
-      document.getElementById("weathericon").innerHTML = "<img src='/img/sun.png' >";
-    }
+    // else if (weather_data[strip(hour(current_time))]["WeatherType"] == "BR") {
+    //   document.getElementById("weathericon").innerHTML = "<img src='/img/sun.png' >";
+    // }
 
     var difference = Math.abs((new_time-current_time)/(60*1000));
         if(difference > 15) {
