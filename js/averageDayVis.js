@@ -26,7 +26,8 @@ averageDayVis = function(_parentElement, _data) {
         averageDay.initVis();
     }
 
-    this.titles = [ "Jul  4", "Dec  1"];
+    this.titles = ["Jun 29", "Jun 30", "Jul  1", "Jul  2", "Jul  3", "Jul  4", "Jul  5"];
+
     this.initVis();
 }
 
@@ -56,7 +57,7 @@ averageDayVis.prototype.initVis = function() {
 
     var index = 0;
     var lasthour = "00";
-    var date = new Date (d[1000].starttime);
+    var date = new Date (d[d.length-1].starttime);
     var true_date = formatDate(date);
 
     //console.log(d);
