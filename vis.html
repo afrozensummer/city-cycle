@@ -49,10 +49,13 @@ html, body {
     <input type="image" src="img/pause.png" name="pause" class="button" id = "pause" />  
       </div>
   <div id = "dates">
-              <button  class = "buttonactive" type="button" value="july_4"> July 4</button>
-        <button class = "day" type="button" value="dec_1">Dec 1</button>
-        <button class = "day" type="button">Other Day</button>
-        <button class = "day" type="button">Other Day</button>
+      <button  class = "buttonactive" type="button" value="june_29"> June 29</button>
+        <button  class = "day" type="button" value="june_30"> June 30</button>
+        <button  class = "day" type="button" value="july_1"> July 1</button>
+        <button  class = "day" type="button" value="july_2"> July 2</button>
+        <button  class = "day" type="button" value="july_3"> July 3</button>
+        <button  class = "day" type="button" value="july_4"> July 4</button>
+        <button  class = "day" type="button" value="july_5"> July 5</button>
     </div>
 
     
@@ -68,17 +71,10 @@ html, body {
         <label><input type="radio" name="filter" value="none" checked> None </label>
         <label><input type="radio" name="filter" value="gender"> Gender </label>  
         <label><input type="radio" name="filter" value="subscription"> Subscription </label>
-        <button  class = "buttonactive" type="button" value="june_29"> June 29</button>
-        <button  class = "day" type="button" value="june_30"> June 30</button>
-        <button  class = "day" type="button" value="july_1"> July 1</button>
-        <button  class = "day" type="button" value="july_2"> July 2</button>
-        <button  class = "day" type="button" value="july_3"> July 3</button>
-        <button  class = "day" type="button" value="july_4"> July 4</button>
-        <button  class = "day" type="button" value="july_5"> July 5</button>    
-    </div>
         <label><input type="radio" name="filter" value="age"> Age </label>
       </div>  
 
+    
     <div id="bikeline"></div>
   <div id="slider"></div> <br>
       
@@ -88,11 +84,16 @@ html, body {
       
     </div><!-- <div id="map_cover"></div> -->
       
-      <div id="legend"></div> 
+      <div id="category legend"></div> 
       <div id="map"></div>
       <div id="barchart"></div>
       <div id="aggregate_chart"></div>
       <div id="stations_chart"></div>
+      <div id="line legend"> 
+        <span id= "red">E 43 St & Vanderbilt Ave</span> <br>
+        <span id= "blue"></span> <br>
+        <span id= "green"></span>
+      </div>
 
     <script type="text/javascript">
 
@@ -106,6 +107,7 @@ var july4_bikes;
 var july5_bikes; 
 var station_data;
 var barchart_data;
+var stations_selected = [{name:"E 43 St & Vanderbilt Ave", color:"red"}];
 
 var current_day = "july_4";
 var starting_time = new Date("2014-06-29 00:00:00"); //start with july
@@ -168,7 +170,7 @@ function data_loaded() {
   var data_test = [june29_bikes, june30_bikes, july1_bikes, july2_bikes, july3_bikes, july4_bikes, july5_bikes];
   var averageDay_vis = new averageDayVis(d3.select("#barchart"), data_test);
   var aggregate_vis = new aggregateVis(d3.select("#aggregate_chart"), data_test);
-  var stations_vis = new StationVis(d3.select("#stations_chart"), bike_data, ["1 Ave & E 15 St"]);
+  var stations_vis = new StationVis(d3.select("#stations_chart"), bike_data, stations_selected);
 
 // "E 43 St & Vanderbilt Ave"
 
@@ -746,7 +748,6 @@ function data_loaded() {
                     })
   }
 
-  var stations_selected = [];
   var stations = g.selectAll("stations")
             .data(stationsList)
             .enter()
@@ -754,19 +755,49 @@ function data_loaded() {
             .attr("r", 4)
             .attr("class", "stations")
             .attr("highlighted", "false")
+            .style("fill", function(d) {
+              if(d.stationName == "E 43 St & Vanderbilt Ave") {
+                d3.select(this).attr("highlighted", "true");
+                return "red";
+              }
+            })
             .on("click", function(d) {
               d3.select(this).style("fill", function(d) {
                   if(d3.select(this).attr("highlighted") == "false") {
                     if(stations_selected.length < 3) {
-                      stations_selected.push(d.stationName);
+                      
+                      d3.select(this).attr("highlighted", "true");
+                      
+                      var red = true;
+                      var blue = true;
+                      var green = true;
+                      var this_color = "green";
+
+                      stations_selected.forEach( function (e) {
+                        if(e.color == "red") {
+                          red = false;
+                        }
+                        if(e.color == "blue") {
+                          blue = false;
+                        }
+                        if(e.color == "green") {
+                          green = false;
+                        }
+                      });
+
+                      if(red == true) this_color = "red";
+                      if(blue == true) this_color = "blue";
+                     
+                      stations_selected.push({name:d.stationName, color:this_color});
                       // new station added to line graph, update it
                       stations_vis.change_stations(stations_selected);
                       console.log(stations_selected);
-                      d3.select(this).attr("highlighted", "true");
-                      return "red";
+
+                      return this_color;
+
                     }
                   }
-                  var i = stations_selected.indexOf(d.stationName);
+                  var i = stations_selected.map(function (e) { return e.name;}).indexOf(d.stationName);
                   if(i != -1) {
                     stations_selected.splice(i, 1);
                     //station removed from line graph, update it

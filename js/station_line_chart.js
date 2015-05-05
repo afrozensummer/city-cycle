@@ -83,16 +83,13 @@ StationVis.prototype.initVis = function(){
         .attr("y", 6)
         .attr("dy", ".71em")
         .style("text-anchor", "end")
-        .text("Count Volume");
+        .text("Trips Starting from the Station in this Hour");
 
     // modify the data
     this.wrangleData();
 
     // call the update method
     this.updateVis();
-
-    //remove first call
-    this.svg.selectAll(".line").remove();
 }
 
 /**
@@ -116,7 +113,7 @@ StationVis.prototype.wrangleData= function() {
                 count: 0
             });
         }
-        line_data.push({name:d, bikers:time_line});
+        line_data.push({name:d.name, color:d.color, bikers:time_line});
     });
 
     this.data.forEach( function(d,i) {
@@ -125,7 +122,7 @@ StationVis.prototype.wrangleData= function() {
             line_data.forEach( function (e,j) {
                 if(e.name == d["start station name"]) {
                     var index = ((d3.time.hour.floor(bikes_starting_time).getTime() - starttime.getTime())/(60*60*1000));
-                    e.bikers[index+1].count ++;
+                    e.bikers[index].count ++;
                 }
             });
         }
@@ -182,7 +179,9 @@ StationVis.prototype.updateVis = function() {
     lines
         .attr("d", function(d,i) {return that.line(d.bikers);})
         .attr("fill", "none")
-        .style("stroke", "red");
+        .style("stroke", function (d) {
+          return d.color;  
+        });
 
    lines.exit()
         .remove();
