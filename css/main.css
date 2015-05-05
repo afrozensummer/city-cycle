@@ -235,7 +235,7 @@ a {
     z-index: 4;
     top: 200px;
     margin: auto;
-    font-size: 40px;
+    font-size: 35px;
     font-family: 'Poiret One';
 }
 
@@ -255,6 +255,11 @@ a {
   opacity: 0.3;
 /*  stroke: black;
   stroke-width: .8px;*/
+}
+
+#pause {
+  display: none;
+  padding-right: 5px;
 }
 
 .bikes {

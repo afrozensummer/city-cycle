@@ -10,7 +10,7 @@ StationVis = function(_parentElement, day_data, station_list) {
     this.data = day_data;
     this.station_list = station_list;
     
-    this.margin = {top: 10, right: 0, bottom: 25, left: 25},
+    this.margin = {top: 10, right: 0, bottom: 25, left: 35},
     this.width = parseInt(d3.select('#stations_chart').style('width'), 10) - this.margin.left - this.margin.right,
     this.height = 300 - this.margin.top - this.margin.bottom;
 
@@ -111,7 +111,7 @@ StationVis.prototype.wrangleData= function() {
 
     // time interval in minutes
     //var total_time = 24
-    console.log(this.data);
+    // console.log(this.data);
     var interval = 10;
     var starttime = d3.time.day(new Date(this.data[this.data.length-1]["starttime"]));
 
@@ -139,7 +139,7 @@ StationVis.prototype.wrangleData= function() {
         }
     });
     this.displayData = line_data;
-    console.log(this.displayData);
+    // console.log(this.displayData);
 }
 
 StationVis.prototype.change_day = function(data) {
