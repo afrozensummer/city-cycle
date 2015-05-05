@@ -38,20 +38,32 @@ html, body {
       CitiBike Visualization
     </div>
     <div class = "vis_text">
-      Select a day and press the play button to see CityBike users in action! By default the map shows each user as a black dot and tracks each biker's journey through New York City. You can also select the gender feature to color bikers by gender (females are red, males are blue) or by subscription level (subscribers are yellow and one time customers are blue). 
+<!--       Select a day and press the play button to see CityBike users in action! By default the map shows each user as a black dot and tracks each biker's journey through New York City. You can also select the gender feature to color bikers by gender (females are red, males are blue) or by subscription level (subscribers are yellow and one time customers are blue). 
       The two bar charts to the right of the map show how bike usage today compares to the other three days you can view. The top bar chart tracks the number of bikers who departed during the current hour on each of the days, while the bottom bar chart shows the total number of bikers who have departed by the current time on each of the four days. When you select the 'gender' or 'subscription' options, both bar charts will break down the data by the catagory you selected, with colors corresponding to the bikers on the map. While the bar charts help compare the current day to others, the line chart below the timeline displays the total number of bikes departing at each time over the course of the selected day. 
-      Feel free to drag the bike along the timeline to jump to a particular moment you'd like to see or switch days. To learn more about our motivation behind this project and why we selected these particular days, please go to 'Read Our Story' from our homepage! <br><br>
+      Feel free to drag the bike along the timeline to jump to a particular moment you'd like to see or switch days. To learn more about our motivation behind this project and why we selected these particular days, please go to 'Read Our Story' from our homepage! <br><br> -->
     </div>
 
-    <div id = "controls">
-    <input type="image" src="img/reset.png" name="reset" class="button" id = "reset" />
+<div id = "controls">
+            <input type="image" src="img/reset.png" name="reset" class="button" id = "reset" />
     <input type="image" src="img/play.png" name="play" class="button" id = "play" />
-    <input type="image" src="img/pause.png" name="pause" class="button" id = "pause" />
-    <!--<input type="range" data-highlight="true" name="minutes" min="0" max="0" step="1" value="0" class="slider" id="slider-time"; >-->
+    <input type="image" src="img/pause.png" name="pause" class="button" id = "pause" />  
+      </div>
+  <div id = "dates">
+              <button  class = "buttonactive" type="button" value="july_4"> July 4</button>
+        <button class = "day" type="button" value="dec_1">Dec 1</button>
+        <button class = "day" type="button">Other Day</button>
+        <button class = "day" type="button">Other Day</button>
+    </div>
+
     
-    
-  </div>
-  <div id = "bike_categorize"> 
+
+    <div id = "time"></div>
+      
+<br><br>    
+      <div id = "weathericon"><img src="/img/sun.png" alt=""></div>
+      <div id = "temp"></div>  
+      
+      <div id = "filters">
         Categorize By:
         <label><input type="radio" name="filter" value="none" checked> None </label>
         <label><input type="radio" name="filter" value="gender"> Gender </label>  
@@ -64,14 +76,16 @@ html, body {
         <button  class = "day" type="button" value="july_4"> July 4</button>
         <button  class = "day" type="button" value="july_5"> July 5</button>    
     </div>
+        <label><input type="radio" name="filter" value="age"> Age </label>
+      </div>  
+
     <div id="bikeline"></div>
   <div id="slider"></div> <br>
       
     <div id = "description_container">
-      <div id = "time"></div>
+      
       <br>
-      <div id = "temp"></div>  
-      <div id = "weathericon"><img src="/img/sun.png" alt=""></div>
+      
     </div><!-- <div id="map_cover"></div> -->
       
       <div id="legend"></div> 
@@ -466,13 +480,14 @@ function data_loaded() {
 
   // Format the date
   var formatDate = d3.time.format("%a, %b %e, %H:%M");
+  var formatTime = d3.time.format("%H:%M");
   var format_day_hour = d3.time.format("%a, %b %e, %H");
   var format_minute_only = d3.time.format("%M");
   var format_hour_only = d3.time.format("%H");
   var format_day = d3.time.format("%b %e");
 
 
-  document.getElementById("time").innerHTML = "Current Time: <br>" + formatDate(starting_time);
+  document.getElementById("time").innerHTML = "Current Time: " + formatTime(starting_time);
 
   // Bike Catergorize Functions
   d3.selectAll("input[name=\"filter\"]").on("click", function () {
@@ -518,7 +533,7 @@ function data_loaded() {
   function update() {
     var new_time = new Date($("#slider").slider('value'));
     aggregate_vis.updateVis(format_hour_only(new_time), format_minute_only(new_time));
-    document.getElementById("time").innerHTML = "Current Time: <br>" + formatDate(new_time);
+    document.getElementById("time").innerHTML = "Current Time: " + formatTime(new_time);
     document.getElementById("temp").innerHTML = "Temperature: " + weather_data[strip(hour(current_time))]["DryBulbFarenheit"]+ " F";
     if (weather_data[strip(hour(current_time))]["WeatherType"] == "-RA") {
       document.getElementById("weathericon").innerHTML = "<img src='/img/rain.png' >";

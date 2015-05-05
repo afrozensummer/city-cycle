@@ -11,9 +11,9 @@ averageDayVis = function(_parentElement, _data) {
     this.gender_filter_data = [];
     this.subsc_filter_data = [];
 
-    this.margin = {top: 10, right: 0, bottom: 100, left: 45},
-    this.width = 350 - this.margin.left - this.margin.right,
-    this.height = 250 - this.margin.top - this.margin.bottom;
+    this.margin = {top: 10, right: 0, bottom: 50, left: 45},
+    this.width = 250 - this.margin.left - this.margin.right,
+    this.height = 200 - this.margin.top - this.margin.bottom;
 
     this.titles = ["Jun 29", "Jun 30", "Jul  1", "Jul  2", "Jul  3", "Jul  4", "Jul  5"];
     this.initVis();

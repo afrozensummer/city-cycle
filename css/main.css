@@ -14,7 +14,27 @@ body {
     clear: both;
 }
 .button {
-    width: 30px;
+    width: 25px;
+}
+#dates {
+  margin: auto;
+  position: relative;
+  float: left;
+}
+
+#temp {
+  font-family: 'Poiret One';
+  margin-top: -8px;
+    font-size: 14px;
+
+  float: right;
+  padding-right: 5px;
+}
+
+#time {
+  font-size: 16px;
+  font-family: "Poiret One";
+  float: right;
 }
 
 .vis_text {
@@ -57,10 +77,22 @@ a {
   stroke-linecap: round;
 }
 
+#barchart {
+  float: left;
+}
+
+#aggregate_chart {
+  float: right;
+}
+
+#stations_chart {
+  float: right;
+}
+
 #map
 {
   width: 40%;
-  height: 65%;
+  height: 70%;
   float: left;
 /*  margin: auto;*/
   padding: 0;
@@ -101,7 +133,9 @@ a {
 }
 
 #weathericon img {
-  width: 40px;
+  width: 22px;
+  margin-top: -12px;
+  float: right;
 }
 
 #preintro, #byline{
@@ -133,17 +167,22 @@ a {
     border-style:none; 
 }
 
-#controls input{
+#filters {
+/*  float: left;*/
+  margin-top: 0px;
+    font-family: 'Poiret One';
+        font-size: 16px;
+}
+
+#controls {
+  float: left;
+  left: 0;
+  position: relative;
+
+}
+
+#play_button {
     float: left;
-}
-
-#controls label {
-    float: none;
-}
-
-#bike_categorize {
-    padding-top: 5px;
-    font-size: 13px;
 }
 
 .background {
