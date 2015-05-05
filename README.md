@@ -15,4 +15,4 @@ To see what bikers are female/male or subscribers/non-subscribers, press the 'Ge
 
 To inspect more closely what is happening at any station, click it on the map to add it to the bar chart on the bottom right. This bar chart shows bikers leaving or coming to that station, depending on which option you select. Select up to three stations. To choose new stations, just click on them. To deselect a station, click on it again, or click the reset button to deselect all the stations and start from scratch. 
 
-Use our Visualization: Our visualization is available for use here: http://afrozensummer.github.io
+Use our Visualization: Our visualization is available for use at the following link. Please use Google Chrome when you open the link. http://afrozensummer.github.io
