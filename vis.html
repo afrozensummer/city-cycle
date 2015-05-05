@@ -173,26 +173,30 @@ queue()
   .defer(d3.csv, "data/july4weather.csv")
   .defer(d3.csv, "data/jul5_weather.csv")
     .await(function(error, stations, june29_b, june30_b, july1_b, july_extra, july2_b, july3_b, july4_b, july5_b, june29_w, june30_w, july1_w, july2_w, july3_w, july4_w, july5_w) { 
+        if (!error) {
         
-        station_data = stations;
+          station_data = stations;
 
-        june29_bikes = june29_b;
-        june30_bikes = june30_b;
-        july1_bikes = july_extra.concat(july1_b);
-        july2_bikes = july2_b;
-        july3_bikes = july3_b;
-        july4_bikes = july4_b;
-        july5_bikes = july5_b;
+          june29_bikes = june29_b;
+          june30_bikes = june30_b;
+          july1_bikes = july_extra.concat(july1_b);
+          july2_bikes = july2_b;
+          july3_bikes = july3_b;
+          july4_bikes = july4_b;
+          july5_bikes = july5_b;
 
-        june29_weather = june29_w;
-        june30_weather = june30_w;
-        july1_weather = july1_w;
-        july2_weather = july2_w;
-        july3_weather = july3_w;
-        july4_weather = july4_w;
-        july5_weather = july5_w;
+          june29_weather = june29_w;
+          june30_weather = june30_w;
+          july1_weather = july1_w;
+          july2_weather = july2_w;
+          july3_weather = july3_w;
+          july4_weather = july4_w;
+          july5_weather = july5_w;
 
-        data_loaded();
+          data_loaded();
+        } else {
+          console.log("error");
+        }
   });
 
 function data_loaded() {
