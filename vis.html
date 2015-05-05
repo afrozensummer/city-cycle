@@ -56,11 +56,13 @@ html, body {
         <label><input type="radio" name="filter" value="none" checked> None </label>
         <label><input type="radio" name="filter" value="gender"> Gender </label>  
         <label><input type="radio" name="filter" value="subscription"> Subscription </label>
-        <label><input type="radio" name="filter" value="age"> Age </label>
-        <button  class = "buttonactive" type="button" value="july_4"> July 4</button>
-        <button class = "day" type="button" value="dec_1">Dec 1</button>
-        <button class = "day" type="button">Other Day</button>
-        <button class = "day" type="button">Other Day</button>
+        <button  class = "buttonactive" type="button" value="june_29"> June 29</button>
+        <button  class = "day" type="button" value="june_30"> June 30</button>
+        <button  class = "day" type="button" value="july_1"> July 1</button>
+        <button  class = "day" type="button" value="july_2"> July 2</button>
+        <button  class = "day" type="button" value="july_3"> July 3</button>
+        <button  class = "day" type="button" value="july_4"> July 4</button>
+        <button  class = "day" type="button" value="july_5"> July 5</button>    
     </div>
     <div id="bikeline"></div>
   <div id="slider"></div> <br>
@@ -81,13 +83,19 @@ html, body {
     <script type="text/javascript">
 
 // Variables
-var current_day = "july_4";
-var dec1_bikes;
-var july4_bikes;
-var barchart_data;
+var june29_bikes;
+var june30_bikes; 
+var july1_bikes; 
+var july2_bikes; 
+var july3_bikes; 
+var july4_bikes; 
+var july5_bikes; 
 var station_data;
-var starting_time = new Date("2014-07-04 00:00:00"); //start with july
-var ending_time = new Date("2014-07-04 23:59:00");
+var barchart_data;
+
+var current_day = "july_4";
+var starting_time = new Date("2014-06-29 00:00:00"); //start with july
+var ending_time = new Date("2014-06-29 23:59:00");
 var current_time = starting_time;
 var filter = "none";
 var filters = {
@@ -100,30 +108,34 @@ var filters = {
     subscription: function(d) { 
       if(d.usertype == "Customer") return "#0080ff";
       return "#ffa500";
-    },
-    age: function(d) { 
-      var age = 2014 - d["birth year"];
-      if(age < 20) return "#ADD8E6";
-      if(age >= 20 && age < 50) return "#2072BC";
-      if(age > 50) return "#00264A";
-      return "gray"; //no age indicated
     }
   };
 
 queue()
-  .defer(d3.json, "data/stations.json") 
-  //.defer(d3.csv, "data/december2014.csv")
+  .defer(d3.json, "data/stations.json")
+  .defer(d3.csv, "data/june29.csv")
+  .defer(d3.csv, "data/june30.csv")
+  .defer(d3.csv, "data/july1.csv")
+  .defer(d3.csv, "data/july1_extra.csv")
+  .defer(d3.csv, "data/july2.csv")
+  .defer(d3.csv, "data/july3.csv")
   .defer(d3.csv, "data/july4.csv")
+  .defer(d3.csv, "data/july5.csv")
   .defer(d3.csv, "data/july4weather.csv")
-  .defer(d3.csv, "data/december1.csv") 
-  .defer(d3.csv, "data/december1stweatherdata.csv")
-    .await(function(error, stations, july4_b, july4_w, dec1_b, decemberfirst) { 
+    .await(function(error, stations, june29_b, june30_b, july1_b, july_extra, july2_b, july3_b, july4_b, july5_b, july4_w) { 
         // error handling
         station_data = stations;
+
+        june29_bikes = june29_b;
+        june30_bikes = june30_b;
+        july1_bikes = july_extra.concat(july1_b);
+        july2_bikes = july2_b;
+        july3_bikes = july3_b;
         july4_bikes = july4_b;
+        july5_bikes = july5_b;
+
         july4_weather = july4_w;
-        dec1_bikes = dec1_b;
-        december_first_data = decemberfirst;
+
         data_loaded();
   });
 
@@ -136,10 +148,10 @@ function data_loaded() {
   
   var stationsList = station_data["stationBeanList"];
 
-  bike_data = july4_bikes; //start with december
-  weather_data = july4_weather;
+  bike_data = june29_bikes;
+  weather_data = july4_weather; //UPDATE THIS
 
-  var data_test = [july4_bikes, dec1_bikes];
+  var data_test = [june29_bikes, june30_bikes, july1_bikes, july2_bikes, july3_bikes, july4_bikes, july5_bikes];
   var averageDay_vis = new averageDayVis(d3.select("#barchart"), data_test);
   var aggregate_vis = new aggregateVis(d3.select("#aggregate_chart"), data_test);
   var stations_vis = new StationVis(d3.select("#stations_chart"), bike_data, ["1 Ave & E 15 St"]);
@@ -240,13 +252,153 @@ function data_loaded() {
   // console.log(aggregate_info);
 
   // button functions
+   d3.selectAll("button[value=\"june_29\"]").on("click", function () {
+    //if not currently selected
+      //change start time, end time,
+    if(this.value != current_day) {
+      clearInterval(myVar);
+      starting_time = new Date("2014-06-29 00:00:00");
+      ending_time = new Date("2014-06-29 23:59:00");
+
+      //change bike_data
+      bike_data = june29_bikes;
+      //weather_data = june30_weather;
+
+      //reset function
+      $("#slider").slider({
+                value: starting_time.getTime(),
+                min: starting_time.getTime(),
+                max: ending_time.getTime(),
+      });
+      d3.select("svg").remove();
+      var bikeline_vis = new bikeLineVis(d3.select("#bikeline"), bike_data);
+      stations_vis.change_day(bike_data);
+      d3.selectAll("button").attr("class", 'day');
+      d3.selectAll("button[value=\"june_29\"]").attr("class", 'buttonactive');
+      resetbike();
+      current_day = this.value;
+    }
+  });
+
+  d3.selectAll("button[value=\"june_30\"]").on("click", function () {
+    //if not currently selected
+      //change start time, end time,
+    if(this.value != current_day) {
+      clearInterval(myVar);
+      starting_time = new Date("2014-06-30 00:00:00");
+      ending_time = new Date("2014-06-30 23:59:00");
+
+      //change bike_data
+      bike_data = june30_bikes;
+      //weather_data = june30_weather;
+
+      //reset function
+      $("#slider").slider({
+                value: starting_time.getTime(),
+                min: starting_time.getTime(),
+                max: ending_time.getTime(),
+      });
+      d3.select("svg").remove();
+      var bikeline_vis = new bikeLineVis(d3.select("#bikeline"), bike_data);
+      stations_vis.change_day(bike_data);
+      d3.selectAll("button").attr("class", 'day');
+      d3.selectAll("button[value=\"june_30\"]").attr("class", 'buttonactive');
+      resetbike();
+      current_day = this.value;
+    }
+  });
+
+  d3.selectAll("button[value=\"july_1\"]").on("click", function () {
+    //if not currently selected
+      //change start time, end time,
+    if(this.value != current_day) {
+      clearInterval(myVar);
+      starting_time = new Date("2014-07-01 00:00:00");
+      ending_time = new Date("2014-07-01 23:59:00");
+
+      //change bike_data
+      bike_data = july1_bikes;
+      //weather_data = july1_weather;
+
+      //reset function
+      $("#slider").slider({
+                value: starting_time.getTime(),
+                min: starting_time.getTime(),
+                max: ending_time.getTime(),
+      });
+      d3.select("svg").remove();
+      var bikeline_vis = new bikeLineVis(d3.select("#bikeline"), bike_data);
+      stations_vis.change_day(bike_data);
+      d3.selectAll("button").attr("class", 'day');
+      d3.selectAll("button[value=\"july_1\"]").attr("class", 'buttonactive');
+      resetbike();
+      current_day = this.value;
+    }
+  });
+
+  d3.selectAll("button[value=\"july_2\"]").on("click", function () {
+    //if not currently selected
+      //change start time, end time,
+    if(this.value != current_day) {
+      clearInterval(myVar);
+      starting_time = new Date("2014-07-02 00:00:00");
+      ending_time = new Date("2014-07-02 23:59:00");
+
+      //change bike_data
+      bike_data = july2_bikes;
+      //weather_data = july2_weather;
+
+      //reset function
+      $("#slider").slider({
+                value: starting_time.getTime(),
+                min: starting_time.getTime(),
+                max: ending_time.getTime(),
+      });
+      d3.select("svg").remove();
+      var bikeline_vis = new bikeLineVis(d3.select("#bikeline"), bike_data);
+      stations_vis.change_day(bike_data);
+      d3.selectAll("button").attr("class", 'day');
+      d3.selectAll("button[value=\"july_2\"]").attr("class", 'buttonactive');
+      resetbike();
+      current_day = this.value;
+    }
+  });
+
+  d3.selectAll("button[value=\"july_3\"]").on("click", function () {
+    //if not currently selected
+      //change start time, end time,
+    if(this.value != current_day) {
+      clearInterval(myVar);
+      starting_time = new Date("2014-07-03 00:00:00");
+      ending_time = new Date("2014-07-03 23:59:00");
+
+      //change bike_data
+      bike_data = july3_bikes;
+      //weather_data = july3_weather;
+
+      //reset function
+      $("#slider").slider({
+                value: starting_time.getTime(),
+                min: starting_time.getTime(),
+                max: ending_time.getTime(),
+      });
+      d3.select("svg").remove();
+      var bikeline_vis = new bikeLineVis(d3.select("#bikeline"), bike_data);
+      stations_vis.change_day(bike_data);
+      d3.selectAll("button").attr("class", 'day');
+      d3.selectAll("button[value=\"july_3\"]").attr("class", 'buttonactive');
+      resetbike();
+      current_day = this.value;
+    }
+  });
+
   d3.selectAll("button[value=\"july_4\"]").on("click", function () {
     //if not currently selected
       //change start time, end time,
     if(this.value != current_day) {
       clearInterval(myVar);
       starting_time = new Date("2014-07-04 00:00:00");
-      ending_time = new Date("2014-07-05 00:00:00");
+      ending_time = new Date("2014-07-04 23:59:00");
 
       //change bike_data
       bike_data = july4_bikes;
@@ -268,16 +420,18 @@ function data_loaded() {
     }
   });
 
-   d3.selectAll("button[value=\"dec_1\"]").on("click", function () {
+  d3.selectAll("button[value=\"july_5\"]").on("click", function () {
     //if not currently selected
       //change start time, end time,
     if(this.value != current_day) {
       clearInterval(myVar);
-      starting_time = new Date("2014-12-01 00:00:00");
-      ending_time = new Date("2014-12-02 00:00:00");
+      starting_time = new Date("2014-07-05 00:00:00");
+      ending_time = new Date("2014-07-05 23:59:00");
 
-      bike_data = dec1_bikes;
-      weather_data = december_first_data;
+      //change bike_data
+      bike_data = july5_bikes;
+      //weather_data = july5_weather;
+      //change weather data
       //reset function
       $("#slider").slider({
                 value: starting_time.getTime(),
@@ -287,17 +441,12 @@ function data_loaded() {
       d3.select("svg").remove();
       var bikeline_vis = new bikeLineVis(d3.select("#bikeline"), bike_data);
       stations_vis.change_day(bike_data);
-      d3.selectAll("button").attr("class", 'day')
-      d3.selectAll("button[value=\"dec_1\"]").attr("class", 'buttonactive');
+      d3.selectAll("button").attr("class", 'day');
+      d3.selectAll("button[value=\"july_5\"]").attr("class", 'buttonactive');
       resetbike();
       current_day = this.value;
     }
   });
-
-
-  // Initialize the bar charts
-  
-
 
   // Initialize the bar chart
   //var averageDay_vis = new averageDayVis(d3.select("#barchart"), barchart_data);
@@ -449,11 +598,10 @@ function data_loaded() {
 
   function resetbike() {
     $("#slider").slider('value', starting_time.getTime());
-    //current_time = starting_time;
-    //minidata = new_trips(current_time, true);
-    //createnewbikes(minidata);
-    //document.getElementById("time").innerHTML = "Current Time: <br>" + formatDate(current_time);
-    //reset weather
+
+    svg.selectAll(".bikes").remove();
+    minidata = all_bikes_for_date(current_time);
+    createnewbikes(minidata); 
   }
 
   // Create a date range slider
@@ -685,7 +833,7 @@ function data_loaded() {
             .duration(100)
             .style("opacity", .4)
             .transition()
-              .duration(500)
+              .duration(200)
               .style("opacity", 0)
               .remove()
   }
