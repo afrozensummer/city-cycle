@@ -112,8 +112,8 @@ bikeLineVis.prototype.updateVis = function(){
 
     this.svg.append('svg:path')
         .attr('d', that.area(this.bikeperminute))
-        .attr('stroke', '#ffc966')
-        .attr('fill', '#ffc966')
+       // .attr('stroke', '#ffc966')
+        .attr('fill',  '#d3d3d3')
 
       
 }

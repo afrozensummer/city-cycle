@@ -287,10 +287,11 @@ a {
 .bikes {
   z-index: 1;
   opacity: 1;
+  fill:#4D4D4D;
 } 
 
 .buttonactive {
-  background-color: #388E8E;
+  background-color: #3399FF;
   color: #FFF;
     border:1px solid #dcdcdc;
   display:inline-block;

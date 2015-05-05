@@ -129,26 +129,26 @@ var filters = {
       document.getElementById("option 2").innerHTML = "";
       document.getElementById("option 3").innerHTML = "";
 
-      return "#000"
+      return "#4D4D4D"
     },
     gender: function(d) { 
 
-      document.getElementById("option 1").innerHTML = '<font color="#0000ff"> <font face="verdana"> &#8226 </font> Male </font>';
-      document.getElementById("option 2").innerHTML = '<font color="#FF0000"> <font face="verdana"> &#8226 </font> Female </font>';
-      document.getElementById("option 3").innerHTML = '<font color="#8A2BE2"> <font face="verdana"> &#8226 </font> Unspecified </font>';
+      document.getElementById("option 1").innerHTML = '<font color="#3399FF"> <font face="verdana"> &#8226 </font> Male </font>';
+      document.getElementById("option 2").innerHTML = '<font color="#FF6699"> <font face="verdana"> &#8226 </font> Female </font>';
+      document.getElementById("option 3").innerHTML = '<font color="#A0A0A0"> <font face="verdana"> &#8226 </font> Unspecified </font>';
 
-      if(d.gender == 1) return "#0000ff";
-      if(d.gender == 2) return "#FF0000";
-      return "#8A2BE2";
+      if(d.gender == 1) return "#3399FF";
+      if(d.gender == 2) return "#FF6699";
+      return "#A0A0A0";
     },
     subscription: function(d) {
 
-      document.getElementById("option 1").innerHTML = '<font color="#0080ff"><font face="verdana"> &#8226 </font> New Customer </font>';
-      document.getElementById("option 2").innerHTML = '<font color="#ffa500"><font face="verdana"> &#8226 </font> Yearly Subscriber </font>';
+      document.getElementById("option 1").innerHTML = '<font color="#6699FF"><font face="verdana"> &#8226 </font> New Customer </font>';
+      document.getElementById("option 2").innerHTML = '<font color="#F5A50A"><font face="verdana"> &#8226 </font> Yearly Subscriber </font>';
       document.getElementById("option 3").innerHTML = "";
 
-      if(d.usertype == "Customer") return "#0080ff";
-      return "#ffa500";
+      if(d.usertype == "Customer") return "#6699FF";
+      return "#F5A50A";
     }
   };
 
@@ -202,107 +202,12 @@ function data_loaded() {
   var stationsList = station_data["stationBeanList"];
 
   bike_data = june29_bikes;
-  weather_data = july4_weather; //UPDATE THIS
+  weather_data = june29_weather;
 
   var data_test = [june29_bikes, june30_bikes, july1_bikes, july2_bikes, july3_bikes, july4_bikes, july5_bikes];
   var averageDay_vis = new averageDayVis(d3.select("#barchart"), data_test);
   var aggregate_vis = new aggregateVis(d3.select("#aggregate_chart"), data_test);
   var stations_vis = new StationVis(d3.select("#stations_chart"), bike_data, stations_selected);
-
-// "E 43 St & Vanderbilt Ave"
-
-  // function format_hour_bar (bike_data) {
-
-  //   var day_array = d3.range(24).map(function () { return 0; });
-
-  //   var index = 0;
-  //   var lasthour = "00";
-  //   var date = new Date (bike_data[1000].starttime);
-  //   var true_date = formatDate(date);
-  //   console.log(true_date);
-
-  //   bike_data.forEach(function(i){
-  //     var hour = new Date (i.starttime);
-  //     var now = formatHour(hour);
-  //     var this_date = formatDate(hour);
-
-  //     if (this_date == true_date){
-  //       if (now != lasthour) {
-  //         index +=1;
-  //         lasthour = now;
-  //       }
-  //       day_array[index] += 1;
-  //     }   
-  //   })
-  //   return day_array
-  // } 
-
-  // function format_hour_bar_gender (bike_data) {
-
-  //   var female_array = d3.range(24).map(function () { return 0; });
-  //   var male_array = d3.range(24).map(function () { return 0; });
-
-  //   var index = 0;
-  //   var lasthour = "00";
-  //   var date = new Date (bike_data[1000].starttime);
-  //   var true_date = formatDate(date);
-  //   //console.log(true_date);
-  //   console.log(bike_data);
-
-  //   bike_data.forEach(function(i){
-  //     var hour = new Date (i.starttime);
-  //     var now = formatHour(hour);
-  //     var this_date = formatDate(hour);
-
-  //     if (this_date == true_date){
-  //       if (now != lasthour) {
-  //         index +=1;
-  //         lasthour = now;
-  //       } 
-  //       if (i.gender == 1){
-  //         male_array[index] += 1;
-  //       } if (i.gender == 2){
-  //         female_array[index] +=1;
-  //       }
-  //     }   
-  //   })
-  //   return [male_array, female_array]
-  // }
-
-  //console.log(format_hour_bar_gender(july4_bikes));
-
-  // function format_aggregate_bar (bike_data) {
-
-  //   var minute_aggregate = d3.range(1440).map(function () { return 0; });
-  //   var index = 0;
-  //   var date = new Date (bike_data[1000].starttime);
-  //   var true_date = formatDate(date);
-
-  //   bike_data.forEach(function(d){
-
-  //     var time = new Date (d.starttime);
-  //     if (formatDate(time) == true_date){
-  //       var new_index = (60 * parseInt(formatHour(time))) + parseInt(formatMinute(time));
-  //       if (new_index == index){
-  //         minute_aggregate[index] += 1;
-  //       } else {
-  //         index +=1;
-  //         minute_aggregate[index] = minute_aggregate[index - 1] + 1; 
-  //       }
-  //     }
-  //   })
-  //   return minute_aggregate;
-  // }
-
-  // gender_barchart_data = [{"date":"July 4", "gender": "male", "bikers": format_hour_bar_gender(july4_bikes)[0]}, {"date":"July 4", "gender": "female", "bikers": format_hour_bar_gender(july4_bikes)[1]},{"date": "December 1", "gender": "male", "bikers": format_hour_bar_gender(dec1_bikes)[0]},{"date": "December 1", "gender": "female", "bikers": format_hour_bar_gender(dec1_bikes)[1]}];
-
-  // console.log(gender_barchart_data);
-
-  // barchart_data = [{"date":"July 4", "bikers": format_hour_bar(july4_bikes)}, {"date": "December 1", "bikers": format_hour_bar(dec1_bikes)}];
-
-  // aggregate_info = [{"date":"July 4", "bikers": format_aggregate_bar(july4_bikes)}, {"date": "December 1", "bikers": format_aggregate_bar(dec1_bikes)}];
-
-  // console.log(aggregate_info);
 
   // button functions
    d3.selectAll("button[value=\"june_29\"]").on("click", function () {
@@ -328,6 +233,8 @@ function data_loaded() {
       stations_vis.change_day(bike_data);
       d3.selectAll("button").attr("class", 'day');
       d3.selectAll("button[value=\"june_29\"]").attr("class", 'buttonactive');
+      d3.select("#play").style("display", "initial");
+      d3.select("#pause").style("display", "none");
       resetbike();
       current_day = this.value;
     }
@@ -356,6 +263,8 @@ function data_loaded() {
       stations_vis.change_day(bike_data);
       d3.selectAll("button").attr("class", 'day');
       d3.selectAll("button[value=\"june_30\"]").attr("class", 'buttonactive');
+      d3.select("#play").style("display", "initial");
+      d3.select("#pause").style("display", "none");
       resetbike();
       current_day = this.value;
     }
@@ -384,6 +293,8 @@ function data_loaded() {
       stations_vis.change_day(bike_data);
       d3.selectAll("button").attr("class", 'day');
       d3.selectAll("button[value=\"july_1\"]").attr("class", 'buttonactive');
+      d3.select("#play").style("display", "initial");
+      d3.select("#pause").style("display", "none");
       resetbike();
       current_day = this.value;
     }
@@ -412,6 +323,8 @@ function data_loaded() {
       stations_vis.change_day(bike_data);
       d3.selectAll("button").attr("class", 'day');
       d3.selectAll("button[value=\"july_2\"]").attr("class", 'buttonactive');
+      d3.select("#play").style("display", "initial");
+      d3.select("#pause").style("display", "none");
       resetbike();
       current_day = this.value;
     }
@@ -440,6 +353,8 @@ function data_loaded() {
       stations_vis.change_day(bike_data);
       d3.selectAll("button").attr("class", 'day');
       d3.selectAll("button[value=\"july_3\"]").attr("class", 'buttonactive');
+      d3.select("#play").style("display", "initial");
+      d3.select("#pause").style("display", "none");
       resetbike();
       current_day = this.value;
     }
@@ -468,6 +383,8 @@ function data_loaded() {
       stations_vis.change_day(bike_data);
       d3.selectAll("button").attr("class", 'day');
       d3.selectAll("button[value=\"july_4\"]").attr("class", 'buttonactive');
+      d3.select("#play").style("display", "initial");
+      d3.select("#pause").style("display", "none");
       resetbike();
       current_day = this.value;
     }
@@ -496,6 +413,8 @@ function data_loaded() {
       stations_vis.change_day(bike_data);
       d3.selectAll("button").attr("class", 'day');
       d3.selectAll("button[value=\"july_5\"]").attr("class", 'buttonactive');
+      d3.select("#play").style("display", "initial");
+      d3.select("#pause").style("display", "none");
       resetbike();
       current_day = this.value;
     }
@@ -524,7 +443,6 @@ function data_loaded() {
   });
 
   // Initialize the bar chart
-  //var averageDay_vis = new averageDayVis(d3.select("#barchart"), barchart_data);
   var bikeline_vis = new bikeLineVis(d3.select("#bikeline"), bike_data);
 
   //Format the weather
@@ -541,8 +459,9 @@ function data_loaded() {
 
   // Format the date
   var formatDate = d3.time.format("%a, %b %e, %H:%M");
-  var formatTime = d3.time.format("%H:%M");
   var format_day_hour = d3.time.format("%a, %b %e, %H");
+  var formatTime = d3.time.format("%a, %H:%M");
+
   var format_minute_only = d3.time.format("%M");
   var format_hour_only = d3.time.format("%H");
   var format_day = d3.time.format("%b %e");
@@ -867,6 +786,7 @@ function data_loaded() {
   }
 
   function reset() {
+    
     var x_coors = [];
     var y_coors = [];
 
@@ -906,7 +826,7 @@ function data_loaded() {
   function emit(coordinates) {
       var emit = g.append("circle")
         .attr("r", 5)
-        .style("fill", "black")
+        .style("fill", "steelblue")
         .attr("class", "hi")
         .style("opacity", 0)
         .attr("transform", function() { 
@@ -916,9 +836,9 @@ function data_loaded() {
       })
         .transition()
             .duration(100)
-            .style("opacity", .4)
+            .style("opacity", .3)
             .transition()
-              .duration(200)
+              .duration(300)
               .style("opacity", 0)
               .remove()
   }

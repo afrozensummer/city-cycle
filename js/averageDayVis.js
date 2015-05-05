@@ -90,11 +90,11 @@ averageDayVis.prototype.initVis = function() {
     })
 
     //console.log(day_array);
-    no_filter.push({"date": formatTitle(date), "type": 0, "bikers":day_array, "color":"black"});
-    gender_filter.push({"date": formatTitle(date), "type": 1, "bikers":male_array, "color":"blue"});
-    gender_filter.push({"date": formatTitle(date), "type": 2, "bikers":female_array, "color":"red"}); 
-    subsc_filter.push({"date": formatTitle(date), "type": 1, "bikers":yes_subscribe, "color":"#ffa500"});
-    subsc_filter.push({"date": formatTitle(date), "type": 2, "bikers":no_subscribe, "color":"#0080ff"});
+    no_filter.push({"date": formatTitle(date), "type": 0, "bikers":day_array, "color":"#4D4D4D"});
+    gender_filter.push({"date": formatTitle(date), "type": 1, "bikers":male_array, "color":"#3399FF"});
+    gender_filter.push({"date": formatTitle(date), "type": 2, "bikers":female_array, "color":"#FF6699"}); 
+    subsc_filter.push({"date": formatTitle(date), "type": 1, "bikers":yes_subscribe, "color":"#F5A50A"});
+    subsc_filter.push({"date": formatTitle(date), "type": 2, "bikers":no_subscribe, "color":"#6699FF"});
   });
 
   this.nofilter_data = no_filter;
