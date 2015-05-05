@@ -1,11 +1,10 @@
 /**
- * Bitches make graphs 
+ * Bitches make graphs pt. 2
  */
 
 aggregateVis = function(_parentElement, _data) {
     this.parentElement = _parentElement;
     this.data = _data;
-    //this.displayData = [];
 
     this.nofilter_data = [];
     this.gender_filter_data = [];
@@ -147,8 +146,6 @@ aggregateVis.prototype.initVis = function() {
     this.svg.append("g")
       .attr("class", "y axis")
       .append("text")
-         
-         //.attr("transform", "translate(0, 100)", "")
          .attr("transform", "translate(100, 0)")
          .attr("y", 6)
          .attr("dy", ".71em")
@@ -179,15 +176,11 @@ aggregateVis.prototype.filter_called = function(filter, hour, minute) {
 
 aggregateVis.prototype.updateVis = function(hour, minute) {
 
-   //console.log("in update vis");
-   // console.log(today_date);
-
     var index = (60 * parseInt(hour)) + parseInt(minute);
 
     this.data = this.nofilter_data;
     var that = this;
 
-    //this.y.domain([0, d3.max(this.data.map(function(d) {return d.bikers[index];}))]);
     var max = d3.max(this.data_to_use.map(function (d) {return d3.max(d.bikers);}));
     this.y.domain([0, max]);
     this.x.domain(this.titles);
@@ -203,11 +196,11 @@ aggregateVis.prototype.updateVis = function(hour, minute) {
             return "rotate(-65)" 
          });
 
-    // updates axis
+    // Updates axis
     this.svg.select(".y.axis")
         .call(this.yAxis);
 
-    // data join
+    // Data join
     var bar = this.svg.selectAll(".bar")
       .data(this.data_to_use);
 
@@ -215,7 +208,7 @@ aggregateVis.prototype.updateVis = function(hour, minute) {
 
     bar_enter.append("rect")
       .attr("class", "bar")
-      .attr("y", function(d) { return that.y(d.bikers[index]);}) // or something like that
+      .attr("y", function(d) { return that.y(d.bikers[index]);})
       .attr("x", function(d, i) { 
         if(d.type != 2) {
           return that.x(d.date);
@@ -234,21 +227,7 @@ aggregateVis.prototype.updateVis = function(hour, minute) {
       .style("fill", function(d) {
         return d.color;
       })
-
-   /* bar_enter.append("rect")
-      .attr("class", "bar")
-      .attr("y", function(d) { return that.y(d.bikers[index]);}) // or something like that
-      .attr("x", function(d, i) {return that.x(d.date);})
-    .attr("width", this.x.rangeBand())
-    .attr("height", function(d, i) {
-        return that.height - that.y(d.bikers[index]);
-    })
-    .style("fill", function(d,i) {
-        if (d.date == today_date) {
-            return "teal";
-        }
-     });
-  */
+      
     bar.exit().remove();
 
     bar

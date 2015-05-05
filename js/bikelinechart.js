@@ -22,13 +22,11 @@ bikeLineVis = function(_parentElement, _data) {
     
     var currenttime = d3.time.day(new Date(this.data[this.data.length-1]["starttime"]));
     var newday = d3.time.day(new Date(this.data[this.data.length-1]["starttime"]));
-    //var endtime = new Date(this.data[this.data.length-1]["stoptime"]);
     this.bikeperminute = [];
     var placemarker = 0;
     var endplacemarker = 0;
 
     for (var i = 0; i < 1440; i++) {
-        //var counterforminute = all_bikes_for_date(currenttime, this.data);
         var counterforminute = 0;
 
         var datatime = d3.time.minute.floor(currenttime);
@@ -48,13 +46,10 @@ bikeLineVis = function(_parentElement, _data) {
         currenttime = new Date(currenttime.getTime() + 60*1000);
     }
 
-    // console.log(bikeperminute)
     this.initVis();
 }
 
-/**
- * Method that sets up the SVG and the variables
- */
+
 bikeLineVis.prototype.initVis = function(){
 
   var that = this;
@@ -74,7 +69,6 @@ bikeLineVis.prototype.initVis = function(){
 
     this.xAxis = d3.svg.axis()
       .scale(this.x)
-      //.ticks(15)
       .orient("bottom");
 
     this.yAxis = d3.svg.axis()

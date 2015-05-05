@@ -1,9 +1,7 @@
 /**
- * Bitches make graphs 
+ * Bitches make graphs pt. 1
  */
 
-
-//TODO: DO IT ! :) Look at agevis.js for a useful structure
 averageDayVis = function(_parentElement, _data) {
     this.parentElement = _parentElement;
     this.data = _data;
@@ -31,12 +29,7 @@ averageDayVis = function(_parentElement, _data) {
     this.initVis();
 }
 
-/**
- * Method that sets up the SVG and the variables
- */
 averageDayVis.prototype.initVis = function() {
-
-  //console.log(this.data);  
 
   var no_filter = [];
   var gender_filter = [];
@@ -59,8 +52,6 @@ averageDayVis.prototype.initVis = function() {
     var date = new Date (d[d.length-1].starttime);
     var true_date = formatDate(date);
 
-    //console.log(d);
-
     d.forEach(function(i){
       var hour = new Date (i.starttime);
       var now = formatHour(hour);
@@ -75,7 +66,7 @@ averageDayVis.prototype.initVis = function() {
         // Add to unfiltered data
         day_array[index] += 1;
 
-        // Now add to where the gender is filtered
+        // Now add to filtered data sets
         if (i.gender == 1){
             male_array[index] +=1;
         } if (i.gender == 2){
@@ -88,7 +79,6 @@ averageDayVis.prototype.initVis = function() {
       }   
     })
 
-    //console.log(day_array);
     no_filter.push({"date": formatTitle(date), "type": 0, "bikers":day_array, "color":"#4D4D4D"});
     gender_filter.push({"date": formatTitle(date), "type": 1, "bikers":male_array, "color":"#3399FF"});
     gender_filter.push({"date": formatTitle(date), "type": 2, "bikers":female_array, "color":"#FF6699"}); 
@@ -135,7 +125,6 @@ averageDayVis.prototype.initVis = function() {
       .attr("class", "y axis")
       .append("text")
          
-         //.attr("transform", "translate(0, 100)", "")
          .attr("transform", "translate(100,0)")
          .attr("y", 6)
          .attr("dy", ".71em")
@@ -161,7 +150,7 @@ averageDayVis.prototype.filter_called = function(filter, hour) {
     if(filter == "none") {
       this.data_to_use = this.nofilter_data;
     }
-    // call updateVis
+    // Call updateVis
     this.updateVis(hour);
 }
 
@@ -186,11 +175,11 @@ averageDayVis.prototype.updateVis = function(hour) {
             return "rotate(-65)" 
          });
 
-    // updates axis
+    // Updates axis
     this.svg.select(".y.axis")
         .call(this.yAxis);
 
-    // data join
+    // Data join
     var bar = this.svg.selectAll(".bar")
       .data(this.data_to_use);
 
