@@ -257,8 +257,30 @@ a {
   stroke-width: .8px;*/
 }
 
+#category_legend {
+      position:absolute;
+    top: 300px;
+/*    width: 35%;
+    height: 80%;*/
+    padding: 5px;
+ /*   opacity: 0.4;*/
+        background-color: rgba(255,255,255,0.4);
+        z-index: 10;
+}
+
+#line_legend {
+  float: right;
+  top: -320px;
+  position: relative;
+  text-align: right;
+}
+
 #pause {
   display: none;
+  padding-right: 5px;
+}
+
+#play {
   padding-right: 5px;
 }
 

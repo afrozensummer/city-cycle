@@ -77,13 +77,13 @@ html, body {
     <div id="bikeline"></div>
   <div id="slider"></div> <br>
       
-    <div id = "description_container">
+<!--     <div id = "description_container">
       
       <br>
       
-    </div><!-- <div id="map_cover"></div> -->
+    </div> --><!-- <div id="map_cover"></div> -->
       
-      <div id="category legend">
+      <div id="category_legend">
           <span id= "option 1"></span> <br>
           <span id= "option 2"></span> <br>
           <span id= "option 3"></span>
@@ -97,7 +97,7 @@ html, body {
          <button  type="button" name="ending"> Trips ending </button>
          <button  type="button" name="reset"> Reset </button>
       </div>
-      <div id="line legend"> 
+      <div id="line_legend"> 
         <span id= "red">E 43 St & Vanderbilt Ave</span> <br>
         <span id= "blue"></span> <br>
         <span id= "green"></span>
@@ -961,6 +961,8 @@ function data_loaded() {
                       });
   }
   map.on("viewreset", reset);
+
+  // d3.select("#line_legend").attr(top: )
 }
     </script>
   </body>
