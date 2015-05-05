@@ -49,10 +49,13 @@ html, body {
     <input type="image" src="img/pause.png" name="pause" class="button" id = "pause" />  
       </div>
   <div id = "dates">
-              <button  class = "buttonactive" type="button" value="july_4"> July 4</button>
-        <button class = "day" type="button" value="dec_1">Dec 1</button>
-        <button class = "day" type="button">Other Day</button>
-        <button class = "day" type="button">Other Day</button>
+      <button  class = "buttonactive" type="button" value="june_29"> June 29</button>
+        <button  class = "day" type="button" value="june_30"> June 30</button>
+        <button  class = "day" type="button" value="july_1"> July 1</button>
+        <button  class = "day" type="button" value="july_2"> July 2</button>
+        <button  class = "day" type="button" value="july_3"> July 3</button>
+        <button  class = "day" type="button" value="july_4"> July 4</button>
+        <button  class = "day" type="button" value="july_5"> July 5</button>
     </div>
 
     
@@ -322,7 +325,7 @@ function data_loaded() {
       return (hour/10)*10;
     }
   }
-  document.getElementById("temp").innerHTML = "Temperature: " + weather_data[strip(hour(current_time))]["DryBulbFarenheit"]+ " F";
+  document.getElementById("temp").innerHTML = "Temperature: " + weather_data[strip(hour(current_time))]["DryBulbFarenheit"]+ " °F";
 
   // Format the date
   var formatDate = d3.time.format("%a, %b %e, %H:%M");
@@ -380,22 +383,17 @@ function data_loaded() {
     var new_time = new Date($("#slider").slider('value'));
     aggregate_vis.updateVis(format_hour_only(new_time), format_minute_only(new_time));
     document.getElementById("time").innerHTML = "Current Time: " + formatTime(new_time);
-    document.getElementById("temp").innerHTML = "Temperature: " + weather_data[strip(hour(current_time))]["DryBulbFarenheit"]+ " F";
+    // console.log(weather_data[strip(hour(current_time))]["WeatherType"])
+    document.getElementById("temp").innerHTML = "Temperature: " + weather_data[strip(hour(current_time))]["DryBulbFarenheit"]+ " °F";
     if (weather_data[strip(hour(current_time))]["WeatherType"] == "-RA") {
       document.getElementById("weathericon").innerHTML = "<img src='/img/rain.png' >";
     }
     else if (weather_data[strip(hour(current_time))]["WeatherType"] == " ") {
       document.getElementById("weathericon").innerHTML = "<img src='/img/sun.png' >";
     }
-
-    // var format_hour = d3.time.format("%H"); 
-
-    // //console.log(format_hour(new_time) == format_hour(current_time));
-
-    // if (d3.time.hour.floor(new_time).getTime() != d3.time.hour.floor(current_time).getTime()) {
-    //   console.log("new hour");
-    //   //update_hour_bar();
-    // }
+    else if (weather_data[strip(hour(current_time))]["WeatherType"] == "BR") {
+      document.getElementById("weathericon").innerHTML = "<img src='/img/sun.png' >";
+    }
 
     var difference = Math.abs((new_time-current_time)/(60*1000));
         if(difference > 15) {
@@ -459,11 +457,7 @@ function data_loaded() {
 
   function resetbike() {
     $("#slider").slider('value', starting_time.getTime());
-    //current_time = starting_time;
-    //minidata = new_trips(current_time, true);
-    //createnewbikes(minidata);
-    //document.getElementById("time").innerHTML = "Current Time: <br>" + formatDate(current_time);
-    //reset weather
+    update();
   }
 
   // Create a date range slider
@@ -738,6 +732,10 @@ function data_loaded() {
                       });
   }
   map.on("viewreset", reset);
+
+
+
+
 }
     </script>
   </body>

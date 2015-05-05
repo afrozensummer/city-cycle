@@ -89,6 +89,23 @@ a {
   float: right;
 }
 
+#barchart {
+  width: 30%;
+}
+
+#bikeline {
+  width: 100%;
+}
+
+#aggregate_chart {
+  width: 30%;
+}
+
+#stations_chart {
+  width: 60%;
+}
+
+
 #map
 {
   width: 40%;
@@ -149,7 +166,7 @@ a {
 
 .ui-slider {
   top: -3px;
-  width: 1200px;
+  width: 100%;
 }
 
 .ui-slider-horizontal {
@@ -206,7 +223,7 @@ a {
     z-index: 4;
     top: 200px;
     margin: auto;
-    font-size: 50px;
+    font-size: 40px;
     font-family: 'Poiret One';
 }
 

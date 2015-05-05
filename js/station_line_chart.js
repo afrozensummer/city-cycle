@@ -5,14 +5,25 @@
 
 //TODO: DO IT ! :) Look at agevis.js for a useful structure
 StationVis = function(_parentElement, day_data, station_list) {
-   	var that = this;
+   	var stationvis = this;
     this.parentElement = _parentElement;
     this.data = day_data;
     this.station_list = station_list;
     
-    this.margin = {top: 10, right: 30, bottom: 25, left: 45},
-    this.width = 650 - this.margin.left - this.margin.right,
+    this.margin = {top: 10, right: 0, bottom: 25, left: 25},
+    this.width = parseInt(d3.select('#stations_chart').style('width'), 10) - this.margin.left - this.margin.right,
     this.height = 300 - this.margin.top - this.margin.bottom;
+
+    d3.selectAll(window).on('resize', resize);
+    function resize() {
+        // update width
+        console.log(stationvis)
+        that.width = parseInt(d3.select('#stations_chart').style('width'), 10) - that.margin.left - that.margin.right;
+        // reset x range
+        console.log("hi")
+        // d3.select("svg").remove();
+        that.initVis();
+    }
 
     this.initVis();
 }

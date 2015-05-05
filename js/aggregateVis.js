@@ -12,8 +12,18 @@ aggregateVis = function(_parentElement, _data) {
     this.subsc_filter_data = [];
 
     this.margin = {top: 10, right: 0, bottom: 50, left: 50},
-    this.width = 300 - this.margin.left - this.margin.right,
+    this.width = parseInt(d3.select('#aggregate_chart').style('width'), 10) - this.margin.left - this.margin.right,
     this.height = 200 - this.margin.top - this.margin.bottom;
+
+        d3.select(window).on('resize', resize); 
+
+    function resize() {
+        // update width
+        averageDay.width = parseInt(d3.select('#aggregate_chart').style('width'), 10)- this.margin.left - this.margin.right;
+        // reset x range
+        d3.select("svg").remove();
+        averageDay.initVis();
+    }
 
     this.titles = ["Jul  4", "Dec  1"];
     this.initVis();

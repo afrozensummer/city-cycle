@@ -5,10 +5,20 @@
 bikeLineVis = function(_parentElement, _data) {
     this.parentElement = _parentElement;
     this.data = _data;
-
+    var bikelineVis = this;
     this.margin = {top: 0, right: 0, bottom: 0, left: 0},
-    this.width = 1200 - this.margin.left - this.margin.right,
+    this.width = parseInt(d3.select('#bikeline').style('width'), 10);
     this.height = 100 - this.margin.top - this.margin.bottom;
+       
+    d3.select(window).on('resize', resize); 
+
+    function resize() {
+        // update width
+        bikelineVis.width = parseInt(d3.select('#bikeline').style('width'), 10);
+        // reset x range
+        d3.select("svg").remove();
+        bikelineVis.initVis();
+    }
     
     var currenttime = d3.time.day(new Date(this.data[this.data.length-1]["starttime"]));
     var newday = d3.time.day(new Date(this.data[this.data.length-1]["starttime"]));
@@ -48,7 +58,6 @@ bikeLineVis = function(_parentElement, _data) {
 bikeLineVis.prototype.initVis = function(){
 
   var that = this;
-
     // constructs SVG layout
     this.svg = this.parentElement.append("svg")
         .attr("width", this.width + this.margin.left + this.margin.right)
@@ -101,14 +110,13 @@ bikeLineVis.prototype.updateVis = function(){
     this.svg.select(".x.axis")
         .call(this.xAxis);
 
-    // var area = d3.svg.area()
-    //     .x(function(d,i) {return that.x(i)})
-    //     .y(function(d) { return that.y(d)})
-    //     .interpolate('monotone');
-
     this.svg.append('svg:path')
         .attr('d', that.area(this.bikeperminute))
         .attr('stroke', '#ffc966')
         .attr('fill', '#ffc966')
+
       
 }
+
+
+
