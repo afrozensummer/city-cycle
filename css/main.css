@@ -275,6 +275,13 @@ a {
   text-align: right;
 }
 
+#line_buttons {
+  float: left;
+  left: 80px;
+  position: relative;
+  top: -300px;
+}
+
 #pause {
   display: none;
   padding-right: 5px;

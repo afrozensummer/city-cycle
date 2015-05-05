@@ -49,13 +49,13 @@ html, body {
     <input type="image" src="img/pause.png" name="pause" class="button" id = "pause" />  
       </div>
   <div id = "dates">
-      <button  class = "buttonactive" type="button" value="june_29"> June 29</button>
-        <button  class = "day" type="button" value="june_30"> June 30</button>
-        <button  class = "day" type="button" value="july_1"> July 1</button>
-        <button  class = "day" type="button" value="july_2"> July 2</button>
-        <button  class = "day" type="button" value="july_3"> July 3</button>
-        <button  class = "day" type="button" value="july_4"> July 4</button>
-        <button  class = "day" type="button" value="july_5"> July 5</button>
+      <button name = "dates" class = "buttonactive" type="button" value="june_29"> June 29</button>
+        <button name = "dates" class = "day" type="button" value="june_30"> June 30</button>
+        <button name = "dates" class = "day" type="button" value="july_1"> July 1</button>
+        <button name = "dates" class = "day" type="button" value="july_2"> July 2</button>
+        <button name = "dates" class = "day" type="button" value="july_3"> July 3</button>
+        <button name = "dates" class = "day" type="button" value="july_4"> July 4</button>
+        <button name = "dates" class = "day" type="button" value="july_5"> July 5</button>
     </div>
 
     
@@ -92,10 +92,10 @@ html, body {
       <div id="barchart"></div>
       <div id="aggregate_chart"></div>
       <div id="stations_chart"></div>
-      <div> 
-         <button  type="button" name="starting"> Trips Starting </button>
-         <button  type="button" name="ending"> Trips ending </button>
-         <button  type="button" name="reset"> Reset </button>
+      <div id = "line_buttons"> 
+         <button  class = "buttonactive" type="button" name="starting" value = "switch"> Trips Starting </button>
+         <button class = "day" type="button" name="ending" value = "switch"> Trips ending </button>
+         <button class = "day" type="button" name="reset"> Reset </button>
       </div>
       <div id="line_legend"> 
         <span id= "red">E 43 St & Vanderbilt Ave</span> <br>
@@ -227,7 +227,7 @@ function data_loaded() {
       d3.select("svg").remove();
       var bikeline_vis = new bikeLineVis(d3.select("#bikeline"), bike_data);
       stations_vis.change_day(bike_data);
-      d3.selectAll("button").attr("class", 'day');
+      d3.selectAll("button[name=\"dates\"]").attr("class", 'day');
       d3.selectAll("button[value=\"june_29\"]").attr("class", 'buttonactive');
       d3.select("#play").style("display", "initial");
       d3.select("#pause").style("display", "none");
@@ -253,7 +253,7 @@ function data_loaded() {
       d3.select("svg").remove();
       var bikeline_vis = new bikeLineVis(d3.select("#bikeline"), bike_data);
       stations_vis.change_day(bike_data);
-      d3.selectAll("button").attr("class", 'day');
+      d3.selectAll("button[name=\"dates\"]").attr("class", 'day');
       d3.selectAll("button[value=\"june_30\"]").attr("class", 'buttonactive');
       d3.select("#play").style("display", "initial");
       d3.select("#pause").style("display", "none");
@@ -279,7 +279,7 @@ function data_loaded() {
       d3.select("svg").remove();
       var bikeline_vis = new bikeLineVis(d3.select("#bikeline"), bike_data);
       stations_vis.change_day(bike_data);
-      d3.selectAll("button").attr("class", 'day');
+      d3.selectAll("button[name=\"dates\"]").attr("class", 'day');
       d3.selectAll("button[value=\"july_1\"]").attr("class", 'buttonactive');
       d3.select("#play").style("display", "initial");
       d3.select("#pause").style("display", "none");
@@ -305,7 +305,7 @@ function data_loaded() {
       d3.select("svg").remove();
       var bikeline_vis = new bikeLineVis(d3.select("#bikeline"), bike_data);
       stations_vis.change_day(bike_data);
-      d3.selectAll("button").attr("class", 'day');
+      d3.selectAll("button[name=\"dates\"]").attr("class", 'day');
       d3.selectAll("button[value=\"july_2\"]").attr("class", 'buttonactive');
       d3.select("#play").style("display", "initial");
       d3.select("#pause").style("display", "none");
@@ -331,7 +331,7 @@ function data_loaded() {
       d3.select("svg").remove();
       var bikeline_vis = new bikeLineVis(d3.select("#bikeline"), bike_data);
       stations_vis.change_day(bike_data);
-      d3.selectAll("button").attr("class", 'day');
+      d3.selectAll("button[name=\"dates\"]").attr("class", 'day');
       d3.selectAll("button[value=\"july_3\"]").attr("class", 'buttonactive');
       d3.select("#play").style("display", "initial");
       d3.select("#pause").style("display", "none");
@@ -357,7 +357,7 @@ function data_loaded() {
       d3.select("svg").remove();
       var bikeline_vis = new bikeLineVis(d3.select("#bikeline"), bike_data);
       stations_vis.change_day(bike_data);
-      d3.selectAll("button").attr("class", 'day');
+      d3.selectAll("button[name=\"dates\"]").attr("class", 'day');
       d3.selectAll("button[value=\"july_4\"]").attr("class", 'buttonactive');
       d3.select("#play").style("display", "initial");
       d3.select("#pause").style("display", "none");
@@ -383,7 +383,7 @@ function data_loaded() {
       d3.select("svg").remove();
       var bikeline_vis = new bikeLineVis(d3.select("#bikeline"), bike_data);
       stations_vis.change_day(bike_data);
-      d3.selectAll("button").attr("class", 'day');
+      d3.selectAll("button[name=\"dates\"]").attr("class", 'day');
       d3.selectAll("button[value=\"july_5\"]").attr("class", 'buttonactive');
       d3.select("#play").style("display", "initial");
       d3.select("#pause").style("display", "none");
@@ -409,10 +409,14 @@ function data_loaded() {
 
   d3.selectAll("button[name=\"ending\"]").on("click", function () {
     stations_vis.ending();
+    d3.selectAll("button[value=\"switch\"]").attr("class", 'day');
+    d3.selectAll("button[name=\"ending\"]").attr("class", 'buttonactive');
   });
 
   d3.selectAll("button[name=\"starting\"]").on("click", function () {
     stations_vis.starting();
+    d3.selectAll("button[value=\"switch\"]").attr("class", 'day');
+    d3.selectAll("button[name=\"starting\"]").attr("class", 'buttonactive');
   });
 
   //Formating Weather and Date
@@ -423,7 +427,7 @@ function data_loaded() {
       return (hour/10)*10;
     }
   }
-  document.getElementById("temp").innerHTML = "Temperature: " + weather_data[strip(hour(current_time))]["DryBulbFarenheit"]+ " °F";
+  document.getElementById("temp").innerHTML = "Temperature: " + weather_data[strip(hour(current_time))]["DryBulbFarenheit"]+ " F";
   document.getElementById("time").innerHTML = "Current Time: " + formatTime(starting_time);
 
   // Bike Catergorize Functions
@@ -468,7 +472,7 @@ function data_loaded() {
     var new_time = new Date($("#slider").slider('value'));
     aggregate_vis.updateVis(hour(new_time), format_minute_only(new_time));
     document.getElementById("time").innerHTML = "Current Time: " + formatTime(new_time);
-    document.getElementById("temp").innerHTML = "Temperature: " + weather_data[strip(hour(current_time))]["DryBulbFarenheit"]+ " °F";
+    document.getElementById("temp").innerHTML = "Temperature: " + weather_data[strip(hour(current_time))]["DryBulbFarenheit"]+ " F";
     if (weather_data[strip(hour(current_time))]["WeatherType"] == "-RA" || weather_data[strip(hour(current_time))]["WeatherType"] == "RA") {
       document.getElementById("weathericon").innerHTML = "<img src='/img/rain.png' >";
     }
