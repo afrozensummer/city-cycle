@@ -75,6 +75,8 @@ body, html{
     top: 50px;
     width: 70%;
     margin: auto;
+    padding:20px;
+    background-color: rgba(255,255,255,0.6);
 }
 .slideno {
     position:absolute;
@@ -106,7 +108,14 @@ body, html{
 *******************************/
 #slide1{
     background:url(../img/nyc.jpg);
+    height: 1150px;
      
+}
+
+.video {
+    margin-top: 100px;
+    margin: 100 auto;
+  text-align: center;
 }
 /******************************
  SLIDE 2 
