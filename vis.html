@@ -793,15 +793,19 @@ function data_loaded() {
                       stations_vis.change_stations(stations_selected);
                       console.log(stations_selected);
 
+                      document.getElementById(this_color).innerHTML = d.stationName;
                       return this_color;
 
                     }
                   }
                   var i = stations_selected.map(function (e) { return e.name;}).indexOf(d.stationName);
                   if(i != -1) {
+                    document.getElementById(stations_selected[i].color).innerHTML = "";
                     stations_selected.splice(i, 1);
                     //station removed from line graph, update it
+
                     stations_vis.change_stations(stations_selected);
+
                   }
                   console.log(stations_selected);
                   d3.select(this).attr("highlighted", "false");
