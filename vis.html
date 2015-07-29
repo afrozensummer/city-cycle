@@ -88,7 +88,7 @@ html, body {
           <span id= "option 2"></span> <br>
           <span id= "option 3"></span>
       </div> 
-      <div id="map"></div>
+      <div id="map"><font size="4" color="red">LOADING...</font></div>
       <div id="barchart"></div>
       <div id="aggregate_chart"></div>
       <div id="stations_chart"></div>
@@ -200,6 +200,9 @@ queue()
   });
 
 function data_loaded() {
+
+
+  document.getElementById("map").innerHTML = "";
   
   var stationsList = station_data["stationBeanList"];
   bike_data = june29_bikes;
